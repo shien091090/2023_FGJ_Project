@@ -41,6 +41,12 @@ public class CharacterView : MonoBehaviour
         characterMoveModel.OnJump += OnJump;
     }
 
+    public void OnCollisionStay2D(Collision2D col)
+    {
+        if (col.gameObject.CompareTag(GameConst.TAG_PLATFORM))
+            characterMoveModel.TriggerFloor();
+    }
+
     private void OnJump(float jumpForce)
     {
         GetRigidbody.AddForce(new Vector2(0, jumpForce));
