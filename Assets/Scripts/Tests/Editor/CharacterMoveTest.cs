@@ -7,15 +7,21 @@ public class CharacterMoveTest
     private Action<float> horizontalMoveEvent;
     private IMoveController moveController;
     private CharacterMoveModel characterMoveModel;
+    private Action<float> jumpEvent;
+    private IKeyController keyController;
 
     [SetUp]
     public void Setup()
     {
         moveController = Substitute.For<IMoveController>();
-        characterMoveModel = new CharacterMoveModel(moveController);
+        keyController = Substitute.For<IKeyController>();
+
+        characterMoveModel = new CharacterMoveModel(moveController, keyController);
 
         horizontalMoveEvent = Substitute.For<Action<float>>();
+        jumpEvent = Substitute.For<Action<float>>();
         characterMoveModel.OnHorizontalMove += horizontalMoveEvent;
+        characterMoveModel.OnJump += jumpEvent;
     }
 
     [Test]
@@ -35,9 +41,51 @@ public class CharacterMoveTest
         ShouldReceiveHorizontalMoveEvent(Arg.Is<float>(x => x <= 0));
     }
 
+    [Test]
+    //跳躍時不能再跳
+    public void jump_cannot_jump_again()
+    {
+        ShouldIsJumping(false);
+
+        GivenIsJumpKeyDown(true);
+        characterMoveModel.CheckJump(1);
+
+        ShouldReceiveJumpEvent(1);
+        ShouldIsJumping(true);
+
+        GivenIsJumpKeyDown(true);
+        characterMoveModel.CheckJump(1);
+        
+        ShouldReceiveJumpEvent(1);
+
+        characterMoveModel.TriggerFloor();
+
+        ShouldIsJumping(false);
+
+        GivenIsJumpKeyDown(true);
+        characterMoveModel.CheckJump(1);
+
+        ShouldReceiveJumpEvent(2);
+    }
+
+    private void GivenIsJumpKeyDown(bool isKeyDown)
+    {
+        keyController.IsJumpKeyDown.Returns(isKeyDown);
+    }
+
     private void GivenHorizontalAxis(float axisValue)
     {
         moveController.GetHorizontalAxis().Returns(axisValue);
+    }
+
+    private void ShouldReceiveJumpEvent(int triggerTimes)
+    {
+        jumpEvent.Received(triggerTimes).Invoke(Arg.Any<float>());
+    }
+
+    private void ShouldIsJumping(bool expectedIsJumping)
+    {
+        Assert.AreEqual(expectedIsJumping, characterMoveModel.IsJumping);
     }
 
     private void ShouldReceiveHorizontalMoveEvent(float expectedLogic)
@@ -45,6 +93,5 @@ public class CharacterMoveTest
         horizontalMoveEvent.Received(1).Invoke(expectedLogic);
     }
 
-    //跳躍時不能再跳
     //跳躍落地後可再跳
 }

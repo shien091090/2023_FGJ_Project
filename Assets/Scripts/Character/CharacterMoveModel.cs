@@ -1,18 +1,37 @@
 using System;
-using UnityEngine;
 
 public class CharacterMoveModel
 {
     private readonly IMoveController moveController;
-    public event Action<float> OnHorizontalMove;
+    private readonly IKeyController keyController;
 
-    public CharacterMoveModel(IMoveController moveController)
+    public event Action<float> OnHorizontalMove;
+    public event Action<float> OnJump;
+
+    public bool IsJumping { get; private set; }
+
+    public CharacterMoveModel(IMoveController moveController, IKeyController keyController)
     {
         this.moveController = moveController;
+        this.keyController = keyController;
     }
 
     public void UpdateMove(int deltaTime, float speed)
     {
-        OnHorizontalMove?.Invoke(moveController.GetHorizontalAxis() * Time.deltaTime * speed);
+        OnHorizontalMove?.Invoke(moveController.GetHorizontalAxis() * deltaTime * speed);
+    }
+
+    public void CheckJump(int jumpForce)
+    {
+        if (keyController.IsJumpKeyDown && IsJumping == false)
+        {
+            IsJumping = true;
+            OnJump?.Invoke(jumpForce);
+        }
+    }
+
+    public void TriggerFloor()
+    {
+        IsJumping = false;
     }
 }
