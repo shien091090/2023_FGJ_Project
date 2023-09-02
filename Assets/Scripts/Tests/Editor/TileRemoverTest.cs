@@ -59,6 +59,22 @@ public class TileRemoverTest
             x[2] == new Vector3(4, 2, 0) &&
             x[3] == new Vector3(4, 1, 0)));
     }
+    
+    [Test]
+    //只有設定下清除範圍, 上清除範圍為0
+    public void only_have_down_clear_range()
+    {
+        tileRemoverModel = CreateModel(0, 3);
+
+        tileRemoverModel.UpdateRemoveTile(new Vector3(4, 0, 0));
+
+        removeTileEvent.Received(1).Invoke(Arg.Is<Vector3[]>(x =>
+            x.Length == 4 &&
+            x[0] == new Vector3(4, 0, 0) &&
+            x[1] == new Vector3(4, -1, 0) &&
+            x[2] == new Vector3(4, -2, 0) &&
+            x[3] == new Vector3(4, -3, 0)));
+    }
 
     private TileRemoverModel CreateModel(int upRange, int downRange)
     {
