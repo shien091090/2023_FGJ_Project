@@ -6,14 +6,15 @@ public class TileRemoverModel
     private readonly int upRange;
     private readonly int downRange;
     private readonly ITileMap tileMap;
-    private int tilesCount;
+    
+    public int TilesCount { get; private set; }
 
     public TileRemoverModel(int upRange, int downRange, ITileMap tileMap)
     {
         this.upRange = upRange;
         this.downRange = downRange;
         this.tileMap = tileMap;
-        tilesCount = tileMap.GetTotalTilesCount();
+        TilesCount = tileMap.GetTotalTilesCount();
     }
 
     public void UpdateRemoveTile(Vector3 centerPos)
@@ -42,7 +43,7 @@ public class TileRemoverModel
             if (tileMap.HaveTile(pos))
             {
                 tileMap.SetTile(pos, null);
-                tilesCount--;
+                TilesCount--;
             }
         }
     }

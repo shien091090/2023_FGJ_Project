@@ -75,6 +75,42 @@ public class TileRemoverTest
             new Vector3(4, -3, 0));
     }
 
+    [Test]
+    //沒有清除格子時, 總格數維持不變
+    public void no_tile_to_remove()
+    {
+        GivenTotalTilesCount(10);
+        GivenAnyHaveTile(false);
+
+        tileRemoverModel = CreateModel(2, 4);
+
+        TilesCountShouldBe(10);
+        tileRemoverModel.UpdateRemoveTile(new Vector3(2, 1, 0));
+
+        ShouldNotAnySetTile();
+        TilesCountShouldBe(10);
+    }
+
+    private void GivenAnyHaveTile(bool haveTile)
+    {
+        tileMap.HaveTile(Arg.Any<Vector3>()).Returns(haveTile);
+    }
+
+    private void GivenTotalTilesCount(int tilesCount)
+    {
+        tileMap.GetTotalTilesCount().Returns(tilesCount);
+    }
+
+    private void ShouldNotAnySetTile()
+    {
+        tileMap.DidNotReceive().SetTile(Arg.Any<Vector3>(), Arg.Any<Tile>());
+    }
+
+    private void TilesCountShouldBe(int expectedTilesCount)
+    {
+        Assert.AreEqual(expectedTilesCount, tileRemoverModel.TilesCount);
+    }
+
     private void ShouldCheckHaveTiles(params Vector3[] posArray)
     {
         foreach (Vector3 pos in posArray)
