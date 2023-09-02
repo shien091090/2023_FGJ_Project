@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using Vector3 = System.Numerics.Vector3;
 
 public class TileRemoverModel
 {
@@ -26,13 +25,13 @@ public class TileRemoverModel
         int currentIndex = 1;
         for (int i = upRange; i > 0; i--)
         {
-            removePosArray[currentIndex] = new Vector3(centerPos.X, centerPos.Y + i, centerPos.Z);
+            removePosArray[currentIndex] = new Vector3(centerPos.x, centerPos.y + i, centerPos.z);
             currentIndex += 1;
         }
 
         for (int i = 0; i < downRange; i++)
         {
-            removePosArray[currentIndex] = new Vector3(centerPos.X, centerPos.Y - 1 - i, centerPos.Z);
+            removePosArray[currentIndex] = new Vector3(centerPos.x, centerPos.y - 1 - i, centerPos.z);
             currentIndex += 1;
         }
 

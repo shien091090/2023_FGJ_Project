@@ -1,7 +1,6 @@
 using System;
 using NSubstitute;
 using NUnit.Framework;
-using UnityEditor;
 
 public class CharacterMoveTest
 {

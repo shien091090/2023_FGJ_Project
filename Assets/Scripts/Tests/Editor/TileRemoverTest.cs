@@ -1,7 +1,7 @@
 using System;
-using System.Numerics;
 using NSubstitute;
 using NUnit.Framework;
+using UnityEngine;
 
 public class TileRemoverTest
 {
@@ -20,7 +20,7 @@ public class TileRemoverTest
     {
         tileRemoverModel = CreateModel(0, 0);
 
-        tileRemoverModel.UpdateRemoveTile(Vector3.Zero);
+        tileRemoverModel.UpdateRemoveTile(Vector3.zero);
 
         removeTileEvent.DidNotReceive().Invoke(Arg.Any<Vector3[]>());
     }
@@ -59,7 +59,7 @@ public class TileRemoverTest
             x[2] == new Vector3(4, 2, 0) &&
             x[3] == new Vector3(4, 1, 0)));
     }
-    
+
     [Test]
     //只有設定下清除範圍, 上清除範圍為0
     public void only_have_down_clear_range()
