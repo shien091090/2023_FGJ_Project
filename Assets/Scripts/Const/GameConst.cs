@@ -1,4 +1,4 @@
 public class GameConst
 {
-    public const string TAG_PLATFORM = "Platform";
+    public const int LAYER_PLATFORM = 6;
 }

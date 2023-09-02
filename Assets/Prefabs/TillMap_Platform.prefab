@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 4773784112516538338}
   - component: {fileID: 2763712864844411728}
   - component: {fileID: 1126581017917192686}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: TillMap_Platform
-  m_TagString: Platform
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
