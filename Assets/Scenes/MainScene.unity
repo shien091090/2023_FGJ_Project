@@ -279,6 +279,54 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8617831890409010435, guid: 1c2209260970bf64691ee5ff90ca7734, type: 3}
+      propertyPath: m_Size.y
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8617831890409010435, guid: 1c2209260970bf64691ee5ff90ca7734, type: 3}
+      propertyPath: m_Tiles.Array.size
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 8617831890409010435, guid: 1c2209260970bf64691ee5ff90ca7734, type: 3}
+      propertyPath: m_Tiles.Array.data[18].first.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8617831890409010435, guid: 1c2209260970bf64691ee5ff90ca7734, type: 3}
+      propertyPath: m_Tiles.Array.data[18].first.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8617831890409010435, guid: 1c2209260970bf64691ee5ff90ca7734, type: 3}
+      propertyPath: m_Tiles.Array.data[19].first.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8617831890409010435, guid: 1c2209260970bf64691ee5ff90ca7734, type: 3}
+      propertyPath: m_Tiles.Array.data[19].first.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8617831890409010435, guid: 1c2209260970bf64691ee5ff90ca7734, type: 3}
+      propertyPath: m_Tiles.Array.data[20].first.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8617831890409010435, guid: 1c2209260970bf64691ee5ff90ca7734, type: 3}
+      propertyPath: m_Tiles.Array.data[20].first.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8617831890409010435, guid: 1c2209260970bf64691ee5ff90ca7734, type: 3}
+      propertyPath: m_TileAssetArray.Array.data[0].m_RefCount
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 8617831890409010435, guid: 1c2209260970bf64691ee5ff90ca7734, type: 3}
+      propertyPath: m_TileColorArray.Array.data[0].m_RefCount
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 8617831890409010435, guid: 1c2209260970bf64691ee5ff90ca7734, type: 3}
+      propertyPath: m_TileMatrixArray.Array.data[0].m_RefCount
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 8617831890409010435, guid: 1c2209260970bf64691ee5ff90ca7734, type: 3}
+      propertyPath: m_TileSpriteArray.Array.data[0].m_RefCount
+      value: 21
+      objectReference: {fileID: 0}
     - target: {fileID: 9004202702271973704, guid: 1c2209260970bf64691ee5ff90ca7734, type: 3}
       propertyPath: m_Name
       value: TillMap_Platform

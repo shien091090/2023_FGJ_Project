@@ -5,6 +5,8 @@ public class CharacterView : MonoBehaviour
     [SerializeField] private float jumpForce;
     [SerializeField] private float speed;
     [SerializeField] private float jumpDelaySeconds;
+    [SerializeField] private Transform footPoint;
+    [SerializeField] private float footRadius;
 
     private Rigidbody2D rigidbody;
     private CharacterMoveModel characterMoveModel;
@@ -46,10 +48,10 @@ public class CharacterView : MonoBehaviour
 
     public void OnCollisionStay2D(Collision2D col)
     {
-        // bool isOnFloor = Physics2D.OverlapCircle(footPoint.position, footRadius);
-        // Debug.Log($"IsOnFloor: {isOnFloor}");
-        
-        if (col.gameObject.layer == GameConst.LAYER_PLATFORM)
+        bool isOnFloor = Physics2D.OverlapCircle(footPoint.position, footRadius, LayerMask.GetMask(GameConst.GameObjectLayerType.Platform.ToString()));
+        Debug.Log($"IsOnFloor: {isOnFloor}");
+
+        if (col.gameObject.layer == (int)GameConst.GameObjectLayerType.Platform && isOnFloor)
             characterMoveModel.TriggerFloor();
     }
 

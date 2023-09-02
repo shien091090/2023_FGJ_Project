@@ -1,4 +1,7 @@
 public class GameConst
 {
-    public const int LAYER_PLATFORM = 6;
+    public enum GameObjectLayerType 
+    {
+        Platform = 6,
+    }
 }
