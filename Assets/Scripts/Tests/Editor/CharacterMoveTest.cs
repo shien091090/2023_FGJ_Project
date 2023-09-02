@@ -1,6 +1,7 @@
 using System;
 using NSubstitute;
 using NUnit.Framework;
+using UnityEditor;
 
 public class CharacterMoveTest
 {
@@ -94,6 +95,43 @@ public class CharacterMoveTest
         ShouldReceiveJumpEvent(2);
         ShouldIsJumping(true);
     }
+    
+    [Test]
+    //跳躍後, 在跳躍延遲時間內觸發地板, 不可再跳, 過延遲時間後再次觸發地板才可跳
+    public void cannot_jump_again_until_delay_time()
+    {
+        characterMoveModel.SetJumpDelay(0.5f);
+        
+        GivenIsJumpKeyDown(true);
+        characterMoveModel.UpdateJumpTimer(0.3f);
+        characterMoveModel.UpdateCheckJump(1);
+        
+        ShouldReceiveJumpEvent(1);
+        
+        characterMoveModel.TriggerFloor();
+        
+        GivenIsJumpKeyDown(true);
+        characterMoveModel.UpdateJumpTimer(0.3f);
+        characterMoveModel.UpdateCheckJump(1);
+        
+        ShouldReceiveJumpEvent(1);
+        
+        GivenIsJumpKeyDown(true);
+        characterMoveModel.UpdateJumpTimer(0.3f);
+        characterMoveModel.UpdateCheckJump(1);
+        
+        ShouldReceiveJumpEvent(1);
+        
+        characterMoveModel.TriggerFloor();
+        
+        GivenIsJumpKeyDown(true);
+        characterMoveModel.UpdateJumpTimer(0.3f);
+        characterMoveModel.UpdateCheckJump(1);
+        
+        ShouldReceiveJumpEvent(2);
+    }
+    
+    //跳躍後, 在跳躍延遲時間過後觸發地板, 可再跳
 
     private void GivenIsJumpKeyDown(bool isKeyDown)
     {

@@ -4,6 +4,7 @@ public class CharacterView : MonoBehaviour
 {
     [SerializeField] private float jumpForce;
     [SerializeField] private float speed;
+    [SerializeField] private float jumpDelaySeconds;
 
     private Rigidbody2D rigidbody;
     private CharacterMoveModel characterMoveModel;
@@ -22,12 +23,14 @@ public class CharacterView : MonoBehaviour
     private void Start()
     {
         characterMoveModel = new CharacterMoveModel(new CharacterMoveController(), new CharacterKeyController());
+        characterMoveModel.SetJumpDelay(jumpDelaySeconds);
 
         SetEventRegister();
     }
 
     private void Update()
     {
+        characterMoveModel.UpdateJumpTimer(Time.deltaTime);
         characterMoveModel.UpdateCheckJump(jumpForce);
         characterMoveModel.UpdateMove(Time.deltaTime, speed);
     }
