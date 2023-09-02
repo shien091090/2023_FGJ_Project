@@ -90,7 +90,7 @@ public class TileRemoverTest
         ShouldNotAnySetTile();
         TilesCountShouldBe(10);
     }
-    
+
     [Test]
     //清除範圍內所有格子, 總格數減少
     public void remove_all_tiles_in_range()
@@ -102,6 +102,28 @@ public class TileRemoverTest
         tileRemoverModel.UpdateRemoveTile(new Vector3(2, 1, 0));
 
         TilesCountShouldBe(8);
+    }
+
+    [Test]
+    //清除範圍內部分格子, 總格數減少
+    public void remove_some_tiles_in_range()
+    {
+        GivenTotalTilesCount(15);
+        GivenHaveTile(new Vector3(0, 2, 0), false);
+        GivenHaveTile(new Vector3(0, 1, 0), true);
+        GivenHaveTile(new Vector3(0, 0, 0), false);
+        GivenHaveTile(new Vector3(0, -1, 0), false);
+        GivenHaveTile(new Vector3(0, -2, 0), true);
+
+        tileRemoverModel = CreateModel(2, 2);
+        tileRemoverModel.UpdateRemoveTile(new Vector3(0, 0, 0));
+
+        TilesCountShouldBe(13);
+    }
+
+    private void GivenHaveTile(Vector3 pos, bool haveTile)
+    {
+        tileMap.HaveTile(pos).Returns(haveTile);
     }
 
     private void GivenAnyHaveTile(bool haveTile)
