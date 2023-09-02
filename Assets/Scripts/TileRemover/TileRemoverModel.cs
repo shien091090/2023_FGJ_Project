@@ -5,13 +5,15 @@ public class TileRemoverModel
 {
     private readonly int upRange;
     private readonly int downRange;
+    private readonly ITileMap tileMap;
+    private int tilesCount;
 
-    public event Action<Vector3[]> OnRemoveTiles;
-
-    public TileRemoverModel(int upRange, int downRange)
+    public TileRemoverModel(int upRange, int downRange, ITileMap tileMap)
     {
         this.upRange = upRange;
         this.downRange = downRange;
+        this.tileMap = tileMap;
+        tilesCount = tileMap.GetTotalTilesCount();
     }
 
     public void UpdateRemoveTile(Vector3 centerPos)
@@ -35,6 +37,13 @@ public class TileRemoverModel
             currentIndex += 1;
         }
 
-        OnRemoveTiles?.Invoke(removePosArray);
+        foreach (Vector3 pos in removePosArray)
+        {
+            if (tileMap.HaveTile(pos))
+            {
+                tileMap.SetTile(pos, null);
+                tilesCount--;
+            }
+        }
     }
 }

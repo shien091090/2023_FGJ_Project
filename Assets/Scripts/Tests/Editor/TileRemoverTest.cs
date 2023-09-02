@@ -2,17 +2,19 @@ using System;
 using NSubstitute;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class TileRemoverTest
 {
-    private Action<Vector3[]> removeTileEvent;
     private TileRemoverModel tileRemoverModel;
+    private ITileMap tileMap;
 
     [SetUp]
     public void Setup()
     {
-        removeTileEvent = Substitute.For<Action<Vector3[]>>();
+        tileMap = Substitute.For<ITileMap>();
     }
+
 
     [Test]
     //清除範圍為0時, 不會有清除事件
@@ -22,7 +24,7 @@ public class TileRemoverTest
 
         tileRemoverModel.UpdateRemoveTile(Vector3.zero);
 
-        removeTileEvent.DidNotReceive().Invoke(Arg.Any<Vector3[]>());
+        ShouldNotCheckAndSetAnyTile();
     }
 
     [Test]
@@ -33,15 +35,14 @@ public class TileRemoverTest
 
         tileRemoverModel.UpdateRemoveTile(new Vector3(2, 1, 0));
 
-        removeTileEvent.Received(1).Invoke(Arg.Is<Vector3[]>(x =>
-            x.Length == 7 &&
-            x[0] == new Vector3(2, 1, 0) &&
-            x[1] == new Vector3(2, 3, 0) &&
-            x[2] == new Vector3(2, 2, 0) &&
-            x[3] == new Vector3(2, 0, 0) &&
-            x[4] == new Vector3(2, -1, 0) &&
-            x[5] == new Vector3(2, -2, 0) &&
-            x[6] == new Vector3(2, -3, 0)));
+        ShouldCheckHaveTiles(
+            new Vector3(2, 1, 0),
+            new Vector3(2, 3, 0),
+            new Vector3(2, 2, 0),
+            new Vector3(2, 0, 0),
+            new Vector3(2, -1, 0),
+            new Vector3(2, -2, 0),
+            new Vector3(2, -3, 0));
     }
 
     [Test]
@@ -52,12 +53,11 @@ public class TileRemoverTest
 
         tileRemoverModel.UpdateRemoveTile(new Vector3(4, 0, 0));
 
-        removeTileEvent.Received(1).Invoke(Arg.Is<Vector3[]>(x =>
-            x.Length == 4 &&
-            x[0] == new Vector3(4, 0, 0) &&
-            x[1] == new Vector3(4, 3, 0) &&
-            x[2] == new Vector3(4, 2, 0) &&
-            x[3] == new Vector3(4, 1, 0)));
+        ShouldCheckHaveTiles(
+            new Vector3(4, 0, 0),
+            new Vector3(4, 3, 0),
+            new Vector3(4, 2, 0),
+            new Vector3(4, 1, 0));
     }
 
     [Test]
@@ -68,18 +68,30 @@ public class TileRemoverTest
 
         tileRemoverModel.UpdateRemoveTile(new Vector3(4, 0, 0));
 
-        removeTileEvent.Received(1).Invoke(Arg.Is<Vector3[]>(x =>
-            x.Length == 4 &&
-            x[0] == new Vector3(4, 0, 0) &&
-            x[1] == new Vector3(4, -1, 0) &&
-            x[2] == new Vector3(4, -2, 0) &&
-            x[3] == new Vector3(4, -3, 0)));
+        ShouldCheckHaveTiles(
+            new Vector3(4, 0, 0),
+            new Vector3(4, -1, 0),
+            new Vector3(4, -2, 0),
+            new Vector3(4, -3, 0));
+    }
+
+    private void ShouldCheckHaveTiles(params Vector3[] posArray)
+    {
+        foreach (Vector3 pos in posArray)
+        {
+            tileMap.Received(1).HaveTile(pos);
+        }
+    }
+
+    private void ShouldNotCheckAndSetAnyTile()
+    {
+        tileMap.DidNotReceive().HaveTile(Arg.Any<Vector3>());
+        tileMap.DidNotReceive().SetTile(Arg.Any<Vector3>(), Arg.Any<Tile>());
     }
 
     private TileRemoverModel CreateModel(int upRange, int downRange)
     {
-        tileRemoverModel = new TileRemoverModel(upRange, downRange);
-        tileRemoverModel.OnRemoveTiles += removeTileEvent;
+        tileRemoverModel = new TileRemoverModel(upRange, downRange, tileMap);
 
         return tileRemoverModel;
     }
