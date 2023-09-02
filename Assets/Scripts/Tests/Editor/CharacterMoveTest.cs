@@ -48,7 +48,7 @@ public class CharacterMoveTest
         ShouldIsJumping(false);
 
         GivenIsJumpKeyDown(false);
-        characterMoveModel.CheckJump(1);
+        characterMoveModel.UpdateCheckJump(1);
 
         ShouldReceiveJumpEvent(0);
         ShouldIsJumping(false);
@@ -61,13 +61,13 @@ public class CharacterMoveTest
         ShouldIsJumping(false);
 
         GivenIsJumpKeyDown(true);
-        characterMoveModel.CheckJump(1);
+        characterMoveModel.UpdateCheckJump(1);
 
         ShouldReceiveJumpEvent(1);
         ShouldIsJumping(true);
 
         GivenIsJumpKeyDown(true);
-        characterMoveModel.CheckJump(1);
+        characterMoveModel.UpdateCheckJump(1);
 
         ShouldReceiveJumpEvent(1);
     }
@@ -79,7 +79,7 @@ public class CharacterMoveTest
         ShouldIsJumping(false);
 
         GivenIsJumpKeyDown(true);
-        characterMoveModel.CheckJump(1);
+        characterMoveModel.UpdateCheckJump(1);
 
         ShouldReceiveJumpEvent(1);
         ShouldIsJumping(true);
@@ -89,7 +89,7 @@ public class CharacterMoveTest
         ShouldIsJumping(false);
 
         GivenIsJumpKeyDown(true);
-        characterMoveModel.CheckJump(1);
+        characterMoveModel.UpdateCheckJump(1);
 
         ShouldReceiveJumpEvent(2);
         ShouldIsJumping(true);

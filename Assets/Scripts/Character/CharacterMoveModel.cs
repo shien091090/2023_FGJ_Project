@@ -16,12 +16,12 @@ public class CharacterMoveModel
         this.keyController = keyController;
     }
 
-    public void UpdateMove(int deltaTime, float speed)
+    public void UpdateMove(float deltaTime, float speed)
     {
         OnHorizontalMove?.Invoke(moveController.GetHorizontalAxis() * deltaTime * speed);
     }
 
-    public void CheckJump(int jumpForce)
+    public void UpdateCheckJump(float jumpForce)
     {
         if (keyController.IsJumpKeyDown && IsJumping == false)
         {
