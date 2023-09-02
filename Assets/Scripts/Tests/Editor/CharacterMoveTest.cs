@@ -70,6 +70,19 @@ public class CharacterMoveTest
         characterMoveModel.CheckJump(1);
 
         ShouldReceiveJumpEvent(1);
+    }
+    
+    [Test]
+    //跳躍落地後可再跳
+    public void jump_can_jump_again()
+    {
+        ShouldIsJumping(false);
+
+        GivenIsJumpKeyDown(true);
+        characterMoveModel.CheckJump(1);
+
+        ShouldReceiveJumpEvent(1);
+        ShouldIsJumping(true);
 
         characterMoveModel.TriggerFloor();
 
@@ -79,6 +92,7 @@ public class CharacterMoveTest
         characterMoveModel.CheckJump(1);
 
         ShouldReceiveJumpEvent(2);
+        ShouldIsJumping(true);
     }
 
     private void GivenIsJumpKeyDown(bool isKeyDown)
@@ -106,5 +120,4 @@ public class CharacterMoveTest
         horizontalMoveEvent.Received(1).Invoke(expectedLogic);
     }
 
-    //跳躍落地後可再跳
 }
