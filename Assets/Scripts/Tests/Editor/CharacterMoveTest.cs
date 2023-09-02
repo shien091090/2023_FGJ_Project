@@ -42,6 +42,19 @@ public class CharacterMoveTest
     }
 
     [Test]
+    //沒有按跳躍按鍵時, 不會跳躍
+    public void jump_not_press_key()
+    {
+        ShouldIsJumping(false);
+
+        GivenIsJumpKeyDown(false);
+        characterMoveModel.CheckJump(1);
+
+        ShouldReceiveJumpEvent(0);
+        ShouldIsJumping(false);
+    }
+
+    [Test]
     //跳躍時不能再跳
     public void jump_cannot_jump_again()
     {
@@ -55,7 +68,7 @@ public class CharacterMoveTest
 
         GivenIsJumpKeyDown(true);
         characterMoveModel.CheckJump(1);
-        
+
         ShouldReceiveJumpEvent(1);
 
         characterMoveModel.TriggerFloor();
