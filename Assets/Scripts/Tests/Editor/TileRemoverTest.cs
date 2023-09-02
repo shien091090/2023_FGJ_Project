@@ -102,6 +102,7 @@ public class TileRemoverTest
         tileRemoverModel.UpdateRemoveTile(new Vector3(2, 1, 0));
 
         TilesCountShouldBe(8);
+        ShouldCallSetTile(7);
     }
 
     [Test]
@@ -119,6 +120,7 @@ public class TileRemoverTest
         tileRemoverModel.UpdateRemoveTile(new Vector3(0, 0, 0));
 
         TilesCountShouldBe(13);
+        ShouldCallSetTile(2);
     }
 
     private void GivenHaveTile(Vector3 pos, bool haveTile)
@@ -134,6 +136,11 @@ public class TileRemoverTest
     private void GivenTotalTilesCount(int tilesCount)
     {
         tileMap.GetTotalTilesCount().Returns(tilesCount);
+    }
+
+    private void ShouldCallSetTile(int expectedCallTimes)
+    {
+        tileMap.Received(expectedCallTimes).SetTile(Arg.Any<Vector3>(), Arg.Any<Tile>());
     }
 
     private void ShouldNotAnySetTile()
