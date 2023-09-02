@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7918636506258862006}
   - component: {fileID: 8825951375671192468}
   - component: {fileID: 8017394335448449450}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Character
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -187,7 +187,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7716344304938210079}
   - component: {fileID: 4461834441445652315}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FootPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
