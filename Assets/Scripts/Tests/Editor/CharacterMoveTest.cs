@@ -131,7 +131,25 @@ public class CharacterMoveTest
         ShouldReceiveJumpEvent(2);
     }
     
+    [Test]
     //跳躍後, 在跳躍延遲時間過後觸發地板, 可再跳
+    public void can_jump_again_after_delay_time()
+    {
+        characterMoveModel.SetJumpDelay(0.5f);
+        
+        GivenIsJumpKeyDown(true);
+        characterMoveModel.UpdateJumpTimer(0.3f);
+        characterMoveModel.UpdateCheckJump(1);
+        
+        ShouldReceiveJumpEvent(1);
+        
+        GivenIsJumpKeyDown(true);
+        characterMoveModel.UpdateJumpTimer(0.5f);
+        characterMoveModel.TriggerFloor();
+        characterMoveModel.UpdateCheckJump(1);
+        
+        ShouldReceiveJumpEvent(2);
+    }
 
     private void GivenIsJumpKeyDown(bool isKeyDown)
     {
