@@ -90,6 +90,19 @@ public class TileRemoverTest
         ShouldNotAnySetTile();
         TilesCountShouldBe(10);
     }
+    
+    [Test]
+    //清除範圍內所有格子, 總格數減少
+    public void remove_all_tiles_in_range()
+    {
+        GivenTotalTilesCount(15);
+        GivenAnyHaveTile(true);
+
+        tileRemoverModel = CreateModel(2, 4);
+        tileRemoverModel.UpdateRemoveTile(new Vector3(2, 1, 0));
+
+        TilesCountShouldBe(8);
+    }
 
     private void GivenAnyHaveTile(bool haveTile)
     {
