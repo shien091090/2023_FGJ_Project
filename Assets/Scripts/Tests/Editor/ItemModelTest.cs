@@ -57,7 +57,7 @@ public class ItemModelTest
         ShouldReceiveItemUseCompleteEvent(1);
         ShouldReceiveRefreshTimerEvent(1, 0);
     }
-    
+
     [Test]
     //使用秒數限制型道具, 等待過程中再次使用沒反應
     public void use_item_pass_time_twice()
@@ -79,6 +79,23 @@ public class ItemModelTest
         itemModel.UpdateTimer(1);
         ShouldReceiveItemUseCompleteEvent(1);
         ShouldReceiveRefreshTimerEvent(1, 0);
+    }
+
+    [Test]
+    //使用秒數型道具, 按下使用前不會計時
+    public void use_item_pass_time_before_use()
+    {
+        ItemModel itemModel = CreateModel(ItemUseType.PassTime, 1);
+
+        itemModel.UpdateTimer(1);
+
+        ShouldReceiveItemUseCompleteEvent(0);
+        ShouldNotReceiveAnyRefreshTimerEvent();
+    }
+
+    private void ShouldNotReceiveAnyRefreshTimerEvent()
+    {
+        refreshCurrentTimerEvent.DidNotReceive().Invoke(Arg.Any<float>());
     }
 
     private void ShouldReceiveRefreshTimerEvent(int triggerTimes, float expectedTimerValue)
@@ -105,7 +122,7 @@ public class ItemModelTest
 
         refreshCurrentUseTimesEvent = Substitute.For<Action<int>>();
         itemModel.OnRefreshCurrentUseTimes += refreshCurrentUseTimesEvent;
-        
+
         refreshCurrentTimerEvent = Substitute.For<Action<float>>();
         itemModel.OnRefreshCurrentTimer += refreshCurrentTimerEvent;
 

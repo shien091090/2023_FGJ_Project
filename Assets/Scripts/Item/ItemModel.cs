@@ -6,6 +6,7 @@ public class ItemModel
     private readonly float useLimit;
     private int currentUseTimes;
     private float currentTimer;
+    private bool startUsePassTimeItem;
 
     public event Action OnItemUseComplete;
     public event Action<int> OnRefreshCurrentUseTimes;
@@ -17,11 +18,12 @@ public class ItemModel
         this.useLimit = useLimit;
         currentUseTimes = (int)useLimit;
         currentTimer = useLimit;
+        startUsePassTimeItem = false;
     }
 
     public void UpdateTimer(float deltaTime)
     {
-        if (itemUseType == ItemUseType.UseTimes)
+        if (itemUseType == ItemUseType.UseTimes || startUsePassTimeItem == false)
             return;
 
         currentTimer = Math.Max(currentTimer - deltaTime, 0);
@@ -35,7 +37,10 @@ public class ItemModel
     public void UseItem()
     {
         if (itemUseType == ItemUseType.PassTime)
+        {
+            startUsePassTimeItem = true;
             return;
+        }
 
         currentUseTimes--;
 
