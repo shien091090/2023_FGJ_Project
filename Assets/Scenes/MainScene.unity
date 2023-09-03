@@ -188,6 +188,10 @@ PrefabInstance:
       propertyPath: teleportPos.y
       value: -43
       objectReference: {fileID: 0}
+    - target: {fileID: 7242473842551902548, guid: 782b3c36e39a51c41a318e698f352722, type: 3}
+      propertyPath: m_SortingOrder
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -427,6 +431,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Monster_Goblin
       objectReference: {fileID: 0}
+    - target: {fileID: 243978070281154258, guid: 366608f990ae2b941ae821fc931ebcb0, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 2351646353815271615, guid: 366608f990ae2b941ae821fc931ebcb0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 82
@@ -500,6 +508,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Monster_Goblin
       objectReference: {fileID: 0}
+    - target: {fileID: 243978070281154258, guid: 366608f990ae2b941ae821fc931ebcb0, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 2351646353815271615, guid: 366608f990ae2b941ae821fc931ebcb0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 37
@@ -561,6 +573,10 @@ PrefabInstance:
     - target: {fileID: 234022249610564636, guid: 366608f990ae2b941ae821fc931ebcb0, type: 3}
       propertyPath: m_Name
       value: Monster_Goblin (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 243978070281154258, guid: 366608f990ae2b941ae821fc931ebcb0, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2351646353815271615, guid: 366608f990ae2b941ae821fc931ebcb0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -689,6 +705,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Monster_Joker (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 7265372489846359066, guid: f29726c5ca993ef43995e288e8cafa80, type: 3}
+      propertyPath: m_SortingOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7506838558106893213, guid: f29726c5ca993ef43995e288e8cafa80, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7631904846954503271, guid: f29726c5ca993ef43995e288e8cafa80, type: 3}
       propertyPath: m_LocalPosition.x
       value: 230
@@ -751,6 +775,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Monster_Goblin (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 243978070281154258, guid: 366608f990ae2b941ae821fc931ebcb0, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 2351646353815271615, guid: 366608f990ae2b941ae821fc931ebcb0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 212
@@ -812,6 +840,10 @@ PrefabInstance:
     - target: {fileID: 234022249610564636, guid: 366608f990ae2b941ae821fc931ebcb0, type: 3}
       propertyPath: m_Name
       value: Monster_Goblin (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 243978070281154258, guid: 366608f990ae2b941ae821fc931ebcb0, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2351646353815271615, guid: 366608f990ae2b941ae821fc931ebcb0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -931,6 +963,10 @@ PrefabInstance:
     - target: {fileID: 234022249610564636, guid: 366608f990ae2b941ae821fc931ebcb0, type: 3}
       propertyPath: m_Name
       value: Monster_Goblin (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 243978070281154258, guid: 366608f990ae2b941ae821fc931ebcb0, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2351646353815271615, guid: 366608f990ae2b941ae821fc931ebcb0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1083,6 +1119,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Monster_Joker (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 7265372489846359066, guid: f29726c5ca993ef43995e288e8cafa80, type: 3}
+      propertyPath: m_SortingOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7506838558106893213, guid: f29726c5ca993ef43995e288e8cafa80, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7631904846954503271, guid: f29726c5ca993ef43995e288e8cafa80, type: 3}
       propertyPath: m_LocalPosition.x
       value: 63
@@ -1192,6 +1236,10 @@ PrefabInstance:
     - target: {fileID: 4129962061672491523, guid: 782b3c36e39a51c41a318e698f352722, type: 3}
       propertyPath: teleportPos.y
       value: -157
+      objectReference: {fileID: 0}
+    - target: {fileID: 7242473842551902548, guid: 782b3c36e39a51c41a318e698f352722, type: 3}
+      propertyPath: m_SortingOrder
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -20002,6 +20050,85 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 09b4bf05c7064b542ac023ea03fba98e, type: 3}
+--- !u!1 &1362064222
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1362064223}
+  - component: {fileID: 1362064225}
+  - component: {fileID: 1362064224}
+  m_Layer: 0
+  m_Name: txt_missingTextureRemain
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1362064223
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1362064222}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1815034285}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 1906.5, y: 1049.6}
+  m_SizeDelta: {x: 283.3, y: 100}
+  m_Pivot: {x: 1, y: 1}
+--- !u!114 &1362064224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1362064222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 82
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 82
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: 100
+--- !u!222 &1362064225
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1362064222}
+  m_CullTransparentMesh: 1
 --- !u!4 &1467009332 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2885771242994926933, guid: ed727472ad1abd5418776d584244a5d6, type: 3}
@@ -20018,6 +20145,14 @@ PrefabInstance:
     - target: {fileID: 6068296017364978600, guid: f29726c5ca993ef43995e288e8cafa80, type: 3}
       propertyPath: m_Name
       value: Monster_Joker (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265372489846359066, guid: f29726c5ca993ef43995e288e8cafa80, type: 3}
+      propertyPath: m_SortingOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7506838558106893213, guid: f29726c5ca993ef43995e288e8cafa80, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7631904846954503271, guid: f29726c5ca993ef43995e288e8cafa80, type: 3}
       propertyPath: m_LocalPosition.x
@@ -20080,6 +20215,10 @@ PrefabInstance:
     - target: {fileID: 234022249610564636, guid: 366608f990ae2b941ae821fc931ebcb0, type: 3}
       propertyPath: m_Name
       value: Monster_Goblin (6)
+      objectReference: {fileID: 0}
+    - target: {fileID: 243978070281154258, guid: 366608f990ae2b941ae821fc931ebcb0, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2351646353815271615, guid: 366608f990ae2b941ae821fc931ebcb0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -36622,6 +36761,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Monster_Joker (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 7265372489846359066, guid: f29726c5ca993ef43995e288e8cafa80, type: 3}
+      propertyPath: m_SortingOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7506838558106893213, guid: f29726c5ca993ef43995e288e8cafa80, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7631904846954503271, guid: f29726c5ca993ef43995e288e8cafa80, type: 3}
       propertyPath: m_LocalPosition.x
       value: 80
@@ -36683,6 +36830,14 @@ PrefabInstance:
     - target: {fileID: 6068296017364978600, guid: f29726c5ca993ef43995e288e8cafa80, type: 3}
       propertyPath: m_Name
       value: Monster_Joker (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265372489846359066, guid: f29726c5ca993ef43995e288e8cafa80, type: 3}
+      propertyPath: m_SortingOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7506838558106893213, guid: f29726c5ca993ef43995e288e8cafa80, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7631904846954503271, guid: f29726c5ca993ef43995e288e8cafa80, type: 3}
       propertyPath: m_LocalPosition.x
@@ -36746,6 +36901,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Monster_Joker
       objectReference: {fileID: 0}
+    - target: {fileID: 7265372489846359066, guid: f29726c5ca993ef43995e288e8cafa80, type: 3}
+      propertyPath: m_SortingOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7506838558106893213, guid: f29726c5ca993ef43995e288e8cafa80, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7631904846954503271, guid: f29726c5ca993ef43995e288e8cafa80, type: 3}
       propertyPath: m_LocalPosition.x
       value: 13.5
@@ -36788,7 +36951,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 7631904846954503271, guid: f29726c5ca993ef43995e288e8cafa80, type: 3}
+      insertIndex: 1
+      addedObject: {fileID: 1362064223}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f29726c5ca993ef43995e288e8cafa80, type: 3}
 --- !u!4 &1815034285 stripped
@@ -36807,6 +36973,10 @@ PrefabInstance:
     - target: {fileID: 234022249610564636, guid: 366608f990ae2b941ae821fc931ebcb0, type: 3}
       propertyPath: m_Name
       value: Monster_Goblin (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 243978070281154258, guid: 366608f990ae2b941ae821fc931ebcb0, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2351646353815271615, guid: 366608f990ae2b941ae821fc931ebcb0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -36925,6 +37095,10 @@ PrefabInstance:
     - target: {fileID: 5492098975171744248, guid: 28f3f099435c1df4cac495e743dd69b8, type: 3}
       propertyPath: m_Name
       value: TeleportGateHolder
+      objectReference: {fileID: 0}
+    - target: {fileID: 6566888143928158365, guid: 28f3f099435c1df4cac495e743dd69b8, type: 3}
+      propertyPath: m_SortingOrder
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
