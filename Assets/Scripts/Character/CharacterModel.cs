@@ -133,4 +133,9 @@ public class CharacterModel
     {
         CurrentTriggerTeleportGate = teleportGate;
     }
+
+    public void ExitTeleportGate()
+    {
+        CurrentTriggerTeleportGate = null;
+    }
 }

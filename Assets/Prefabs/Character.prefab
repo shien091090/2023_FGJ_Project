@@ -55,6 +55,7 @@ MonoBehaviour:
   footRadius: 0.1
   te1eportComponent: {fileID: 0}
   fallDownToOriginPosTime: 4
+  interactDistance: 3
 --- !u!212 &7918636506258862006
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -10,9 +10,14 @@ public class CharacterView : MonoBehaviour, ITransform
     [SerializeField] private float footRadius;
     [SerializeField] private TeleportComponent te1eportComponent;
     [SerializeField] private float fallDownToOriginPosTime;
+    [SerializeField] private float interactDistance;
 
-    public Vector3 position => transform.position;
-    
+    public Vector3 position
+    {
+        get => transform.position;
+        set => transform.position = value;
+    }
+
     private Rigidbody2D rigidbody;
     private CharacterModel characterModel;
 
@@ -32,6 +37,7 @@ public class CharacterView : MonoBehaviour, ITransform
         characterModel = new CharacterModel(new CharacterMoveController(), new CharacterKeyController(), te1eportComponent, this);
         characterModel.SetJumpDelay(jumpDelaySeconds);
         characterModel.SetFallDownTime(fallDownToOriginPosTime);
+        characterModel.SetInteractDistance(interactDistance);
 
         SetEventRegister();
     }
@@ -42,6 +48,7 @@ public class CharacterView : MonoBehaviour, ITransform
         characterModel.UpdateCheckJump(jumpForce);
         characterModel.UpdateMove(Time.deltaTime, speed);
         characterModel.UpdateFallDownTimer(Time.deltaTime);
+        characterModel.UpdateCheckInteract();
     }
 
     private void SetEventRegister()
@@ -67,6 +74,30 @@ public class CharacterView : MonoBehaviour, ITransform
         {
             characterModel.ExitFloor();
         }
+    }
+
+    public void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.gameObject.layer != (int)GameConst.GameObjectLayerType.TeleportGate)
+            return;
+        
+        TeleportGateComponent teleportGateComponent = col.gameObject.GetComponent<TeleportGateComponent>();
+        if (teleportGateComponent == null)
+            return;
+
+        characterModel.TriggerTeleportGate(teleportGateComponent);
+    }
+
+    public void OnTriggerExit2D(Collider2D col)
+    {
+        if (col.gameObject.layer != (int)GameConst.GameObjectLayerType.TeleportGate)
+            return;
+
+        TeleportGateComponent teleportGateComponent = col.gameObject.GetComponent<TeleportGateComponent>();
+        if (teleportGateComponent == null)
+            return;
+
+        characterModel.ExitTeleportGate();
     }
 
     private void OnJump(float jumpForce)
