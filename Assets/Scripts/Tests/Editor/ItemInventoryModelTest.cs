@@ -207,6 +207,26 @@ public class ItemInventoryModelTest
         ItemTypeShouldBe(ItemType.Protection, 0);
         ShouldHaveItem(false, 1);
     }
+    
+    [Test]
+    //道具欄已滿時, 不可再放入道具
+    public void can_not_add_item_when_inventory_is_full()
+    {
+        itemInventoryModel.SetSlotLimit(2);
+
+        itemInventoryModel.AddItem(CreateItem(ItemType.Protection));
+        itemInventoryModel.AddItem(CreateItem(ItemType.Weapon));
+
+        CurrentItemCountShouldBe(2);
+        ItemTypeShouldBe(ItemType.Protection, 0);
+        ItemTypeShouldBe(ItemType.Weapon, 1);
+
+        itemInventoryModel.AddItem(CreateItem(ItemType.Shoes));
+
+        CurrentItemCountShouldBe(2);
+        ItemTypeShouldBe(ItemType.Protection, 0);
+        ItemTypeShouldBe(ItemType.Weapon, 1);
+    }
 
     private void CallItemUseEvent(IItem item)
     {
@@ -240,5 +260,4 @@ public class ItemInventoryModelTest
         return item;
     }
 
-    //道具欄已滿時, 不可再放入道具
 }
