@@ -115,7 +115,11 @@ public class ItemModelTest
 
     private ItemModel CreateModel(ItemUseType itemUseType, int useLimit)
     {
-        ItemModel itemModel = new ItemModel(itemUseType, useLimit);
+        ItemModel itemModel = new ItemModel();
+        if (itemUseType == ItemUseType.UseTimes)
+            itemModel.SetUseTimesType(useLimit);
+        else
+            itemModel.SetPassTimeType(useLimit);
 
         itemUseCompleteEvent = Substitute.For<Action>();
         itemModel.OnItemUseComplete += itemUseCompleteEvent;

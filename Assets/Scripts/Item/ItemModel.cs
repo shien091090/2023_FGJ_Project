@@ -2,8 +2,8 @@ using System;
 
 public class ItemModel
 {
-    private readonly ItemUseType itemUseType;
-    private readonly float useLimit;
+    private float useLimit;
+    private ItemUseType itemUseType;
     private int currentUseTimes;
     private float currentTimer;
     private bool startUsePassTimeItem;
@@ -11,15 +11,6 @@ public class ItemModel
     public event Action OnItemUseComplete;
     public event Action<int> OnRefreshCurrentUseTimes;
     public event Action<float> OnRefreshCurrentTimer;
-
-    public ItemModel(ItemUseType itemUseType, float useLimit)
-    {
-        this.itemUseType = itemUseType;
-        this.useLimit = useLimit;
-        currentUseTimes = (int)useLimit;
-        currentTimer = useLimit;
-        startUsePassTimeItem = false;
-    }
 
     public void UpdateTimer(float deltaTime)
     {
@@ -32,6 +23,22 @@ public class ItemModel
 
         if (currentTimer <= 0)
             OnItemUseComplete?.Invoke();
+    }
+
+    public void SetUseTimesType(int useTimes)
+    {
+        itemUseType = ItemUseType.UseTimes;
+        currentUseTimes = useTimes;
+        currentTimer = 0;
+        startUsePassTimeItem = false;
+    }
+
+    public void SetPassTimeType(float timerSetting)
+    {
+        itemUseType = ItemUseType.PassTime;
+        currentUseTimes = 0;
+        currentTimer = timerSetting;
+        startUsePassTimeItem = false;
     }
 
     public void UseItem()
