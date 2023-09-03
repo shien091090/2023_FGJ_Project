@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class ItemInventoryModel
 {
@@ -27,6 +28,9 @@ public class ItemInventoryModel
 
     public void AddItem(IItem item)
     {
+        if (GetItems.FirstOrDefault(x => x != null && x.ItemType == item.ItemType) != null)
+            return;
+
         for (int index = 0; index < GetItems.Count; index++)
         {
             IItem currentItem = GetItems[index];

@@ -187,6 +187,25 @@ public class ItemInventoryModelTest
         ShouldHaveItem(false, 2);
         ShouldHaveItem(false, 3);
     }
+    
+    [Test]
+    //道具欄裡有相同道具時, 不可再放入相同道具
+    public void can_not_add_same_item()
+    {
+        itemInventoryModel.SetSlotLimit(4);
+
+        itemInventoryModel.AddItem(CreateItem(ItemType.Protection));
+
+        CurrentItemCountShouldBe(1);
+        ItemTypeShouldBe(ItemType.Protection, 0);
+        ShouldHaveItem(false, 1);
+        
+        itemInventoryModel.AddItem(CreateItem(ItemType.Protection));
+        
+        CurrentItemCountShouldBe(1);
+        ItemTypeShouldBe(ItemType.Protection, 0);
+        ShouldHaveItem(false, 1);
+    }
 
     private void CallItemUseEvent(IItem item)
     {
@@ -215,6 +234,5 @@ public class ItemInventoryModelTest
         return item;
     }
 
-    //道具欄裡有相同道具時, 不可再放入相同道具
     //道具欄已滿時, 不可再放入道具
 }
