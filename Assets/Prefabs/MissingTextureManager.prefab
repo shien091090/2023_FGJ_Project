@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 429fea48857041bbba32fa1da6043028, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  totalMissingTextureCount: 20
+  totalMissingTextureCount: 1002
   txt_remainCount: {fileID: 6488202431044688856}
 --- !u!1 &4146763896209439527
 GameObject:

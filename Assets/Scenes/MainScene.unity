@@ -906,7 +906,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4644646120495575739, guid: 9fab9e081981f304dbdda6a1831f84c6, type: 3}
       propertyPath: totalMissingTextureCount
-      value: 1000
+      value: 20
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -20058,7 +20058,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1236578707233897570, guid: 955586589f37ece48a6cc160fb3a8d6e, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2826393229339818745, guid: 955586589f37ece48a6cc160fb3a8d6e, type: 3}
       propertyPath: m_Enabled
