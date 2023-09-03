@@ -73,7 +73,7 @@ public class CharacterTest
 
         ShouldReceiveJumpEvent(1);
     }
-    
+
     [Test]
     //跳躍落地後可再跳
     public void jump_can_jump_again()
@@ -96,62 +96,62 @@ public class CharacterTest
         ShouldReceiveJumpEvent(2);
         ShouldIsJumping(true);
     }
-    
+
     [Test]
     //跳躍後, 在跳躍延遲時間內觸發地板, 不可再跳, 過延遲時間後再次觸發地板才可跳
     public void cannot_jump_again_until_delay_time()
     {
         characterModel.SetJumpDelay(0.5f);
-        
+
         GivenIsJumpKeyDown(true);
         characterModel.UpdateJumpTimer(0.3f);
         characterModel.UpdateCheckJump(1);
-        
+
         ShouldReceiveJumpEvent(1);
-        
+
         characterModel.TriggerFloor();
-        
+
         GivenIsJumpKeyDown(true);
         characterModel.UpdateJumpTimer(0.3f);
         characterModel.UpdateCheckJump(1);
-        
+
         ShouldReceiveJumpEvent(1);
-        
+
         GivenIsJumpKeyDown(true);
         characterModel.UpdateJumpTimer(0.3f);
         characterModel.UpdateCheckJump(1);
-        
+
         ShouldReceiveJumpEvent(1);
-        
+
         characterModel.TriggerFloor();
-        
+
         GivenIsJumpKeyDown(true);
         characterModel.UpdateJumpTimer(0.3f);
         characterModel.UpdateCheckJump(1);
-        
+
         ShouldReceiveJumpEvent(2);
     }
-    
+
     [Test]
     //跳躍後, 在跳躍延遲時間過後觸發地板, 可再跳
     public void can_jump_again_after_delay_time()
     {
         characterModel.SetJumpDelay(0.5f);
-        
+
         GivenIsJumpKeyDown(true);
         characterModel.UpdateJumpTimer(0.3f);
         characterModel.UpdateCheckJump(1);
-        
+
         ShouldReceiveJumpEvent(1);
-        
+
         GivenIsJumpKeyDown(true);
         characterModel.UpdateJumpTimer(0.5f);
         characterModel.TriggerFloor();
         characterModel.UpdateCheckJump(1);
-        
+
         ShouldReceiveJumpEvent(2);
     }
-    
+
     [Test]
     //墜落一定時間後, 傳送回原點
     public void fall_down_and_teleport()
@@ -160,13 +160,33 @@ public class CharacterTest
 
         characterModel.ExitFloor();
         characterModel.UpdateFallDownTimer(0.5f);
-        
-        teleport.Received(0).BackToOrigin();
-        
+
+        ShouldCallBackToOrigin(0);
+
         characterModel.UpdateFallDownTimer(0.5f);
-        
-        teleport.Received(1).BackToOrigin();
+
+        ShouldCallBackToOrigin(1);
     }
+
+    [Test]
+    //墜落一段時間後落地, 不會傳送回原點
+    public void fall_down_and_trigger_floor()
+    {
+        characterModel.SetFallDownTime(1f);
+
+        characterModel.ExitFloor();
+        characterModel.UpdateFallDownTimer(0.5f);
+
+        ShouldCallBackToOrigin(0);
+
+        characterModel.TriggerFloor();
+        characterModel.UpdateFallDownTimer(0.5f);
+
+        ShouldCallBackToOrigin(0);
+    }
+    
+    //墜落一段時間後落地, 再墜落時會重算回原點時間
+    //墜落傳送回原點後, 不會繼續觸發回原點
 
     private void GivenIsJumpKeyDown(bool isKeyDown)
     {
@@ -176,6 +196,11 @@ public class CharacterTest
     private void GivenHorizontalAxis(float axisValue)
     {
         moveController.GetHorizontalAxis().Returns(axisValue);
+    }
+
+    private void ShouldCallBackToOrigin(int callTimes)
+    {
+        teleport.Received(callTimes).BackToOrigin();
     }
 
     private void ShouldReceiveJumpEvent(int triggerTimes)
@@ -192,5 +217,4 @@ public class CharacterTest
     {
         horizontalMoveEvent.Received(1).Invoke(expectedLogic);
     }
-
 }
