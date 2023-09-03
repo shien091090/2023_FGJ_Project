@@ -78,6 +78,28 @@ public class ItemInventoryModelTest
         ItemTypeShouldBe(ItemType.Protection, 1);
         ShouldHaveItem(false, 2);
     }
+    
+    [Test]
+    //有多個道具時, 使用前面的道具, 後面的道具會往前移動
+    public void item_slot_move_forward_when_use_item()
+    {
+        itemInventoryModel.SetSlotLimit(4);
+
+        IItem item1 = CreateItem(ItemType.Protection);
+        IItem item2 = CreateItem(ItemType.Weapon);
+        IItem item3 = CreateItem(ItemType.Shoes);
+
+        itemInventoryModel.AddItem(item1);
+        itemInventoryModel.AddItem(item2);
+        itemInventoryModel.AddItem(item3);
+
+        CallItemUseEvent(item2);
+
+        CurrentItemCountShouldBe(2);
+        ItemTypeShouldBe(ItemType.Protection, 0);
+        ItemTypeShouldBe(ItemType.Shoes, 1);
+        ShouldHaveItem(false, 2);
+    }
 
     private void ShouldHaveItem(bool expectedHaveItem, int slotIndex)
     {
@@ -101,7 +123,6 @@ public class ItemInventoryModelTest
         return item;
     }
 
-    //有多個道具時, 使用前面的道具, 後面的道具會往前移動
     //只剩一個道具時, 使用後, 道具格變空的
     //道具欄裡有相同道具時, 不可再放入相同道具
     //道具欄已滿時, 不可再放入道具
