@@ -36,6 +36,24 @@ public class ItemInventoryModelTest
         ShouldHaveItem(false, 3);
     }
 
+    [Test]
+    //獲得多個道具, 按照順序放入道具格
+    public void item_slot_has_item_when_get_multiple_item()
+    {
+        itemInventoryModel.SetSlotLimit(4);
+
+        itemInventoryModel.AddItem(CreateItem(ItemType.Shoes));
+        itemInventoryModel.AddItem(CreateItem(ItemType.Protection));
+        itemInventoryModel.AddItem(CreateItem(ItemType.Shoes));
+        itemInventoryModel.AddItem(CreateItem(ItemType.Weapon));
+
+        ItemCountShouldBe(4);
+        ItemTypeShouldBe(ItemType.Shoes, 0);
+        ItemTypeShouldBe(ItemType.Protection, 1);
+        ItemTypeShouldBe(ItemType.Shoes, 2);
+        ItemTypeShouldBe(ItemType.Weapon, 3);
+    }
+
     private void ShouldHaveItem(bool expectedHaveItem, int slotIndex)
     {
         Assert.AreEqual(expectedHaveItem, itemInventoryModel.HaveItem(slotIndex));
@@ -58,7 +76,6 @@ public class ItemInventoryModelTest
         return item;
     }
 
-    //獲得多個道具, 按照順序放入道具格
     //有多個道具時, 最後一格道具使用完畢後, 消失
     //有多個道具時, 使用前面的道具, 後面的道具會往前移動
     //只剩一個道具時, 使用後, 道具格變空的
