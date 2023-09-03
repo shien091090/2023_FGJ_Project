@@ -5,6 +5,7 @@ using UnityEngine;
 public class CharacterView : MonoBehaviour, ITransform
 {
     [SerializeField] private float jumpForce;
+    [SerializeField] private float superJumpForce;
     [SerializeField] private float speed;
     [SerializeField] private float jumpDelaySeconds;
     [SerializeField] private Transform footPoint;
@@ -60,6 +61,7 @@ public class CharacterView : MonoBehaviour, ITransform
     {
         characterModel.UpdateJumpTimer(Time.deltaTime);
         characterModel.UpdateCheckJump(jumpForce);
+        characterModel.UpdateCheckSuperJump(superJumpForce);
         characterModel.UpdateMove(Time.deltaTime, speed);
         characterModel.UpdateFallDownTimer(Time.deltaTime);
         characterModel.UpdateCheckInteract();
