@@ -1,22 +1,31 @@
 using System;
-using UnityEngine;
 
-public class ItemModel : IItem
+public class ItemModel
 {
-    public event Action<IItem> OnItemUsed;
-    public ItemType ItemType { get; }
-    public void SetPos(Vector3 pos)
-    {
-        throw new NotImplementedException();
-    }
+    private readonly ItemUseType itemUseType;
+    private readonly float useLimit;
+    private int currentUseTimes;
 
-    public void RemoveItem()
+    public event Action OnItemUseComplete;
+    public event Action<int> OnRefreshCurrentUseTimes;
+
+    public ItemModel(ItemUseType itemUseType, float useLimit)
     {
-        throw new NotImplementedException();
+        this.itemUseType = itemUseType;
+        this.useLimit = useLimit;
+        currentUseTimes = (int)useLimit;
     }
 
     public void UseItem()
     {
-        throw new NotImplementedException();
+        if (itemUseType == ItemUseType.PassTime)
+            return;
+
+        currentUseTimes--;
+
+        OnRefreshCurrentUseTimes?.Invoke(currentUseTimes);
+
+        if (currentUseTimes <= 0)
+            OnItemUseComplete?.Invoke();
     }
 }

@@ -21,7 +21,6 @@ public class ItemView : MonoBehaviour, IItem
 
     public void SetPos(Vector3 pos)
     {
-        Debug.Log(pos);
         GetRectTransform.localPosition = pos;
         gameObject.SetActive(true);
     }
