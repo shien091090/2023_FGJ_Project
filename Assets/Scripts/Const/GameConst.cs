@@ -5,6 +5,7 @@ public class GameConst
         Platform = 6,
         Player = 7,
         TeleportGate = 8,
-        Weapon = 9
+        Monster = 9,
+        Weapon = 10
     }
 }

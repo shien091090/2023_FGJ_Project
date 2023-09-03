@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7918636506258862006}
   - component: {fileID: 8825951375671192468}
   - component: {fileID: 8017394335448449450}
+  - component: {fileID: 3509490483848623688}
   m_Layer: 7
   m_Name: Character
   m_TagString: Untagged
@@ -57,6 +58,7 @@ MonoBehaviour:
   te1eportComponent: {fileID: 0}
   fallDownToOriginPosTime: 4
   interactDistance: 3
+  anim: {fileID: 3509490483848623688}
 --- !u!212 &7918636506258862006
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -181,6 +183,27 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.64, y: 0.64}
   m_EdgeRadius: 0
+--- !u!95 &3509490483848623688
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 755202031072836492}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a2239d098d1da5b4eb523c3179ae70a5, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2126122441746452686
 GameObject:
   m_ObjectHideFlags: 0

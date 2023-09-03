@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using SNShien.Common.AudioTools;
 using UnityEngine;
 
@@ -13,6 +14,7 @@ public class CharacterView : MonoBehaviour, ITransform
     [SerializeField] private TeleportComponent te1eportComponent;
     [SerializeField] private float fallDownToOriginPosTime;
     [SerializeField] private float interactDistance;
+    [SerializeField] private Animator anim;
 
     public Vector3 position
     {
@@ -55,6 +57,7 @@ public class CharacterView : MonoBehaviour, ITransform
         characterModel.SetInteractDistance(interactDistance);
 
         SetEventRegister();
+        anim.Play("character_normal");
     }
 
     private void Update()
@@ -90,6 +93,22 @@ public class CharacterView : MonoBehaviour, ITransform
         }
     }
 
+    private void Die()
+    {
+        StartCoroutine(Cor_Die());
+    }
+
+    private IEnumerator Cor_Die()
+    {
+        FmodAudioManager.Instance.PlayOneShot("Damage");
+        anim.Play("character_die");
+        
+        yield return new WaitForSeconds(1.5f);
+        
+        anim.Play("character_normal");
+        te1eportComponent.BackToOrigin();
+    }
+
     public void OnCollisionStay2D(Collision2D col)
     {
         bool isOnFloor = Physics2D.OverlapCircle(footPoint.position, footRadius, LayerMask.GetMask(GameConst.GameObjectLayerType.Platform.ToString()));
@@ -108,6 +127,13 @@ public class CharacterView : MonoBehaviour, ITransform
 
     public void OnTriggerEnter2D(Collider2D col)
     {
+        Debug.Log($"layer = {col.gameObject.layer}");
+        if (col.gameObject.layer == (int)GameConst.GameObjectLayerType.Monster)
+        {
+            Die();
+            return;
+        }
+
         if (col.gameObject.layer != (int)GameConst.GameObjectLayerType.TeleportGate)
             return;
 

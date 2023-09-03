@@ -236,7 +236,7 @@ GameObject:
   - component: {fileID: 3342199846080614146}
   - component: {fileID: 4033661995684116632}
   - component: {fileID: 2122971734908611384}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Monster_Joker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
