@@ -242,10 +242,44 @@ public class ItemInventoryModelTest
         itemInventoryModel.AddItem(item);
         itemInventoryModel.AddItem(CreateItem(ItemType.Shoes));
 
-        ShouldUseItemKeyDown(1, true);
+        GivenUseItemKeyDown(1, true);
         itemInventoryModel.UpdateCheckUseItem();
 
         ShouldCallUseItem(item);
+    }
+
+    [Test]
+    //擁有多個道具時, 按下指定按鍵使用道具後, 道具移位, 再按下同一號碼按鍵, 使用下一個道具
+    public void use_item_by_key_twice()
+    {
+        itemInventoryModel.SetSlotLimit(4);
+
+        IItem item0 = CreateItem(ItemType.Protection);
+        IItem item1 = CreateItem(ItemType.Weapon);
+        IItem item2 = CreateItem(ItemType.Shoes);
+
+        itemInventoryModel.AddItem(item0);
+        itemInventoryModel.AddItem(item1);
+        itemInventoryModel.AddItem(item2);
+
+        GivenUseItemKeyDown(1, true);
+        
+        itemInventoryModel.UpdateCheckUseItem();
+        CallItemUseEvent(item1);
+
+        ShouldCallUseItem(item1);
+
+        GivenUseItemKeyDown(1, true);
+        
+        itemInventoryModel.UpdateCheckUseItem();
+        CallItemUseEvent(item2);
+
+        ShouldCallUseItem(item2);
+    }
+
+    private void GivenUseItemKeyDown(int itemSlotIndex, bool isKeyDown)
+    {
+        keyController.IsUseItemKeyDown(itemSlotIndex).Returns(isKeyDown);
     }
 
     private void CallItemUseEvent(IItem item)
@@ -256,11 +290,6 @@ public class ItemInventoryModelTest
     private void ShouldCallUseItem(IItem item)
     {
         item.Received(1).UseItem();
-    }
-
-    private void ShouldUseItemKeyDown(int itemSlotIndex, bool isKeyDown)
-    {
-        keyController.IsUseItemKeyDown(itemSlotIndex).Returns(isKeyDown);
     }
 
     private void ShouldAlreadyHaveSpecificTypeItem(bool expectedAlreadyHave, ItemType itemType)
