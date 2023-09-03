@@ -6,11 +6,6 @@ public class ItemInventoryModelTest
 {
     private ItemInventoryModel itemInventoryModel;
 
-    private void CallItemUseEvent(IItem item)
-    {
-        item.OnItemUsed += Raise.Event<Action<IItem>>(item);
-    }
-
     [SetUp]
     public void Setup()
     {
@@ -78,7 +73,7 @@ public class ItemInventoryModelTest
         ItemTypeShouldBe(ItemType.Protection, 1);
         ShouldHaveItem(false, 2);
     }
-    
+
     [Test]
     //有多個道具時, 使用前面的道具, 後面的道具會往前移動
     public void item_slot_move_forward_when_use_item()
@@ -100,7 +95,7 @@ public class ItemInventoryModelTest
         ItemTypeShouldBe(ItemType.Shoes, 1);
         ShouldHaveItem(false, 2);
     }
-    
+
     [Test]
     //有多個道具時, 連續使用兩個道具
     public void item_slot_move_forward_when_use_two_item()
@@ -123,7 +118,7 @@ public class ItemInventoryModelTest
         ShouldHaveItem(false, 1);
         ShouldHaveItem(false, 2);
     }
-    
+
     [Test]
     //使用道具後再次使用, 不會有反應
     public void item_slot_is_empty_when_use_item_twice()
@@ -144,15 +139,41 @@ public class ItemInventoryModelTest
         ItemTypeShouldBe(ItemType.Weapon, 0);
         ItemTypeShouldBe(ItemType.Shoes, 1);
         ShouldHaveItem(false, 2);
-        
+
         CallItemUseEvent(item1);
-        
+
         CurrentItemCountShouldBe(2);
         ItemTypeShouldBe(ItemType.Weapon, 0);
         ItemTypeShouldBe(ItemType.Shoes, 1);
         ShouldHaveItem(false, 2);
     }
-    
+
+    [Test]
+    //使用未加入道具欄的道具, 不會有反應
+    public void use_item_not_in_inventory()
+    {
+        itemInventoryModel.SetSlotLimit(4);
+
+        IItem item1 = CreateItem(ItemType.Protection);
+        IItem item2 = CreateItem(ItemType.Weapon);
+        IItem item3 = CreateItem(ItemType.Shoes);
+
+        itemInventoryModel.AddItem(item1);
+        itemInventoryModel.AddItem(item2);
+
+        CallItemUseEvent(item3);
+
+        CurrentItemCountShouldBe(2);
+        ItemTypeShouldBe(ItemType.Protection, 0);
+        ItemTypeShouldBe(ItemType.Weapon, 1);
+        ShouldHaveItem(false, 2);
+    }
+
+    private void CallItemUseEvent(IItem item)
+    {
+        item.OnItemUsed += Raise.Event<Action<IItem>>(item);
+    }
+
     private void ShouldHaveItem(bool expectedHaveItem, int slotIndex)
     {
         Assert.AreEqual(expectedHaveItem, itemInventoryModel.HaveItem(slotIndex));
