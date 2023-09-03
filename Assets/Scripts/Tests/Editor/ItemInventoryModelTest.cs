@@ -1,12 +1,15 @@
 using System;
-using System.Collections.Generic;
 using NSubstitute;
 using NUnit.Framework;
-using PlasticPipe.PlasticProtocol.Messages.Serialization;
 
 public class ItemInventoryModelTest
 {
     private ItemInventoryModel itemInventoryModel;
+
+    private void CallItemUseEvent(IItem item)
+    {
+        item.OnItemUsed += Raise.Event<Action<IItem>>(item);
+    }
 
     [SetUp]
     public void Setup()
@@ -68,7 +71,7 @@ public class ItemInventoryModelTest
         itemInventoryModel.AddItem(item2);
         itemInventoryModel.AddItem(item3);
 
-        item3.OnItemUsed += Raise.Event<Action<IItem>>(item3);
+        CallItemUseEvent(item3);
 
         CurrentItemCountShouldBe(2);
         ItemTypeShouldBe(ItemType.Shoes, 0);
