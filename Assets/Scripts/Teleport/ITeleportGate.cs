@@ -2,5 +2,6 @@ using UnityEngine;
 
 public interface ITeleportGate
 {
-    void Teleport(Transform target);
+    void Teleport(ITransform target);
+    Vector3 GetPos { get; }
 }

@@ -11,6 +11,12 @@ public class CharacterTest
     private Action<float> jumpEvent;
     private IKeyController keyController;
     private ITeleport teleport;
+    private ITransform characterTransform;
+
+    private static void GivenTeleportGatePos(ITeleportGate teleportGate, Vector3 pos)
+    {
+        teleportGate.GetPos.Returns(pos);
+    }
 
     [SetUp]
     public void Setup()
@@ -18,8 +24,9 @@ public class CharacterTest
         moveController = Substitute.For<IMoveController>();
         keyController = Substitute.For<IKeyController>();
         teleport = Substitute.For<ITeleport>();
+        characterTransform = Substitute.For<ITransform>();
 
-        characterModel = new CharacterModel(moveController, keyController, teleport);
+        characterModel = new CharacterModel(moveController, keyController, teleport, characterTransform);
 
         horizontalMoveEvent = Substitute.For<Action<float>>();
         jumpEvent = Substitute.For<Action<float>>();
@@ -241,11 +248,34 @@ public class CharacterTest
         ShouldCallTeleport(teleportGate, 1);
     }
 
+    [Test]
+    //接觸傳送門時, 點擊按鍵但超過距離, 不傳送
+    public void not_teleport_when_touch_teleport_but_over_distance()
+    {
+        GivenInteractKeyDown(true);
+
+        GivenCharacterPosition(new Vector3(1, 0, 0));
+        characterModel.SetInteractDistance(2f);
+
+        ITeleportGate teleportGate = Substitute.For<ITeleportGate>();
+        GivenTeleportGatePos(teleportGate, new Vector3(5, 0, 0));
+
+        characterModel.TriggerTeleportGate(teleportGate);
+        characterModel.UpdateCheckInteract();
+
+        ShouldCallTeleport(teleportGate, 0);
+        ShouldHaveTriggerTeleportGate(false);
+    }
+
+    private void GivenCharacterPosition(Vector3 pos)
+    {
+        characterTransform.position.Returns(pos);
+    }
+
     private void GivenInteractKeyDown(bool isKeyDown)
     {
         keyController.IsInteractKeyDown.Returns(isKeyDown);
     }
-    //接觸傳送門時, 點擊按鍵但超過距離, 不傳送
     //沒有接觸傳送門時, 點擊按鍵不會觸發傳送
 
     private void GivenIsJumpKeyDown(bool isKeyDown)
@@ -258,9 +288,14 @@ public class CharacterTest
         moveController.GetHorizontalAxis().Returns(axisValue);
     }
 
+    private void ShouldHaveTriggerTeleportGate(bool expectedHave)
+    {
+        Assert.AreEqual(expectedHave, characterModel.HaveInteractGate);
+    }
+
     private void ShouldCallTeleport(ITeleportGate teleportGate, int callTimes)
     {
-        teleportGate.Received(callTimes).Teleport(Arg.Any<Transform>());
+        teleportGate.Received(callTimes).Teleport(Arg.Any<ITransform>());
     }
 
     private void ShouldCallBackToOrigin(int callTimes)

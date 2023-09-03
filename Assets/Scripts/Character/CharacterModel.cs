@@ -6,11 +6,12 @@ public class CharacterModel
     private readonly IMoveController moveController;
     private readonly IKeyController keyController;
     private readonly ITeleport teleport;
+    private readonly ITransform characterTransform;
     private float jumpTimer;
     private float jumpDelaySeconds;
     private float fallDownTimer;
     private ITeleportGate currentTriggerTeleportGate;
-    private Transform selfTransform;
+    private ITransform selfTransform;
 
     public event Action<float> OnHorizontalMove;
     public event Action<float> OnJump;
@@ -19,11 +20,15 @@ public class CharacterModel
     public float FallDownTime { get; set; }
     public bool IsStayOnFloor { get; set; }
 
-    public CharacterModel(IMoveController moveController, IKeyController keyController, ITeleport teleport)
+    public float InteractiveDistance { get; set; }
+    public bool HaveInteractGate => currentTriggerTeleportGate != null;
+
+    public CharacterModel(IMoveController moveController, IKeyController keyController, ITeleport teleport, ITransform characterTransform)
     {
         this.moveController = moveController;
         this.keyController = keyController;
         this.teleport = teleport;
+        selfTransform = characterTransform;
     }
 
     public void UpdateMove(float deltaTime, float speed)
@@ -72,15 +77,21 @@ public class CharacterModel
 
     public void UpdateCheckInteract()
     {
-        if (keyController.IsInteractKeyDown)
-        {
-            currentTriggerTeleportGate.Teleport(selfTransform);
-        }
-    }
+        if (!keyController.IsInteractKeyDown)
+            return;
 
-    public void SetTransform(Transform transform)
-    {
-        selfTransform = transform;
+        if (selfTransform == null)
+            return;
+
+        float distance = Vector3.Distance(selfTransform.position, currentTriggerTeleportGate.GetPos);
+        if (distance > InteractiveDistance)
+        {
+            currentTriggerTeleportGate = null;
+            return;
+        }
+
+        if (HaveInteractGate)
+            currentTriggerTeleportGate.Teleport(selfTransform);
     }
 
     public void SetJumpDelay(float jumpDelaySeconds)
@@ -92,6 +103,11 @@ public class CharacterModel
     public void SetFallDownTime(float fallDownTime)
     {
         FallDownTime = fallDownTime;
+    }
+
+    public void SetInteractDistance(float distance)
+    {
+        InteractiveDistance = distance;
     }
 
     public void TriggerFloor()

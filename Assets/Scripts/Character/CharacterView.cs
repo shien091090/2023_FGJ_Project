@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class CharacterView : MonoBehaviour
+public class CharacterView : MonoBehaviour, ITransform
 {
     [SerializeField] private float jumpForce;
     [SerializeField] private float speed;
@@ -11,6 +11,8 @@ public class CharacterView : MonoBehaviour
     [SerializeField] private TeleportComponent te1eportComponent;
     [SerializeField] private float fallDownToOriginPosTime;
 
+    public Vector3 position => transform.position;
+    
     private Rigidbody2D rigidbody;
     private CharacterModel characterModel;
 
@@ -27,7 +29,7 @@ public class CharacterView : MonoBehaviour
 
     private void Start()
     {
-        characterModel = new CharacterModel(new CharacterMoveController(), new CharacterKeyController(), te1eportComponent);
+        characterModel = new CharacterModel(new CharacterMoveController(), new CharacterKeyController(), te1eportComponent, this);
         characterModel.SetJumpDelay(jumpDelaySeconds);
         characterModel.SetFallDownTime(fallDownToOriginPosTime);
 
