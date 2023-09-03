@@ -92,6 +92,7 @@ public class ItemInventoryModelTest
 
         CallItemUseEvent(item3);
 
+        ShouldCallRemoveItem(item3, 1);
         CurrentItemCountShouldBe(2);
         ItemTypeShouldBe(ItemType.Shoes, 0);
         ItemTypeShouldBe(ItemType.Protection, 1);
@@ -368,6 +369,11 @@ public class ItemInventoryModelTest
     private void CallItemUseEvent(IItem item)
     {
         item.OnItemUsed += Raise.Event<Action<IItem>>(item);
+    }
+
+    private void ShouldCallRemoveItem(IItem item, int callTimes)
+    {
+        item.Received(callTimes).RemoveItem();
     }
 
     private void ShouldCallSetPos(IItem item, Vector3 pos)

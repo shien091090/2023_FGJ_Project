@@ -93,6 +93,7 @@ public class ItemInventoryModel
     private void OnItemUse(IItem item)
     {
         RemoveItemAndShift(item);
+        item.RemoveItem();
         item.OnItemUsed -= OnItemUse;
     }
 }
