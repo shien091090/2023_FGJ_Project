@@ -21,6 +21,19 @@ public class CharacterView : MonoBehaviour, ITransform
 
     private Rigidbody2D rigidbody;
     private CharacterModel characterModel;
+    private bool isFaceRight;
+    private SpriteRenderer spriteRenderer;
+
+    public SpriteRenderer GetSpriteRenderer
+    {
+        get
+        {
+            if (spriteRenderer == null)
+                spriteRenderer = GetComponent<SpriteRenderer>();
+
+            return spriteRenderer;
+        }
+    }
 
     private Rigidbody2D GetRigidbody
     {
@@ -61,6 +74,20 @@ public class CharacterView : MonoBehaviour, ITransform
         characterModel.OnJump += OnJump;
     }
 
+    private void CheckChangeDirection(float moveValue)
+    {
+        if (isFaceRight && moveValue < 0)
+        {
+            isFaceRight = false;
+            GetSpriteRenderer.flipX = true;
+        }
+        else if (isFaceRight == false && moveValue > 0)
+        {
+            isFaceRight = true;
+            GetSpriteRenderer.flipX = false;
+        }
+    }
+
     public void OnCollisionStay2D(Collision2D col)
     {
         bool isOnFloor = Physics2D.OverlapCircle(footPoint.position, footRadius, LayerMask.GetMask(GameConst.GameObjectLayerType.Platform.ToString()));
@@ -81,7 +108,7 @@ public class CharacterView : MonoBehaviour, ITransform
     {
         if (col.gameObject.layer != (int)GameConst.GameObjectLayerType.TeleportGate)
             return;
-        
+
         TeleportGateComponent teleportGateComponent = col.gameObject.GetComponent<TeleportGateComponent>();
         if (teleportGateComponent == null)
             return;
@@ -109,6 +136,7 @@ public class CharacterView : MonoBehaviour, ITransform
 
     private void OnHorizontalMove(float moveValue)
     {
+        CheckChangeDirection(moveValue);
         transform.Translate(new Vector2(moveValue, 0));
     }
 }
