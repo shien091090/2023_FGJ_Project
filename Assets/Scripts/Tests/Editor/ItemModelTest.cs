@@ -127,8 +127,26 @@ public class ItemModelTest
         ShouldNotReceiveAnyRefreshTimerEvent();
     }
 
-    // [Test]
-    // 使用秒數型道具, 結束後設置次數型道具
+    [Test]
+    //秒數型道具使用完畢, 重置資料為次數型道具
+    public void pass_time_item_is_used_then_reset_data_to_use_times_item()
+    {
+        ItemModel itemModel = CreateModel(ItemUseType.PassTime, 1);
+
+        itemModel.UseItem();
+        itemModel.UpdateTimer(1);
+
+        ShouldReceiveItemUseCompleteEvent(1);
+        ShouldReceiveRefreshTimerEvent(1, 0);
+
+        itemModel.SetUseTimesType(2);
+        itemModel.UseItem();
+        itemModel.UpdateTimer(1);
+
+        ShouldReceiveRefreshUseTimesEvent(1, 1);
+        ShouldReceiveItemUseCompleteEvent(1);
+        ShouldReceiveRefreshTimerEvent(1, 0);
+    }
     
     private void ShouldNotReceiveAnyRefreshTimerEvent()
     {
