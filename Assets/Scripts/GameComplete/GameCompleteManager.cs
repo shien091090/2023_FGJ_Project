@@ -1,28 +1,43 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameCompleteManager : MonoBehaviour
 {
-    [SerializeField] private Animator anim;
-
     private string ANIM_KEY_IDLE = "game_complete_idle";
     private string ANIM_KEY_GAME_COMPLETED = "game_complete";
 
+    private Animator anim;
+
+    public Animator GetAnim
+    {
+        get
+        {
+            if (anim == null)
+                anim = GetComponent<Animator>();
+
+            return anim;
+        }
+    }
+
     private void Start()
     {
-        anim.Play(ANIM_KEY_IDLE);
+        GetAnim.Play(ANIM_KEY_IDLE);
         MissingTextureManager.OnMissingTextureAllClear -= OnMissingTextureAllClear;
         MissingTextureManager.OnMissingTextureAllClear += OnMissingTextureAllClear;
     }
 
-    private void OnMissingTextureAllClear()
-    {
-        anim.Play(ANIM_KEY_GAME_COMPLETED);
-        StartCoroutine(Cor_GameComplete());
-    }
-    
     private IEnumerator Cor_GameComplete()
     {
-        yield break;
+        yield return new WaitForSeconds(4f);
+
+        MissingTextureManager.Instance.ResetGame();
+        SceneManager.LoadScene("MainScene");
+    }
+
+    private void OnMissingTextureAllClear()
+    {
+        GetAnim.Play(ANIM_KEY_GAME_COMPLETED);
+        StartCoroutine(Cor_GameComplete());
     }
 }
