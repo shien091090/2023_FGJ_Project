@@ -341,6 +341,25 @@ public class ItemInventoryModelTest
         ShouldCallUseItem(item2);
     }
 
+    [Test]
+    //按下使用道具按鍵, 該位置沒有道具時, 不會使用道具
+    public void use_item_by_key_when_slot_is_empty()
+    {
+        itemInventoryModel.SetSlotLimit(
+            new Vector3(5, 5, 0),
+            new Vector3(4, 5, 0),
+            new Vector3(3, 5, 0),
+            new Vector3(2, 5, 0));
+
+        itemInventoryModel.AddItem(CreateItem(ItemType.Protection));
+        itemInventoryModel.AddItem(CreateItem(ItemType.Shoes));
+
+        GivenUseItemKeyDown(2, true);
+        itemInventoryModel.UpdateCheckUseItem();
+
+        ShouldHaveItem(false, 2);
+    }
+
     private void GivenUseItemKeyDown(int itemSlotIndex, bool isKeyDown)
     {
         keyController.IsUseItemKeyDown(itemSlotIndex).Returns(isKeyDown);

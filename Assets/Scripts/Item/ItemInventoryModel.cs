@@ -22,7 +22,7 @@ public class ItemInventoryModel
     {
         for (int i = 0; i < ItemCountLimit; i++)
         {
-            if (keyController.IsUseItemKeyDown(i))
+            if (keyController.IsUseItemKeyDown(i) && HaveItem(i))
             {
                 IItem item = GetItem(i);
                 item.UseItem();
