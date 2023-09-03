@@ -9,7 +9,7 @@ public class CharacterView : MonoBehaviour
     [SerializeField] private float footRadius;
 
     private Rigidbody2D rigidbody;
-    private CharacterMoveModel characterMoveModel;
+    private CharacterModel characterModel;
 
     private Rigidbody2D GetRigidbody
     {
@@ -24,26 +24,26 @@ public class CharacterView : MonoBehaviour
 
     private void Start()
     {
-        characterMoveModel = new CharacterMoveModel(new CharacterMoveController(), new CharacterKeyController());
-        characterMoveModel.SetJumpDelay(jumpDelaySeconds);
+        characterModel = new CharacterModel(new CharacterMoveController(), new CharacterKeyController(), new TeleportManager());
+        characterModel.SetJumpDelay(jumpDelaySeconds);
 
         SetEventRegister();
     }
 
     private void Update()
     {
-        characterMoveModel.UpdateJumpTimer(Time.deltaTime);
-        characterMoveModel.UpdateCheckJump(jumpForce);
-        characterMoveModel.UpdateMove(Time.deltaTime, speed);
+        characterModel.UpdateJumpTimer(Time.deltaTime);
+        characterModel.UpdateCheckJump(jumpForce);
+        characterModel.UpdateMove(Time.deltaTime, speed);
     }
 
     private void SetEventRegister()
     {
-        characterMoveModel.OnHorizontalMove -= OnHorizontalMove;
-        characterMoveModel.OnHorizontalMove += OnHorizontalMove;
+        characterModel.OnHorizontalMove -= OnHorizontalMove;
+        characterModel.OnHorizontalMove += OnHorizontalMove;
 
-        characterMoveModel.OnJump -= OnJump;
-        characterMoveModel.OnJump += OnJump;
+        characterModel.OnJump -= OnJump;
+        characterModel.OnJump += OnJump;
     }
 
     public void OnCollisionStay2D(Collision2D col)
@@ -51,7 +51,7 @@ public class CharacterView : MonoBehaviour
         bool isOnFloor = Physics2D.OverlapCircle(footPoint.position, footRadius, LayerMask.GetMask(GameConst.GameObjectLayerType.Platform.ToString()));
 
         if (col.gameObject.layer == (int)GameConst.GameObjectLayerType.Platform && isOnFloor)
-            characterMoveModel.TriggerFloor();
+            characterModel.TriggerFloor();
     }
 
     private void OnJump(float jumpForce)

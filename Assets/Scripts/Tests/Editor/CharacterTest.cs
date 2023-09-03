@@ -6,22 +6,24 @@ public class CharacterTest
 {
     private Action<float> horizontalMoveEvent;
     private IMoveController moveController;
-    private CharacterMoveModel characterMoveModel;
+    private CharacterModel characterModel;
     private Action<float> jumpEvent;
     private IKeyController keyController;
+    private ITeleport teleport;
 
     [SetUp]
     public void Setup()
     {
         moveController = Substitute.For<IMoveController>();
         keyController = Substitute.For<IKeyController>();
+        teleport = Substitute.For<ITeleport>();
 
-        characterMoveModel = new CharacterMoveModel(moveController, keyController);
+        characterModel = new CharacterModel(moveController, keyController, teleport);
 
         horizontalMoveEvent = Substitute.For<Action<float>>();
         jumpEvent = Substitute.For<Action<float>>();
-        characterMoveModel.OnHorizontalMove += horizontalMoveEvent;
-        characterMoveModel.OnJump += jumpEvent;
+        characterModel.OnHorizontalMove += horizontalMoveEvent;
+        characterModel.OnJump += jumpEvent;
     }
 
     [Test]
@@ -30,13 +32,13 @@ public class CharacterTest
     {
         GivenHorizontalAxis(0.5f);
 
-        characterMoveModel.UpdateMove(1, 1);
+        characterModel.UpdateMove(1, 1);
 
         ShouldReceiveHorizontalMoveEvent(Arg.Is<float>(x => x >= 0));
 
         GivenHorizontalAxis(-0.5f);
 
-        characterMoveModel.UpdateMove(1, 1);
+        characterModel.UpdateMove(1, 1);
 
         ShouldReceiveHorizontalMoveEvent(Arg.Is<float>(x => x <= 0));
     }
@@ -48,7 +50,7 @@ public class CharacterTest
         ShouldIsJumping(false);
 
         GivenIsJumpKeyDown(false);
-        characterMoveModel.UpdateCheckJump(1);
+        characterModel.UpdateCheckJump(1);
 
         ShouldReceiveJumpEvent(0);
         ShouldIsJumping(false);
@@ -61,13 +63,13 @@ public class CharacterTest
         ShouldIsJumping(false);
 
         GivenIsJumpKeyDown(true);
-        characterMoveModel.UpdateCheckJump(1);
+        characterModel.UpdateCheckJump(1);
 
         ShouldReceiveJumpEvent(1);
         ShouldIsJumping(true);
 
         GivenIsJumpKeyDown(true);
-        characterMoveModel.UpdateCheckJump(1);
+        characterModel.UpdateCheckJump(1);
 
         ShouldReceiveJumpEvent(1);
     }
@@ -79,17 +81,17 @@ public class CharacterTest
         ShouldIsJumping(false);
 
         GivenIsJumpKeyDown(true);
-        characterMoveModel.UpdateCheckJump(1);
+        characterModel.UpdateCheckJump(1);
 
         ShouldReceiveJumpEvent(1);
         ShouldIsJumping(true);
 
-        characterMoveModel.TriggerFloor();
+        characterModel.TriggerFloor();
 
         ShouldIsJumping(false);
 
         GivenIsJumpKeyDown(true);
-        characterMoveModel.UpdateCheckJump(1);
+        characterModel.UpdateCheckJump(1);
 
         ShouldReceiveJumpEvent(2);
         ShouldIsJumping(true);
@@ -99,33 +101,33 @@ public class CharacterTest
     //跳躍後, 在跳躍延遲時間內觸發地板, 不可再跳, 過延遲時間後再次觸發地板才可跳
     public void cannot_jump_again_until_delay_time()
     {
-        characterMoveModel.SetJumpDelay(0.5f);
+        characterModel.SetJumpDelay(0.5f);
         
         GivenIsJumpKeyDown(true);
-        characterMoveModel.UpdateJumpTimer(0.3f);
-        characterMoveModel.UpdateCheckJump(1);
+        characterModel.UpdateJumpTimer(0.3f);
+        characterModel.UpdateCheckJump(1);
         
         ShouldReceiveJumpEvent(1);
         
-        characterMoveModel.TriggerFloor();
+        characterModel.TriggerFloor();
         
         GivenIsJumpKeyDown(true);
-        characterMoveModel.UpdateJumpTimer(0.3f);
-        characterMoveModel.UpdateCheckJump(1);
+        characterModel.UpdateJumpTimer(0.3f);
+        characterModel.UpdateCheckJump(1);
         
         ShouldReceiveJumpEvent(1);
         
         GivenIsJumpKeyDown(true);
-        characterMoveModel.UpdateJumpTimer(0.3f);
-        characterMoveModel.UpdateCheckJump(1);
+        characterModel.UpdateJumpTimer(0.3f);
+        characterModel.UpdateCheckJump(1);
         
         ShouldReceiveJumpEvent(1);
         
-        characterMoveModel.TriggerFloor();
+        characterModel.TriggerFloor();
         
         GivenIsJumpKeyDown(true);
-        characterMoveModel.UpdateJumpTimer(0.3f);
-        characterMoveModel.UpdateCheckJump(1);
+        characterModel.UpdateJumpTimer(0.3f);
+        characterModel.UpdateCheckJump(1);
         
         ShouldReceiveJumpEvent(2);
     }
@@ -134,20 +136,36 @@ public class CharacterTest
     //跳躍後, 在跳躍延遲時間過後觸發地板, 可再跳
     public void can_jump_again_after_delay_time()
     {
-        characterMoveModel.SetJumpDelay(0.5f);
+        characterModel.SetJumpDelay(0.5f);
         
         GivenIsJumpKeyDown(true);
-        characterMoveModel.UpdateJumpTimer(0.3f);
-        characterMoveModel.UpdateCheckJump(1);
+        characterModel.UpdateJumpTimer(0.3f);
+        characterModel.UpdateCheckJump(1);
         
         ShouldReceiveJumpEvent(1);
         
         GivenIsJumpKeyDown(true);
-        characterMoveModel.UpdateJumpTimer(0.5f);
-        characterMoveModel.TriggerFloor();
-        characterMoveModel.UpdateCheckJump(1);
+        characterModel.UpdateJumpTimer(0.5f);
+        characterModel.TriggerFloor();
+        characterModel.UpdateCheckJump(1);
         
         ShouldReceiveJumpEvent(2);
+    }
+    
+    [Test]
+    //墜落一定時間後, 傳送回原點
+    public void fall_down_and_teleport()
+    {
+        characterModel.SetFallDownTime(1f);
+
+        characterModel.ExitFloor();
+        characterModel.UpdateFallDownTimer(0.5f);
+        
+        teleport.Received(0).BackToOrigin();
+        
+        characterModel.UpdateFallDownTimer(0.5f);
+        
+        teleport.Received(1).BackToOrigin();
     }
 
     private void GivenIsJumpKeyDown(bool isKeyDown)
@@ -167,7 +185,7 @@ public class CharacterTest
 
     private void ShouldIsJumping(bool expectedIsJumping)
     {
-        Assert.AreEqual(expectedIsJumping, characterMoveModel.IsJumping);
+        Assert.AreEqual(expectedIsJumping, characterModel.IsJumping);
     }
 
     private void ShouldReceiveHorizontalMoveEvent(float expectedLogic)
