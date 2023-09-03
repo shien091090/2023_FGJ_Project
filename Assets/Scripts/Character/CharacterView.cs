@@ -49,7 +49,6 @@ public class CharacterView : MonoBehaviour
     public void OnCollisionStay2D(Collision2D col)
     {
         bool isOnFloor = Physics2D.OverlapCircle(footPoint.position, footRadius, LayerMask.GetMask(GameConst.GameObjectLayerType.Platform.ToString()));
-        Debug.Log($"IsOnFloor: {isOnFloor}");
 
         if (col.gameObject.layer == (int)GameConst.GameObjectLayerType.Platform && isOnFloor)
             characterMoveModel.TriggerFloor();
