@@ -18,6 +18,23 @@ public class ItemModelTest
         ShouldReceiveItemUseCompleteEvent(1);
         ShouldReceiveRefreshUseTimesEvent(1, 0);
     }
+    
+    [Test]
+    //使用次數限制型道具, 限制多次, 使用完即消失
+    public void use_item_multiple_times()
+    {
+        ItemModel itemModel = CreateModel(ItemUseType.UseTimes, 2);
+
+        itemModel.UseItem();
+        
+        ShouldReceiveItemUseCompleteEvent(0);
+        ShouldReceiveRefreshUseTimesEvent(1, 1);
+        
+        itemModel.UseItem();
+
+        ShouldReceiveItemUseCompleteEvent(1);
+        ShouldReceiveRefreshUseTimesEvent(1, 0);
+    }
 
     private void ShouldReceiveRefreshUseTimesEvent(int triggerTimes, int expectedCurrentUseTimes)
     {
@@ -41,7 +58,6 @@ public class ItemModelTest
 
         return itemModel;
     }
-    //使用次數限制型道具, 限制多次, 使用完即消失
     //使用秒數限制型道具, 使用後過指定時間消失
     //使用秒數限制型道具, 等待過程中再次使用沒反應
 }
