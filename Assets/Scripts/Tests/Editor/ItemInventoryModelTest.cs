@@ -124,6 +124,35 @@ public class ItemInventoryModelTest
         ShouldHaveItem(false, 2);
     }
     
+    [Test]
+    //使用道具後再次使用, 不會有反應
+    public void item_slot_is_empty_when_use_item_twice()
+    {
+        itemInventoryModel.SetSlotLimit(4);
+
+        IItem item1 = CreateItem(ItemType.Protection);
+        IItem item2 = CreateItem(ItemType.Weapon);
+        IItem item3 = CreateItem(ItemType.Shoes);
+
+        itemInventoryModel.AddItem(item1);
+        itemInventoryModel.AddItem(item2);
+        itemInventoryModel.AddItem(item3);
+
+        CallItemUseEvent(item1);
+
+        CurrentItemCountShouldBe(2);
+        ItemTypeShouldBe(ItemType.Weapon, 0);
+        ItemTypeShouldBe(ItemType.Shoes, 1);
+        ShouldHaveItem(false, 2);
+        
+        CallItemUseEvent(item1);
+        
+        CurrentItemCountShouldBe(2);
+        ItemTypeShouldBe(ItemType.Weapon, 0);
+        ItemTypeShouldBe(ItemType.Shoes, 1);
+        ShouldHaveItem(false, 2);
+    }
+    
     private void ShouldHaveItem(bool expectedHaveItem, int slotIndex)
     {
         Assert.AreEqual(expectedHaveItem, itemInventoryModel.HaveItem(slotIndex));
