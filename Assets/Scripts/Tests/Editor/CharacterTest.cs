@@ -2,7 +2,7 @@ using System;
 using NSubstitute;
 using NUnit.Framework;
 
-public class CharacterMoveTest
+public class CharacterTest
 {
     private Action<float> horizontalMoveEvent;
     private IMoveController moveController;
