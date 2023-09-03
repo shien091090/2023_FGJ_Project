@@ -97,6 +97,23 @@ public class ItemModelTest
         ShouldReceiveItemUseCompleteEvent(1);
         ShouldReceiveRefreshTimerEvent(1, 0);
     }
+    
+    [Test]
+    //次數型道具使用完畢後, 再次使用也不會再繼續發出事件
+    public void when_use_times_item_is_used_should_not_send_event_after_use_again()
+    {
+        ItemModel itemModel = CreateModel(ItemUseType.UseTimes, 1);
+
+        itemModel.UseItem();
+
+        ShouldReceiveItemUseCompleteEvent(1);
+        ShouldReceiveRefreshUseTimesEvent(1, 0);
+
+        itemModel.UseItem();
+
+        ShouldReceiveItemUseCompleteEvent(1);
+        ShouldReceiveRefreshUseTimesEvent(1, 0);
+    }
 
     [Test]
     //使用秒數型道具, 按下使用前不會計時

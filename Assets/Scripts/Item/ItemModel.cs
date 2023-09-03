@@ -49,6 +49,9 @@ public class ItemModel
 
     public void UseItem()
     {
+        if (isUsed)
+            return;
+
         if (itemUseType == ItemUseType.PassTime)
         {
             startUsePassTimeItem = true;
@@ -60,6 +63,9 @@ public class ItemModel
         OnRefreshCurrentUseTimes?.Invoke(currentUseTimes);
 
         if (currentUseTimes <= 0)
+        {
+            isUsed = true;
             OnItemUseComplete?.Invoke();
+        }
     }
 }
