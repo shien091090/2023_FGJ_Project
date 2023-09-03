@@ -145,11 +145,16 @@ public class ItemInventoryModelTest
         itemInventoryModel.AddItem(item2);
         itemInventoryModel.AddItem(item3);
 
+        ShouldCallSetPos(item3, new Vector3(3, 5, 0));
+
         CallItemUseEvent(item1);
-        CallItemUseEvent(item3);
+        ShouldCallSetPos(item3, new Vector3(4, 5, 0));
+
+        CallItemUseEvent(item2);
+        ShouldCallSetPos(item3, new Vector3(5, 5, 0));
 
         CurrentItemCountShouldBe(1);
-        ItemTypeShouldBe(ItemType.Weapon, 0);
+        ItemTypeShouldBe(ItemType.Shoes, 0);
         ShouldHaveItem(false, 1);
         ShouldHaveItem(false, 2);
     }
