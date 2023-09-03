@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2351646353815271615}
   - component: {fileID: 5478804049688002920}
+  - component: {fileID: 5402783103830404641}
   - component: {fileID: 7131713838332389011}
   - component: {fileID: 6768991554574792803}
   - component: {fileID: 3399753338941889646}
@@ -52,6 +53,19 @@ MonoBehaviour:
   go_stunStateEffect: {fileID: 3609199170080720565}
   monsterType: goblin
   keepStunTime: 3
+--- !u!114 &5402783103830404641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 234022249610564636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bf227c082574fb69b7e85086427ffe0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  go_missingTexture: {fileID: 8391348505273462348}
 --- !u!95 &7131713838332389011
 Animator:
   serializedVersion: 5
@@ -302,7 +316,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &5110169308631446646
 Transform:
   m_ObjectHideFlags: 0
