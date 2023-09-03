@@ -54,6 +54,7 @@ public class ItemInventoryModel
                 continue;
 
             GetItems[index] = item;
+            item.SetPos(itemSlotPosArray[index]);
 
             item.OnItemUsed -= OnItemUse;
             item.OnItemUsed += OnItemUse;
@@ -82,7 +83,10 @@ public class ItemInventoryModel
 
         for (int i = index; i < GetItems.Count - 1; i++)
         {
-            GetItems[i] = GetItems[i + 1];
+            IItem shiftItem = GetItems[i + 1];
+            GetItems[i] = shiftItem;
+
+            shiftItem?.SetPos(itemSlotPosArray[i]);
         }
     }
 

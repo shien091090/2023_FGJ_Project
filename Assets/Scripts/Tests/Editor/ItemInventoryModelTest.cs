@@ -35,6 +35,7 @@ public class ItemInventoryModelTest
         IItem item = CreateItem(ItemType.Shoes);
 
         itemInventoryModel.AddItem(item);
+        ShouldCallSetPos(item, new Vector3(5, 5, 0));
 
         CurrentItemCountShouldBe(1);
         ItemTypeShouldBe(ItemType.Shoes, 0);
@@ -53,9 +54,17 @@ public class ItemInventoryModelTest
             new Vector3(3, 5, 0),
             new Vector3(2, 5, 0));
 
-        itemInventoryModel.AddItem(CreateItem(ItemType.Shoes));
-        itemInventoryModel.AddItem(CreateItem(ItemType.Protection));
-        itemInventoryModel.AddItem(CreateItem(ItemType.Weapon));
+        IItem item1 = CreateItem(ItemType.Shoes);
+        IItem item2 = CreateItem(ItemType.Protection);
+        IItem item3 = CreateItem(ItemType.Weapon);
+
+        itemInventoryModel.AddItem(item1);
+        itemInventoryModel.AddItem(item2);
+        itemInventoryModel.AddItem(item3);
+
+        ShouldCallSetPos(item1, new Vector3(5, 5, 0));
+        ShouldCallSetPos(item2, new Vector3(4, 5, 0));
+        ShouldCallSetPos(item3, new Vector3(3, 5, 0));
 
         CurrentItemCountShouldBe(3);
         ItemTypeShouldBe(ItemType.Shoes, 0);
@@ -107,8 +116,11 @@ public class ItemInventoryModelTest
         itemInventoryModel.AddItem(item2);
         itemInventoryModel.AddItem(item3);
 
+        ShouldCallSetPos(item3, new Vector3(3, 5, 0));
+
         CallItemUseEvent(item2);
 
+        ShouldCallSetPos(item3, new Vector3(4, 5, 0));
         CurrentItemCountShouldBe(2);
         ItemTypeShouldBe(ItemType.Protection, 0);
         ItemTypeShouldBe(ItemType.Shoes, 1);
@@ -332,6 +344,11 @@ public class ItemInventoryModelTest
     private void CallItemUseEvent(IItem item)
     {
         item.OnItemUsed += Raise.Event<Action<IItem>>(item);
+    }
+
+    private void ShouldCallSetPos(IItem item, Vector3 pos)
+    {
+        item.Received(1).SetPos(pos);
     }
 
     private void ShouldCallUseItem(IItem item)
