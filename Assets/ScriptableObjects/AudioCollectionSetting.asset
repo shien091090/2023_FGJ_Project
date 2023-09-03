@@ -12,8 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b12f014e3f94611be4603c17c081928, type: 3}
   m_Name: AudioCollectionSetting
   m_EditorClassIdentifier: 
-  loadBankNameList:
-  - 
   audioEventRefList:
   - audioKey: TestSE
     audioEventReferences:
@@ -23,3 +21,5 @@ MonoBehaviour:
         Data3: 2136559491
         Data4: -1703178394
       Path: event:/FlopCard
+  - audioKey: 
+    audioEventReferences: []
