@@ -2,14 +2,14 @@ using System;
 
 public class MonsterModel
 {
-    private readonly int keepStunTime;
+    private readonly float keepStunTime;
     private float stunTimer;
 
     public event Action<MonsterState> OnChangeState;
     public MonsterState CurrentState { get; private set; }
     public bool IsMovable { get; set; }
 
-    public MonsterModel(int keepStunTime)
+    public MonsterModel(float keepStunTime)
     {
         this.keepStunTime = keepStunTime;
         CurrentState = MonsterState.Normal;
