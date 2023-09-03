@@ -45,4 +45,22 @@ public class ItemInventoryView : MonoBehaviour
 
         return resultObj;
     }
+
+    [ContextMenu("Get Protection Item")]
+    private void GetProtectionItem()
+    {
+        AddItem(ItemType.Protection);
+    }
+
+    [ContextMenu("Get Weapon Item")]
+    private void GetWeaponItem()
+    {
+        AddItem(ItemType.Weapon);
+    }
+
+    [ContextMenu("Get Shoes Item")]
+    private void GetShoesItem()
+    {
+        AddItem(ItemType.Shoes);
+    }
 }
