@@ -7,11 +7,13 @@ public class MonsterModel
 
     public event Action<MonsterState> OnChangeState;
     public MonsterState CurrentState { get; private set; }
+    public bool IsMovable { get; set; }
 
     public MonsterModel(int keepStunTime)
     {
         this.keepStunTime = keepStunTime;
         CurrentState = MonsterState.Normal;
+        IsMovable = true;
     }
 
     public void UpdateStunTimer(float deltaTime)
@@ -25,6 +27,7 @@ public class MonsterModel
         {
             CurrentState = MonsterState.Normal;
             stunTimer = 0;
+            IsMovable = true;
             OnChangeState?.Invoke(MonsterState.Normal);
         }
     }
@@ -34,6 +37,7 @@ public class MonsterModel
         bool isSendEvent = CurrentState != MonsterState.Stun;
 
         CurrentState = MonsterState.Stun;
+        IsMovable = false;
         stunTimer = 0;
 
         if (isSendEvent)

@@ -67,6 +67,30 @@ public class MonsterModelTest
         ShouldReceiveChangeStateEvent(1, MonsterState.Normal);
     }
 
+    [Test]
+    //陷入暈眩時不移動
+    public void be_attack_and_stun_and_not_move()
+    {
+        MonsterModel monsterModel = CreateModel(1);
+
+        ShouldBeMovable(monsterModel, true);
+
+        monsterModel.BeAttack();
+        monsterModel.UpdateStunTimer(0.5f);
+
+        ShouldBeMovable(monsterModel, false);
+
+        monsterModel.UpdateStunTimer(0.5f);
+
+        CurrentMonsterStateShouldBe(monsterModel, MonsterState.Normal);
+        ShouldBeMovable(monsterModel, true);
+    }
+
+    private void ShouldBeMovable(MonsterModel monsterModel, bool expectedMovable)
+    {
+        Assert.AreEqual(expectedMovable, monsterModel.IsMovable);
+    }
+
     private void ShouldReceiveChangeStateEvent(int triggerTimes, MonsterState monsterState)
     {
         changeStateEvent.Received(triggerTimes).Invoke(monsterState);
@@ -84,6 +108,4 @@ public class MonsterModelTest
 
         return monsterModel;
     }
-
-    //陷入暈眩時不移動
 }
