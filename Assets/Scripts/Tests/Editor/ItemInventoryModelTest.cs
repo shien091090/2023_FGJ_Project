@@ -5,11 +5,13 @@ using NUnit.Framework;
 public class ItemInventoryModelTest
 {
     private ItemInventoryModel itemInventoryModel;
+    private IKeyController keyController;
 
     [SetUp]
     public void Setup()
     {
-        itemInventoryModel = new ItemInventoryModel();
+        keyController = Substitute.For<IKeyController>();
+        itemInventoryModel = new ItemInventoryModel(keyController);
     }
 
     [Test]
@@ -207,7 +209,7 @@ public class ItemInventoryModelTest
         ItemTypeShouldBe(ItemType.Protection, 0);
         ShouldHaveItem(false, 1);
     }
-    
+
     [Test]
     //道具欄已滿時, 不可再放入道具
     public void can_not_add_item_when_inventory_is_full()
@@ -228,9 +230,37 @@ public class ItemInventoryModelTest
         ItemTypeShouldBe(ItemType.Weapon, 1);
     }
 
+    [Test]
+    //擁有多個道具時, 按下指定按鍵使用道具
+    public void use_item_by_key()
+    {
+        itemInventoryModel.SetSlotLimit(4);
+
+        IItem item = CreateItem(ItemType.Weapon);
+
+        itemInventoryModel.AddItem(CreateItem(ItemType.Protection));
+        itemInventoryModel.AddItem(item);
+        itemInventoryModel.AddItem(CreateItem(ItemType.Shoes));
+
+        ShouldUseItemKeyDown(1, true);
+        itemInventoryModel.UpdateCheckUseItem();
+
+        ShouldCallUseItem(item);
+    }
+
     private void CallItemUseEvent(IItem item)
     {
         item.OnItemUsed += Raise.Event<Action<IItem>>(item);
+    }
+
+    private void ShouldCallUseItem(IItem item)
+    {
+        item.Received(1).UseItem();
+    }
+
+    private void ShouldUseItemKeyDown(int itemSlotIndex, bool isKeyDown)
+    {
+        keyController.IsUseItemKeyDown(itemSlotIndex).Returns(isKeyDown);
     }
 
     private void ShouldAlreadyHaveSpecificTypeItem(bool expectedAlreadyHave, ItemType itemType)
@@ -259,5 +289,4 @@ public class ItemInventoryModelTest
         item.ItemType.Returns(itemType);
         return item;
     }
-
 }

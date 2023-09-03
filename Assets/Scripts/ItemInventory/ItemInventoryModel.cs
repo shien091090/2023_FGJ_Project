@@ -4,15 +4,29 @@ using UnityEngine;
 
 public class ItemInventoryModel
 {
+    private readonly IKeyController keyController;
     private List<IItem> GetItems;
 
     public int ItemCountLimit { get; set; }
 
     public int GetCurrentItemCount => GetItems.Count(x => x != null);
 
-    public ItemInventoryModel()
+    public ItemInventoryModel(IKeyController keyController)
     {
+        this.keyController = keyController;
         GetItems = new List<IItem>();
+    }
+
+    public void UpdateCheckUseItem()
+    {
+        for (int i = 0; i < ItemCountLimit; i++)
+        {
+            if (keyController.IsUseItemKeyDown(i))
+            {
+                IItem item = GetItem(i);
+                item.UseItem();
+            }
+        }
     }
 
     public IItem GetItem(int index)
