@@ -28,6 +28,29 @@ public class MonsterModelTest
 
         CurrentMonsterStateShouldBe(monsterModel, MonsterState.Normal);
     }
+    
+    [Test]
+    //被重複攻擊時, 暈眩時間重置
+    public void be_attack_and_stun_and_be_attack_again()
+    {
+        MonsterModel monsterModel = new MonsterModel(1);
+
+        CurrentMonsterStateShouldBe(monsterModel, MonsterState.Normal);
+
+        monsterModel.BeAttack();
+        monsterModel.UpdateStunTimer(0.5f);
+
+        CurrentMonsterStateShouldBe(monsterModel, MonsterState.Stun);
+
+        monsterModel.BeAttack();
+        monsterModel.UpdateStunTimer(0.5f);
+
+        CurrentMonsterStateShouldBe(monsterModel, MonsterState.Stun);
+        
+        monsterModel.UpdateStunTimer(0.5f);
+        
+        CurrentMonsterStateShouldBe(monsterModel, MonsterState.Normal);
+    }
 
     private void CurrentMonsterStateShouldBe(MonsterModel monsterModel, MonsterState expectedState)
     {
