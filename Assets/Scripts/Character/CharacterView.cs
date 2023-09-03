@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class CharacterView : MonoBehaviour
@@ -7,6 +8,8 @@ public class CharacterView : MonoBehaviour
     [SerializeField] private float jumpDelaySeconds;
     [SerializeField] private Transform footPoint;
     [SerializeField] private float footRadius;
+    [SerializeField] private TeleportComponent te1eportComponent;
+    [SerializeField] private float fallDownToOriginPosTime;
 
     private Rigidbody2D rigidbody;
     private CharacterModel characterModel;
@@ -24,8 +27,9 @@ public class CharacterView : MonoBehaviour
 
     private void Start()
     {
-        characterModel = new CharacterModel(new CharacterMoveController(), new CharacterKeyController(), new TeleportManager());
+        characterModel = new CharacterModel(new CharacterMoveController(), new CharacterKeyController(), te1eportComponent);
         characterModel.SetJumpDelay(jumpDelaySeconds);
+        characterModel.SetFallDownTime(fallDownToOriginPosTime);
 
         SetEventRegister();
     }
@@ -35,6 +39,7 @@ public class CharacterView : MonoBehaviour
         characterModel.UpdateJumpTimer(Time.deltaTime);
         characterModel.UpdateCheckJump(jumpForce);
         characterModel.UpdateMove(Time.deltaTime, speed);
+        characterModel.UpdateFallDownTimer(Time.deltaTime);
     }
 
     private void SetEventRegister()
@@ -52,6 +57,14 @@ public class CharacterView : MonoBehaviour
 
         if (col.gameObject.layer == (int)GameConst.GameObjectLayerType.Platform && isOnFloor)
             characterModel.TriggerFloor();
+    }
+
+    public void OnCollisionExit2D(Collision2D col)
+    {
+        if (col.gameObject.layer == (int)GameConst.GameObjectLayerType.Platform)
+        {
+            characterModel.ExitFloor();
+        }
     }
 
     private void OnJump(float jumpForce)

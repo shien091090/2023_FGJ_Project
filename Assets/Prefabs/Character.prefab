@@ -53,6 +53,8 @@ MonoBehaviour:
   jumpDelaySeconds: 0.3
   footPoint: {fileID: 7716344304938210079}
   footRadius: 0.1
+  te1eportComponent: {fileID: 0}
+  fallDownToOriginPosTime: 4
 --- !u!212 &7918636506258862006
 SpriteRenderer:
   m_ObjectHideFlags: 0
