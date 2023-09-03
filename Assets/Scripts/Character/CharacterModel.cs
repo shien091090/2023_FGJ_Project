@@ -36,6 +36,20 @@ public class CharacterModel
         OnHorizontalMove?.Invoke(moveController.GetHorizontalAxis() * deltaTime * speed);
     }
 
+    public void UpdateCheckSuperJump(float jumpForce)
+    {
+        if (jumpTimer < jumpDelaySeconds)
+            return;
+
+        if (keyController.IsSuperJumpKeyDown && IsJumping == false)
+        {
+            // Debug.Log("OnJump");
+            jumpTimer = 0;
+            IsJumping = true;
+            OnJump?.Invoke(jumpForce);
+        }
+    }
+
     public void UpdateCheckJump(float jumpForce)
     {
         if (jumpTimer < jumpDelaySeconds)

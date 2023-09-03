@@ -49,6 +49,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   jumpForce: 300
+  superJumpForce: 700
   speed: 10
   jumpDelaySeconds: 0.3
   footPoint: {fileID: 7716344304938210079}
