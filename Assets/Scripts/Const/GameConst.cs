@@ -4,6 +4,7 @@ public class GameConst
     {
         Platform = 6,
         Player = 7,
-        TeleportGate = 8
+        TeleportGate = 8,
+        Weapon = 9
     }
 }
