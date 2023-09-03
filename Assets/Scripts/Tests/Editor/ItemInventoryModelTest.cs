@@ -168,7 +168,7 @@ public class ItemInventoryModelTest
         ItemTypeShouldBe(ItemType.Weapon, 1);
         ShouldHaveItem(false, 2);
     }
-    
+
     [Test]
     //只剩一個道具時, 使用後, 道具格變空的
     public void item_slot_is_empty_when_use_last_item()
@@ -187,7 +187,7 @@ public class ItemInventoryModelTest
         ShouldHaveItem(false, 2);
         ShouldHaveItem(false, 3);
     }
-    
+
     [Test]
     //道具欄裡有相同道具時, 不可再放入相同道具
     public void can_not_add_same_item()
@@ -199,9 +199,10 @@ public class ItemInventoryModelTest
         CurrentItemCountShouldBe(1);
         ItemTypeShouldBe(ItemType.Protection, 0);
         ShouldHaveItem(false, 1);
-        
+        ShouldAlreadyHaveSpecificTypeItem(true, ItemType.Protection);
+
         itemInventoryModel.AddItem(CreateItem(ItemType.Protection));
-        
+
         CurrentItemCountShouldBe(1);
         ItemTypeShouldBe(ItemType.Protection, 0);
         ShouldHaveItem(false, 1);
@@ -210,6 +211,11 @@ public class ItemInventoryModelTest
     private void CallItemUseEvent(IItem item)
     {
         item.OnItemUsed += Raise.Event<Action<IItem>>(item);
+    }
+
+    private void ShouldAlreadyHaveSpecificTypeItem(bool expectedAlreadyHave, ItemType itemType)
+    {
+        Assert.AreEqual(expectedAlreadyHave, itemInventoryModel.AlreadyHaveSpecificTypeItem(itemType));
     }
 
     private void ShouldHaveItem(bool expectedHaveItem, int slotIndex)

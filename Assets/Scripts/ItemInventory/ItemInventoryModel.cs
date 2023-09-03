@@ -28,7 +28,7 @@ public class ItemInventoryModel
 
     public void AddItem(IItem item)
     {
-        if (GetItems.FirstOrDefault(x => x != null && x.ItemType == item.ItemType) != null)
+        if (AlreadyHaveSpecificTypeItem(item.ItemType))
             return;
 
         for (int index = 0; index < GetItems.Count; index++)
@@ -49,6 +49,11 @@ public class ItemInventoryModel
     public bool HaveItem(int index)
     {
         return GetItems[index] != null;
+    }
+
+    public bool AlreadyHaveSpecificTypeItem(ItemType itemType)
+    {
+        return GetItems.FirstOrDefault(x => x != null && x.ItemType == itemType) != null;
     }
 
     private void RemoveItemAndShift(IItem item)
