@@ -185,8 +185,47 @@ public class CharacterTest
         ShouldCallBackToOrigin(0);
     }
     
+    [Test]
     //墜落一段時間後落地, 再墜落時會重算回原點時間
+    public void fall_down_and_trigger_floor_and_fall_down_again()
+    {
+        characterModel.SetFallDownTime(1f);
+
+        characterModel.ExitFloor();
+        characterModel.UpdateFallDownTimer(0.5f);
+
+        ShouldCallBackToOrigin(0);
+
+        characterModel.TriggerFloor();
+        characterModel.UpdateFallDownTimer(0.5f);
+
+        ShouldCallBackToOrigin(0);
+
+        characterModel.ExitFloor();
+        characterModel.UpdateFallDownTimer(0.5f);
+
+        ShouldCallBackToOrigin(0);
+
+        characterModel.UpdateFallDownTimer(0.5f);
+
+        ShouldCallBackToOrigin(1);
+    }
+    
+    [Test]
     //墜落傳送回原點後, 不會繼續觸發回原點
+    public void fall_down_and_teleport_and_not_trigger_again()
+    {
+        characterModel.SetFallDownTime(1f);
+
+        characterModel.ExitFloor();
+        characterModel.UpdateFallDownTimer(1f);
+
+        ShouldCallBackToOrigin(1);
+
+        characterModel.UpdateFallDownTimer(1f);
+
+        ShouldCallBackToOrigin(1);
+    }
 
     private void GivenIsJumpKeyDown(bool isKeyDown)
     {
