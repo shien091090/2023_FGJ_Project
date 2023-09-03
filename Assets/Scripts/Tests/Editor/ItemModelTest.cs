@@ -56,6 +56,10 @@ public class ItemModelTest
         itemModel.UpdateTimer(2);
         ShouldReceiveItemUseCompleteEvent(1);
         ShouldReceiveRefreshTimerEvent(1, 0);
+        
+        itemModel.UpdateTimer(1);
+        ShouldReceiveItemUseCompleteEvent(1);
+        ShouldReceiveRefreshTimerEvent(1, 0);
     }
 
     [Test]
@@ -75,6 +79,19 @@ public class ItemModelTest
         itemModel.UpdateTimer(1);
         ShouldReceiveItemUseCompleteEvent(0);
         ShouldReceiveRefreshTimerEvent(1, 1);
+    }
+    
+    [Test]
+    //秒數型道具使用完畢後, 再次刷新時間也不會再繼續發出事件
+    public void when_pass_time_item_is_used_should_not_send_event_after_refresh_timer()
+    {
+        ItemModel itemModel = CreateModel(ItemUseType.PassTime, 1);
+
+        itemModel.UseItem();
+
+        itemModel.UpdateTimer(1);
+        ShouldReceiveItemUseCompleteEvent(1);
+        ShouldReceiveRefreshTimerEvent(1, 0);
 
         itemModel.UpdateTimer(1);
         ShouldReceiveItemUseCompleteEvent(1);
@@ -93,6 +110,9 @@ public class ItemModelTest
         ShouldNotReceiveAnyRefreshTimerEvent();
     }
 
+    // [Test]
+    // 使用秒數型道具, 結束後設置次數型道具
+    
     private void ShouldNotReceiveAnyRefreshTimerEvent()
     {
         refreshCurrentTimerEvent.DidNotReceive().Invoke(Arg.Any<float>());

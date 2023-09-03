@@ -7,6 +7,7 @@ public class ItemModel
     private int currentUseTimes;
     private float currentTimer;
     private bool startUsePassTimeItem;
+    private bool isUsed;
 
     public event Action OnItemUseComplete;
     public event Action<int> OnRefreshCurrentUseTimes;
@@ -14,7 +15,7 @@ public class ItemModel
 
     public void UpdateTimer(float deltaTime)
     {
-        if (itemUseType == ItemUseType.UseTimes || startUsePassTimeItem == false)
+        if (itemUseType == ItemUseType.UseTimes || startUsePassTimeItem == false || isUsed)
             return;
 
         currentTimer = Math.Max(currentTimer - deltaTime, 0);
@@ -22,7 +23,10 @@ public class ItemModel
         OnRefreshCurrentTimer?.Invoke(currentTimer);
 
         if (currentTimer <= 0)
+        {
+            isUsed = true;
             OnItemUseComplete?.Invoke();
+        }
     }
 
     public void SetUseTimesType(int useTimes)
@@ -31,6 +35,7 @@ public class ItemModel
         currentUseTimes = useTimes;
         currentTimer = 0;
         startUsePassTimeItem = false;
+        isUsed = false;
     }
 
     public void SetPassTimeType(float timerSetting)
@@ -39,6 +44,7 @@ public class ItemModel
         currentUseTimes = 0;
         currentTimer = timerSetting;
         startUsePassTimeItem = false;
+        isUsed = false;
     }
 
     public void UseItem()
