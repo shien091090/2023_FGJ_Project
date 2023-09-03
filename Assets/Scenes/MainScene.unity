@@ -36950,10 +36950,6 @@ PrefabInstance:
       value: Character
       objectReference: {fileID: 0}
     - target: {fileID: 2578510518347061705, guid: ed727472ad1abd5418776d584244a5d6, type: 3}
-      propertyPath: jumpForce
-      value: 700
-      objectReference: {fileID: 0}
-    - target: {fileID: 2578510518347061705, guid: ed727472ad1abd5418776d584244a5d6, type: 3}
       propertyPath: te1eportComponent
       value: 
       objectReference: {fileID: 692761707}
