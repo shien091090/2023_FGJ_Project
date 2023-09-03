@@ -1,12 +1,11 @@
 using System.Collections.Generic;
-using System.Linq;
-using Debug = UnityEngine.Debug;
 
 public class ItemInventoryModel
 {
-    public List<IItem> GetItems;
+    private List<IItem> GetItems;
 
     public int ItemCountLimit { get; set; }
+    public int GetCurrentItemCount => GetItems.Count;
 
     public ItemInventoryModel()
     {

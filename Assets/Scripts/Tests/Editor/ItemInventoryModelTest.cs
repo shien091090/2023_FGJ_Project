@@ -48,8 +48,7 @@ public class ItemInventoryModelTest
 
     private void ItemCountShouldBe(int expectedItemCount)
     {
-        List<IItem> items = itemInventoryModel.GetItems;
-        Assert.AreEqual(expectedItemCount, items.Count);
+        Assert.AreEqual(expectedItemCount, itemInventoryModel.GetCurrentItemCount);
     }
 
     private IItem CreateItem(ItemType itemType)
