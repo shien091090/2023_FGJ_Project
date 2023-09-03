@@ -1,3 +1,4 @@
+using SNShien.Common.AudioTools;
 using UnityEngine;
 
 public class TeleportGateComponent : MonoBehaviour, ITeleportGate
@@ -7,6 +8,7 @@ public class TeleportGateComponent : MonoBehaviour, ITeleportGate
 
     public void Teleport(ITransform target)
     {
+        FmodAudioManager.Instance.PlayOneShot("Teleport");
         target.position = teleportPos;
     }
 }

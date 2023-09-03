@@ -24,6 +24,33 @@ MonoBehaviour:
   IsGlobal: 1
   Labels: []
   Exists: 1
+--- !u!114 &-8755159583535270118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SE_Jump
+  m_EditorClassIdentifier: 
+  Path: event:/SE_Jump
+  Guid:
+    Data1: -1193669204
+    Data2: 1191267716
+    Data3: 835166094
+    Data4: -1334577185
+  Banks:
+  - {fileID: -7783187632557701440}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 201
 --- !u!114 &-7783187632557701440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39,10 +66,10 @@ MonoBehaviour:
   Path: "C:/Users/NKShien/OneDrive/\u6587\u4EF6/FMOD Studio/SNShien/Build/Desktop/Master.bank"
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638223862408917152
+  lastModified: 638293509448011277
   FileSizes:
   - Name: Desktop
-    Value: 4263520
+    Value: 7095584
   Exists: 1
 --- !u!114 &-6390766009429888883
 MonoBehaviour:
@@ -86,10 +113,10 @@ MonoBehaviour:
   Path: "C:/Users/NKShien/OneDrive/\u6587\u4EF6/FMOD Studio/SNShien/Build/Desktop/Master.strings.bank"
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638223862408977885
+  lastModified: 638293509448051543
   FileSizes:
   - Name: Desktop
-    Value: 1046
+    Value: 1206
   Exists: 1
 --- !u!114 &-4833164153512101076
 MonoBehaviour:
@@ -245,6 +272,10 @@ MonoBehaviour:
   - {fileID: -6390766009429888883}
   - {fileID: -3466186685840222150}
   - {fileID: 5032338794212031067}
+  - {fileID: 8422683677876812713}
+  - {fileID: 2408729804635149116}
+  - {fileID: -8755159583535270118}
+  - {fileID: 7640606056961084153}
   EditorParameters:
   - {fileID: -1766875281513303114}
   - {fileID: 748384539566676789}
@@ -252,7 +283,7 @@ MonoBehaviour:
   - {fileID: -7783187632557701440}
   StringsBanks:
   - {fileID: -5961632289406730399}
-  cacheTime: 638223862408977885
+  cacheTime: 638293509448051543
   cacheVersion: 131601
 --- !u!114 &748384539566676789
 MonoBehaviour:
@@ -278,6 +309,33 @@ MonoBehaviour:
   IsGlobal: 1
   Labels: []
   Exists: 1
+--- !u!114 &2408729804635149116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SE_Damage
+  m_EditorClassIdentifier: 
+  Path: event:/SE_Damage
+  Guid:
+    Data1: 1951969634
+    Data2: 1126827978
+    Data3: 1953631105
+    Data4: -781061218
+  Banks:
+  - {fileID: -7783187632557701440}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 901
 --- !u!114 &3897139071532813721
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -353,3 +411,57 @@ MonoBehaviour:
   IsGlobal: 1
   Labels: []
   Exists: 1
+--- !u!114 &7640606056961084153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SE_Teleport
+  m_EditorClassIdentifier: 
+  Path: event:/SE_Teleport
+  Guid:
+    Data1: 1716785614
+    Data2: 1136492191
+    Data3: -1507110010
+    Data4: -1975058669
+  Banks:
+  - {fileID: -7783187632557701440}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 2149
+--- !u!114 &8422683677876812713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/BGM_FGJ
+  m_EditorClassIdentifier: 
+  Path: event:/BGM_FGJ
+  Guid:
+    Data1: -1703161142
+    Data2: 1085574048
+    Data3: 1310905764
+    Data4: -164677760
+  Banks:
+  - {fileID: -7783187632557701440}
+  IsStream: 1
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 215457

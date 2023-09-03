@@ -13,13 +13,35 @@ MonoBehaviour:
   m_Name: AudioCollectionSetting
   m_EditorClassIdentifier: 
   audioEventRefList:
-  - audioKey: TestSE
+  - audioKey: BGM
     audioEventReferences:
     - Guid:
-        Data1: -1825325780
-        Data2: 1319013428
-        Data3: 2136559491
-        Data4: -1703178394
-      Path: event:/FlopCard
-  - audioKey: 
-    audioEventReferences: []
+        Data1: -1703161142
+        Data2: 1085574048
+        Data3: 1310905764
+        Data4: -164677760
+      Path: event:/BGM_FGJ
+  - audioKey: Jump
+    audioEventReferences:
+    - Guid:
+        Data1: -1193669204
+        Data2: 1191267716
+        Data3: 835166094
+        Data4: -1334577185
+      Path: event:/SE_Jump
+  - audioKey: Damage
+    audioEventReferences:
+    - Guid:
+        Data1: 1951969634
+        Data2: 1126827978
+        Data3: 1953631105
+        Data4: -781061218
+      Path: event:/SE_Damage
+  - audioKey: Teleport
+    audioEventReferences:
+    - Guid:
+        Data1: 1716785614
+        Data2: 1136492191
+        Data3: -1507110010
+        Data4: -1975058669
+      Path: event:/SE_Teleport

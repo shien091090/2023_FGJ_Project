@@ -1,3 +1,4 @@
+using SNShien.Common.AudioTools;
 using UnityEngine;
 
 public class TeleportComponent : MonoBehaviour, ITeleport
@@ -7,6 +8,7 @@ public class TeleportComponent : MonoBehaviour, ITeleport
 
     public void BackToOrigin()
     {
+        FmodAudioManager.Instance.PlayOneShot("Teleport");
         character.position = originPos;
     }
 

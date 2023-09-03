@@ -1,4 +1,5 @@
 using System;
+using SNShien.Common.AudioTools;
 using UnityEngine;
 
 public class CharacterView : MonoBehaviour, ITransform
@@ -102,6 +103,7 @@ public class CharacterView : MonoBehaviour, ITransform
 
     private void OnJump(float jumpForce)
     {
+        FmodAudioManager.Instance.PlayOneShot("Jump");
         GetRigidbody.AddForce(new Vector2(0, jumpForce));
     }
 

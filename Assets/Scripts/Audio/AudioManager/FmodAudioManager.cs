@@ -60,7 +60,7 @@ namespace SNShien.Common.AudioTools
 
         public void Stop(int trackIndex = 0, bool stopImmediately = false)
         {
-            if (!eventInstanceTrackDict.ContainsKey(trackIndex))
+            if (eventInstanceTrackDict == null || !eventInstanceTrackDict.ContainsKey(trackIndex))
                 return;
 
             EventInstance eventInstance = eventInstanceTrackDict[trackIndex];

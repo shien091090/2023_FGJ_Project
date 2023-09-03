@@ -1,4 +1,5 @@
 using System.Collections;
+using SNShien.Common.AudioTools;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -22,6 +23,7 @@ public class GameCompleteManager : MonoBehaviour
 
     private void Start()
     {
+        FmodAudioManager.Instance.PlayOneShot("BGM");
         GetAnim.Play(ANIM_KEY_IDLE);
         MissingTextureManager.OnMissingTextureAllClear -= OnMissingTextureAllClear;
         MissingTextureManager.OnMissingTextureAllClear += OnMissingTextureAllClear;
