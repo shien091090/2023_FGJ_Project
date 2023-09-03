@@ -267,6 +267,17 @@ public class CharacterTest
         ShouldHaveTriggerTeleportGate(false);
     }
 
+    [Test]
+    //沒有接觸傳送門時, 點擊按鍵不會觸發傳送
+    public void not_teleport_when_not_touch_teleport()
+    {
+        GivenInteractKeyDown(true);
+
+        characterModel.UpdateCheckInteract();
+
+        ShouldHaveTriggerTeleportGate(false);
+    }
+
     private void GivenCharacterPosition(Vector3 pos)
     {
         characterTransform.position.Returns(pos);
@@ -276,7 +287,6 @@ public class CharacterTest
     {
         keyController.IsInteractKeyDown.Returns(isKeyDown);
     }
-    //沒有接觸傳送門時, 點擊按鍵不會觸發傳送
 
     private void GivenIsJumpKeyDown(bool isKeyDown)
     {

@@ -7,21 +7,21 @@ public class CharacterModel
     private readonly IKeyController keyController;
     private readonly ITeleport teleport;
     private readonly ITransform characterTransform;
+    private readonly ITransform selfTransform;
     private float jumpTimer;
     private float jumpDelaySeconds;
     private float fallDownTimer;
-    private ITeleportGate currentTriggerTeleportGate;
-    private ITransform selfTransform;
 
     public event Action<float> OnHorizontalMove;
     public event Action<float> OnJump;
+    public ITeleportGate CurrentTriggerTeleportGate { get; private set; }
 
     public bool IsJumping { get; private set; }
     public float FallDownTime { get; set; }
     public bool IsStayOnFloor { get; set; }
 
     public float InteractiveDistance { get; set; }
-    public bool HaveInteractGate => currentTriggerTeleportGate != null;
+    public bool HaveInteractGate => CurrentTriggerTeleportGate != null;
 
     public CharacterModel(IMoveController moveController, IKeyController keyController, ITeleport teleport, ITransform characterTransform)
     {
@@ -83,15 +83,18 @@ public class CharacterModel
         if (selfTransform == null)
             return;
 
-        float distance = Vector3.Distance(selfTransform.position, currentTriggerTeleportGate.GetPos);
+        if (HaveInteractGate == false)
+            return;
+
+        float distance = Vector3.Distance(selfTransform.position, CurrentTriggerTeleportGate.GetPos);
         if (distance > InteractiveDistance)
         {
-            currentTriggerTeleportGate = null;
+            CurrentTriggerTeleportGate = null;
             return;
         }
 
         if (HaveInteractGate)
-            currentTriggerTeleportGate.Teleport(selfTransform);
+            CurrentTriggerTeleportGate.Teleport(selfTransform);
     }
 
     public void SetJumpDelay(float jumpDelaySeconds)
@@ -128,6 +131,6 @@ public class CharacterModel
 
     public void TriggerTeleportGate(ITeleportGate teleportGate)
     {
-        currentTriggerTeleportGate = teleportGate;
+        CurrentTriggerTeleportGate = teleportGate;
     }
 }
