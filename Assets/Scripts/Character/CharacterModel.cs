@@ -9,6 +9,8 @@ public class CharacterModel
     private float jumpTimer;
     private float jumpDelaySeconds;
     private float fallDownTimer;
+    private ITeleportGate currentTriggerTeleportGate;
+    private Transform selfTransform;
 
     public event Action<float> OnHorizontalMove;
     public event Action<float> OnJump;
@@ -68,6 +70,19 @@ public class CharacterModel
         }
     }
 
+    public void UpdateCheckInteract()
+    {
+        if (keyController.IsInteractKeyDown)
+        {
+            currentTriggerTeleportGate.Teleport(selfTransform);
+        }
+    }
+
+    public void SetTransform(Transform transform)
+    {
+        selfTransform = transform;
+    }
+
     public void SetJumpDelay(float jumpDelaySeconds)
     {
         this.jumpDelaySeconds = jumpDelaySeconds;
@@ -93,5 +108,10 @@ public class CharacterModel
     public void ExitFloor()
     {
         IsStayOnFloor = false;
+    }
+
+    public void TriggerTeleportGate(ITeleportGate teleportGate)
+    {
+        currentTriggerTeleportGate = teleportGate;
     }
 }

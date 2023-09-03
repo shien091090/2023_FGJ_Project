@@ -1,6 +1,7 @@
 using System;
 using NSubstitute;
 using NUnit.Framework;
+using UnityEngine;
 
 public class CharacterTest
 {
@@ -184,7 +185,7 @@ public class CharacterTest
 
         ShouldCallBackToOrigin(0);
     }
-    
+
     [Test]
     //墜落一段時間後落地, 再墜落時會重算回原點時間
     public void fall_down_and_trigger_floor_and_fall_down_again()
@@ -210,7 +211,7 @@ public class CharacterTest
 
         ShouldCallBackToOrigin(1);
     }
-    
+
     [Test]
     //墜落傳送回原點後, 不會繼續觸發回原點
     public void fall_down_and_teleport_and_not_trigger_again()
@@ -227,6 +228,26 @@ public class CharacterTest
         ShouldCallBackToOrigin(1);
     }
 
+    [Test]
+    //接觸傳送門時, 點擊按鍵後傳送
+    public void teleport_when_touch_teleport()
+    {
+        GivenInteractKeyDown(true);
+
+        ITeleportGate teleportGate = Substitute.For<ITeleportGate>();
+        characterModel.TriggerTeleportGate(teleportGate);
+        characterModel.UpdateCheckInteract();
+
+        ShouldCallTeleport(teleportGate, 1);
+    }
+
+    private void GivenInteractKeyDown(bool isKeyDown)
+    {
+        keyController.IsInteractKeyDown.Returns(isKeyDown);
+    }
+    //接觸傳送門時, 點擊按鍵但超過距離, 不傳送
+    //沒有接觸傳送門時, 點擊按鍵不會觸發傳送
+
     private void GivenIsJumpKeyDown(bool isKeyDown)
     {
         keyController.IsJumpKeyDown.Returns(isKeyDown);
@@ -235,6 +256,11 @@ public class CharacterTest
     private void GivenHorizontalAxis(float axisValue)
     {
         moveController.GetHorizontalAxis().Returns(axisValue);
+    }
+
+    private void ShouldCallTeleport(ITeleportGate teleportGate, int callTimes)
+    {
+        teleportGate.Received(callTimes).Teleport(Arg.Any<Transform>());
     }
 
     private void ShouldCallBackToOrigin(int callTimes)
