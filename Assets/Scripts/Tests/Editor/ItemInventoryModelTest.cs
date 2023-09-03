@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using NSubstitute;
 using NUnit.Framework;
+using PlasticPipe.PlasticProtocol.Messages.Serialization;
 
 public class ItemInventoryModelTest
 {
@@ -16,7 +18,7 @@ public class ItemInventoryModelTest
     //沒有道具時, 所有道具格都是空的
     public void all_item_slot_is_empty_when_no_item()
     {
-        ItemCountShouldBe(0);
+        CurrentItemCountShouldBe(0);
     }
 
     [Test]
@@ -29,7 +31,7 @@ public class ItemInventoryModelTest
 
         itemInventoryModel.AddItem(item);
 
-        ItemCountShouldBe(4);
+        CurrentItemCountShouldBe(1);
         ItemTypeShouldBe(ItemType.Shoes, 0);
         ShouldHaveItem(false, 1);
         ShouldHaveItem(false, 2);
@@ -44,14 +46,34 @@ public class ItemInventoryModelTest
 
         itemInventoryModel.AddItem(CreateItem(ItemType.Shoes));
         itemInventoryModel.AddItem(CreateItem(ItemType.Protection));
-        itemInventoryModel.AddItem(CreateItem(ItemType.Shoes));
         itemInventoryModel.AddItem(CreateItem(ItemType.Weapon));
 
-        ItemCountShouldBe(4);
+        CurrentItemCountShouldBe(3);
         ItemTypeShouldBe(ItemType.Shoes, 0);
         ItemTypeShouldBe(ItemType.Protection, 1);
-        ItemTypeShouldBe(ItemType.Shoes, 2);
-        ItemTypeShouldBe(ItemType.Weapon, 3);
+        ItemTypeShouldBe(ItemType.Weapon, 2);
+    }
+
+    [Test]
+    //有多個道具時, 最後一格道具使用完畢後, 消失
+    public void last_item_slot_is_empty_when_use_last_item()
+    {
+        itemInventoryModel.SetSlotLimit(4);
+
+        IItem item1 = CreateItem(ItemType.Shoes);
+        IItem item2 = CreateItem(ItemType.Protection);
+        IItem item3 = CreateItem(ItemType.Weapon);
+
+        itemInventoryModel.AddItem(item1);
+        itemInventoryModel.AddItem(item2);
+        itemInventoryModel.AddItem(item3);
+
+        item3.OnItemUsed += Raise.Event<Action<IItem>>(item3);
+
+        CurrentItemCountShouldBe(2);
+        ItemTypeShouldBe(ItemType.Shoes, 0);
+        ItemTypeShouldBe(ItemType.Protection, 1);
+        ShouldHaveItem(false, 2);
     }
 
     private void ShouldHaveItem(bool expectedHaveItem, int slotIndex)
@@ -64,7 +86,7 @@ public class ItemInventoryModelTest
         Assert.AreEqual(expectedItemType, itemInventoryModel.GetItem(slotIndex).ItemType);
     }
 
-    private void ItemCountShouldBe(int expectedItemCount)
+    private void CurrentItemCountShouldBe(int expectedItemCount)
     {
         Assert.AreEqual(expectedItemCount, itemInventoryModel.GetCurrentItemCount);
     }
@@ -76,7 +98,6 @@ public class ItemInventoryModelTest
         return item;
     }
 
-    //有多個道具時, 最後一格道具使用完畢後, 消失
     //有多個道具時, 使用前面的道具, 後面的道具會往前移動
     //只剩一個道具時, 使用後, 道具格變空的
     //道具欄裡有相同道具時, 不可再放入相同道具

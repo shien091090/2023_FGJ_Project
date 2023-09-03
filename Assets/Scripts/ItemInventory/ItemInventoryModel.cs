@@ -1,11 +1,13 @@
 using System.Collections.Generic;
+using System.Linq;
 
 public class ItemInventoryModel
 {
     private List<IItem> GetItems;
 
     public int ItemCountLimit { get; set; }
-    public int GetCurrentItemCount => GetItems.Count;
+
+    public int GetCurrentItemCount => GetItems.Count(x => x != null);
 
     public ItemInventoryModel()
     {
@@ -32,6 +34,10 @@ public class ItemInventoryModel
                 continue;
 
             GetItems[index] = item;
+
+            item.OnItemUsed -= OnItemUse;
+            item.OnItemUsed += OnItemUse;
+
             return;
         }
     }
@@ -39,5 +45,25 @@ public class ItemInventoryModel
     public bool HaveItem(int index)
     {
         return GetItems[index] != null;
+    }
+
+    private void RemoveItemAndShift(IItem item)
+    {
+        if (GetItems.Contains(item) == false)
+            return;
+
+        int index = GetItems.IndexOf(item);
+        GetItems[index] = null;
+
+        for (int i = index; i < GetItems.Count - 1; i++)
+        {
+            GetItems[i] = GetItems[i + 1];
+        }
+    }
+
+    private void OnItemUse(IItem item)
+    {
+        RemoveItemAndShift(item);
+        item.OnItemUsed -= OnItemUse;
     }
 }
