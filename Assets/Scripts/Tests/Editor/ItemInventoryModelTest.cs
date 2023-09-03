@@ -1,6 +1,7 @@
 using System;
 using NSubstitute;
 using NUnit.Framework;
+using UnityEngine;
 
 public class ItemInventoryModelTest
 {
@@ -25,7 +26,11 @@ public class ItemInventoryModelTest
     //獲得一個道具, 第一格道具格有道具
     public void first_item_slot_has_item_when_get_one_item()
     {
-        itemInventoryModel.SetSlotLimit(4);
+        itemInventoryModel.SetSlotLimit(
+            new Vector3(5, 5, 0),
+            new Vector3(4, 5, 0),
+            new Vector3(3, 5, 0),
+            new Vector3(2, 5, 0));
 
         IItem item = CreateItem(ItemType.Shoes);
 
@@ -42,7 +47,11 @@ public class ItemInventoryModelTest
     //獲得多個道具, 按照順序放入道具格
     public void item_slot_has_item_when_get_multiple_item()
     {
-        itemInventoryModel.SetSlotLimit(4);
+        itemInventoryModel.SetSlotLimit(
+            new Vector3(5, 5, 0),
+            new Vector3(4, 5, 0),
+            new Vector3(3, 5, 0),
+            new Vector3(2, 5, 0));
 
         itemInventoryModel.AddItem(CreateItem(ItemType.Shoes));
         itemInventoryModel.AddItem(CreateItem(ItemType.Protection));
@@ -58,7 +67,11 @@ public class ItemInventoryModelTest
     //有多個道具時, 最後一格道具使用完畢後, 消失
     public void last_item_slot_is_empty_when_use_last_item()
     {
-        itemInventoryModel.SetSlotLimit(4);
+        itemInventoryModel.SetSlotLimit(
+            new Vector3(5, 5, 0),
+            new Vector3(4, 5, 0),
+            new Vector3(3, 5, 0),
+            new Vector3(2, 5, 0));
 
         IItem item1 = CreateItem(ItemType.Shoes);
         IItem item2 = CreateItem(ItemType.Protection);
@@ -80,7 +93,11 @@ public class ItemInventoryModelTest
     //有多個道具時, 使用前面的道具, 後面的道具會往前移動
     public void item_slot_move_forward_when_use_item()
     {
-        itemInventoryModel.SetSlotLimit(4);
+        itemInventoryModel.SetSlotLimit(
+            new Vector3(5, 5, 0),
+            new Vector3(4, 5, 0),
+            new Vector3(3, 5, 0),
+            new Vector3(2, 5, 0));
 
         IItem item1 = CreateItem(ItemType.Protection);
         IItem item2 = CreateItem(ItemType.Weapon);
@@ -102,7 +119,11 @@ public class ItemInventoryModelTest
     //有多個道具時, 連續使用兩個道具
     public void item_slot_move_forward_when_use_two_item()
     {
-        itemInventoryModel.SetSlotLimit(4);
+        itemInventoryModel.SetSlotLimit(
+            new Vector3(5, 5, 0),
+            new Vector3(4, 5, 0),
+            new Vector3(3, 5, 0),
+            new Vector3(2, 5, 0));
 
         IItem item1 = CreateItem(ItemType.Protection);
         IItem item2 = CreateItem(ItemType.Weapon);
@@ -125,7 +146,11 @@ public class ItemInventoryModelTest
     //使用道具後再次使用, 不會有反應
     public void item_slot_is_empty_when_use_item_twice()
     {
-        itemInventoryModel.SetSlotLimit(4);
+        itemInventoryModel.SetSlotLimit(
+            new Vector3(5, 5, 0),
+            new Vector3(4, 5, 0),
+            new Vector3(3, 5, 0),
+            new Vector3(2, 5, 0));
 
         IItem item1 = CreateItem(ItemType.Protection);
         IItem item2 = CreateItem(ItemType.Weapon);
@@ -154,7 +179,11 @@ public class ItemInventoryModelTest
     //使用未加入道具欄的道具, 不會有反應
     public void use_item_not_in_inventory()
     {
-        itemInventoryModel.SetSlotLimit(4);
+        itemInventoryModel.SetSlotLimit(
+            new Vector3(5, 5, 0),
+            new Vector3(4, 5, 0),
+            new Vector3(3, 5, 0),
+            new Vector3(2, 5, 0));
 
         IItem item1 = CreateItem(ItemType.Protection);
         IItem item2 = CreateItem(ItemType.Weapon);
@@ -175,7 +204,11 @@ public class ItemInventoryModelTest
     //只剩一個道具時, 使用後, 道具格變空的
     public void item_slot_is_empty_when_use_last_item()
     {
-        itemInventoryModel.SetSlotLimit(4);
+        itemInventoryModel.SetSlotLimit(
+            new Vector3(5, 5, 0),
+            new Vector3(4, 5, 0),
+            new Vector3(3, 5, 0),
+            new Vector3(2, 5, 0));
 
         IItem item1 = CreateItem(ItemType.Protection);
 
@@ -194,7 +227,11 @@ public class ItemInventoryModelTest
     //道具欄裡有相同道具時, 不可再放入相同道具
     public void can_not_add_same_item()
     {
-        itemInventoryModel.SetSlotLimit(4);
+        itemInventoryModel.SetSlotLimit(
+            new Vector3(5, 5, 0),
+            new Vector3(4, 5, 0),
+            new Vector3(3, 5, 0),
+            new Vector3(2, 5, 0));
 
         itemInventoryModel.AddItem(CreateItem(ItemType.Protection));
 
@@ -214,7 +251,9 @@ public class ItemInventoryModelTest
     //道具欄已滿時, 不可再放入道具
     public void can_not_add_item_when_inventory_is_full()
     {
-        itemInventoryModel.SetSlotLimit(2);
+        itemInventoryModel.SetSlotLimit(
+            new Vector3(5, 5, 0),
+            new Vector3(4, 5, 0));
 
         itemInventoryModel.AddItem(CreateItem(ItemType.Protection));
         itemInventoryModel.AddItem(CreateItem(ItemType.Weapon));
@@ -234,7 +273,11 @@ public class ItemInventoryModelTest
     //擁有多個道具時, 按下指定按鍵使用道具
     public void use_item_by_key()
     {
-        itemInventoryModel.SetSlotLimit(4);
+        itemInventoryModel.SetSlotLimit(
+            new Vector3(5, 5, 0),
+            new Vector3(4, 5, 0),
+            new Vector3(3, 5, 0),
+            new Vector3(2, 5, 0));
 
         IItem item = CreateItem(ItemType.Weapon);
 
@@ -252,7 +295,11 @@ public class ItemInventoryModelTest
     //擁有多個道具時, 按下指定按鍵使用道具後, 道具移位, 再按下同一號碼按鍵, 使用下一個道具
     public void use_item_by_key_twice()
     {
-        itemInventoryModel.SetSlotLimit(4);
+        itemInventoryModel.SetSlotLimit(
+            new Vector3(5, 5, 0),
+            new Vector3(4, 5, 0),
+            new Vector3(3, 5, 0),
+            new Vector3(2, 5, 0));
 
         IItem item0 = CreateItem(ItemType.Protection);
         IItem item1 = CreateItem(ItemType.Weapon);
@@ -263,14 +310,14 @@ public class ItemInventoryModelTest
         itemInventoryModel.AddItem(item2);
 
         GivenUseItemKeyDown(1, true);
-        
+
         itemInventoryModel.UpdateCheckUseItem();
         CallItemUseEvent(item1);
 
         ShouldCallUseItem(item1);
 
         GivenUseItemKeyDown(1, true);
-        
+
         itemInventoryModel.UpdateCheckUseItem();
         CallItemUseEvent(item2);
 

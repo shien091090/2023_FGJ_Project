@@ -6,6 +6,7 @@ public class ItemInventoryModel
 {
     private readonly IKeyController keyController;
     private List<IItem> GetItems;
+    private Vector3[] itemSlotPosArray;
 
     public int ItemCountLimit { get; set; }
 
@@ -34,10 +35,11 @@ public class ItemInventoryModel
         return GetItems[index];
     }
 
-    public void SetSlotLimit(int limit)
+    public void SetSlotLimit(params Vector3[] slotPosArray)
     {
-        ItemCountLimit = limit;
-        GetItems = new List<IItem>(new IItem[limit]);
+        ItemCountLimit = slotPosArray.Length;
+        GetItems = new List<IItem>(new IItem[ItemCountLimit]);
+        itemSlotPosArray = slotPosArray;
     }
 
     public void AddItem(IItem item)
