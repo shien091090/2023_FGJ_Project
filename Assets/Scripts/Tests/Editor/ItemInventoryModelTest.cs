@@ -359,6 +359,25 @@ public class ItemInventoryModelTest
 
         ShouldHaveItem(false, 2);
     }
+    
+    [Test]
+    //道具使用完畢時, 呼叫移除道具
+    public void remove_item_when_item_use_completed()
+    {
+        itemInventoryModel.SetSlotLimit(
+            new Vector3(5, 5, 0),
+            new Vector3(4, 5, 0),
+            new Vector3(3, 5, 0),
+            new Vector3(2, 5, 0));
+
+        IItem item = CreateItem(ItemType.Protection);
+
+        itemInventoryModel.AddItem(item);
+        CallItemUseCompletedEvent(item);
+
+        ShouldCallRemoveItem(item, 1);
+        CurrentItemCountShouldBe(0);
+    }
 
     private void GivenUseItemKeyDown(int itemSlotIndex, bool isKeyDown)
     {
