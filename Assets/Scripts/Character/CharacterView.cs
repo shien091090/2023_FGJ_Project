@@ -26,6 +26,7 @@ public class CharacterView : MonoBehaviour, ITransform
     private CharacterModel characterModel;
     private bool isFaceRight;
     private SpriteRenderer spriteRenderer;
+    private bool isDying;
 
     public SpriteRenderer GetSpriteRenderer
     {
@@ -62,6 +63,9 @@ public class CharacterView : MonoBehaviour, ITransform
 
     private void Update()
     {
+        if(isDying)
+            return;
+        
         characterModel.UpdateJumpTimer(Time.deltaTime);
         characterModel.UpdateCheckJump(jumpForce);
         characterModel.UpdateMove(Time.deltaTime, speed);
@@ -103,18 +107,23 @@ public class CharacterView : MonoBehaviour, ITransform
 
     private void Die()
     {
+        if(isDying)
+            return;
+        
         StartCoroutine(Cor_Die());
     }
 
     private IEnumerator Cor_Die()
     {
+        isDying = true;
         FmodAudioManager.Instance.PlayOneShot("Damage");
-        anim.Play("character_die");
+        anim.Play("character_die", 0);
 
         yield return new WaitForSeconds(1.5f);
 
-        anim.Play("character_normal");
+        anim.Play("character_normal", 0);
         te1eportComponent.BackToOrigin();
+        isDying = false;
     }
 
     private void OnEndItemEffect(ItemType itemType)
