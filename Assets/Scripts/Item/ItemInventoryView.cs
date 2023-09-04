@@ -5,12 +5,15 @@ using UnityEngine;
 
 public class ItemInventoryView : MonoBehaviour
 {
+    private static ItemInventoryView _instance;
+
     [SerializeField] private RectTransform[] slotPosArray;
     [SerializeField] private ItemSettingScriptableObject itemSetting;
     [SerializeField] private Transform itemHolder;
 
     private ItemInventoryModel itemInventoryModel;
     private List<ItemView> itemViewList;
+    public static ItemInventoryView Instance => _instance;
 
     private void Start()
     {
@@ -31,6 +34,11 @@ public class ItemInventoryView : MonoBehaviour
 
         ItemView itemView = GetItemObject(itemType);
         itemInventoryModel.AddItem(itemView);
+    }
+
+    public bool AlreadyHaveSpecificTypeItem(ItemType itemType)
+    {
+        return itemInventoryModel.AlreadyHaveSpecificTypeItem(itemType);
     }
 
     private ItemView GetItemObject(ItemType itemType)
@@ -62,5 +70,11 @@ public class ItemInventoryView : MonoBehaviour
     private void GetShoesItem()
     {
         AddItem(ItemType.Shoes);
+    }
+
+    private void Awake()
+    {
+        if (_instance == null)
+            _instance = this;
     }
 }
