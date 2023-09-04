@@ -2,6 +2,7 @@ using System;
 
 public class ItemModel
 {
+    private readonly ItemType itemType;
     private float useLimit;
     private ItemUseType itemUseType;
     private int currentUseTimes;
@@ -11,7 +12,14 @@ public class ItemModel
 
     public event Action OnItemUseComplete;
     public event Action<int> OnRefreshCurrentUseTimes;
+
     public event Action<float> OnRefreshCurrentTimer;
+    // public event Action<ItemType> OnUseItemOneTime;
+
+    public ItemModel(ItemType itemType)
+    {
+        this.itemType = itemType;
+    }
 
     public void UpdateTimer(float deltaTime)
     {
@@ -60,6 +68,7 @@ public class ItemModel
 
         currentUseTimes--;
 
+        // OnUseItemOneTime?.Invoke(itemType);
         OnRefreshCurrentUseTimes?.Invoke(currentUseTimes);
 
         if (currentUseTimes <= 0)

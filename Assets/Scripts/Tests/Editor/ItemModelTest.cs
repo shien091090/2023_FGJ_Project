@@ -7,12 +7,13 @@ public class ItemModelTest
     private Action itemUseCompleteEvent;
     private Action<int> refreshCurrentUseTimesEvent;
     private Action<float> refreshCurrentTimerEvent;
+    private Action<ItemType> useItemEvent;
 
     [Test]
     //使用次數限制型道具, 僅限制1次, 使用完即消失
     public void use_item_once()
     {
-        ItemModel itemModel = CreateModel(ItemUseType.UseTimes, 1);
+        ItemModel itemModel = CreateModel(ItemType.Shoes, ItemUseType.UseTimes, 1);
 
         itemModel.UseItem();
 
@@ -24,7 +25,7 @@ public class ItemModelTest
     //使用次數限制型道具, 限制多次, 使用完即消失
     public void use_item_multiple_times()
     {
-        ItemModel itemModel = CreateModel(ItemUseType.UseTimes, 2);
+        ItemModel itemModel = CreateModel(ItemType.Shoes, ItemUseType.UseTimes, 2);
 
         itemModel.UseItem();
 
@@ -41,7 +42,7 @@ public class ItemModelTest
     //使用秒數限制型道具, 使用後過指定時間消失
     public void use_item_pass_time()
     {
-        ItemModel itemModel = CreateModel(ItemUseType.PassTime, 3);
+        ItemModel itemModel = CreateModel(ItemType.Protection, ItemUseType.PassTime, 3);
 
         itemModel.UseItem();
 
@@ -56,7 +57,7 @@ public class ItemModelTest
         itemModel.UpdateTimer(2);
         ShouldReceiveItemUseCompleteEvent(1);
         ShouldReceiveRefreshTimerEvent(1, 0);
-        
+
         itemModel.UpdateTimer(1);
         ShouldReceiveItemUseCompleteEvent(1);
         ShouldReceiveRefreshTimerEvent(1, 0);
@@ -66,7 +67,7 @@ public class ItemModelTest
     //使用秒數限制型道具, 等待過程中再次使用沒反應
     public void use_item_pass_time_twice()
     {
-        ItemModel itemModel = CreateModel(ItemUseType.PassTime, 3);
+        ItemModel itemModel = CreateModel(ItemType.Protection, ItemUseType.PassTime, 3);
 
         itemModel.UseItem();
 
@@ -80,12 +81,12 @@ public class ItemModelTest
         ShouldReceiveItemUseCompleteEvent(0);
         ShouldReceiveRefreshTimerEvent(1, 1);
     }
-    
+
     [Test]
     //秒數型道具使用完畢後, 再次刷新時間也不會再繼續發出事件
     public void when_pass_time_item_is_used_should_not_send_event_after_refresh_timer()
     {
-        ItemModel itemModel = CreateModel(ItemUseType.PassTime, 1);
+        ItemModel itemModel = CreateModel(ItemType.Protection, ItemUseType.PassTime, 1);
 
         itemModel.UseItem();
 
@@ -97,12 +98,12 @@ public class ItemModelTest
         ShouldReceiveItemUseCompleteEvent(1);
         ShouldReceiveRefreshTimerEvent(1, 0);
     }
-    
+
     [Test]
     //次數型道具使用完畢後, 再次使用也不會再繼續發出事件
     public void when_use_times_item_is_used_should_not_send_event_after_use_again()
     {
-        ItemModel itemModel = CreateModel(ItemUseType.UseTimes, 1);
+        ItemModel itemModel = CreateModel(ItemType.Weapon, ItemUseType.UseTimes, 1);
 
         itemModel.UseItem();
 
@@ -119,7 +120,7 @@ public class ItemModelTest
     //使用秒數型道具, 按下使用前不會計時
     public void use_item_pass_time_before_use()
     {
-        ItemModel itemModel = CreateModel(ItemUseType.PassTime, 1);
+        ItemModel itemModel = CreateModel(ItemType.Protection, ItemUseType.PassTime, 1);
 
         itemModel.UpdateTimer(1);
 
@@ -131,7 +132,7 @@ public class ItemModelTest
     //秒數型道具使用完畢, 重置資料為次數型道具
     public void pass_time_item_is_used_then_reset_data_to_use_times_item()
     {
-        ItemModel itemModel = CreateModel(ItemUseType.PassTime, 1);
+        ItemModel itemModel = CreateModel(ItemType.Protection, ItemUseType.PassTime, 1);
 
         itemModel.UseItem();
         itemModel.UpdateTimer(1);
@@ -147,12 +148,12 @@ public class ItemModelTest
         ShouldReceiveItemUseCompleteEvent(1);
         ShouldReceiveRefreshTimerEvent(1, 0);
     }
-    
+
     [Test]
     //次數型道具使用完畢, 重置資料為秒數型道具
     public void use_times_item_is_used_then_reset_data_to_pass_time_item()
     {
-        ItemModel itemModel = CreateModel(ItemUseType.UseTimes, 1);
+        ItemModel itemModel = CreateModel(ItemType.Weapon, ItemUseType.UseTimes, 1);
 
         itemModel.UseItem();
 
@@ -167,7 +168,21 @@ public class ItemModelTest
         ShouldReceiveItemUseCompleteEvent(1);
         ShouldReceiveRefreshUseTimesEvent(1, 0);
     }
-    
+
+    // [Test]
+    // //使用次數型道具, 每使用一次會發出使用事件
+    // public void use_times_item_should_send_event_when_use()
+    // {
+    //     ItemModel itemModel = CreateModel(ItemType.Shoes, ItemUseType.UseTimes, 2);
+    //
+    //     itemModel.UseItem();
+    //
+    //     itemModel.UseItem();
+    //
+    //     ShouldReceiveItemUseCompleteEvent(1);
+    //     ShouldReceiveRefreshUseTimesEvent(1, 0);
+    // }
+
     private void ShouldNotReceiveAnyRefreshTimerEvent()
     {
         refreshCurrentTimerEvent.DidNotReceive().Invoke(Arg.Any<float>());
@@ -188,9 +203,9 @@ public class ItemModelTest
         itemUseCompleteEvent.Received(triggerTimes).Invoke();
     }
 
-    private ItemModel CreateModel(ItemUseType itemUseType, int useLimit)
+    private ItemModel CreateModel(ItemType itemType, ItemUseType itemUseType, int useLimit)
     {
-        ItemModel itemModel = new ItemModel();
+        ItemModel itemModel = new ItemModel(itemType);
         if (itemUseType == ItemUseType.UseTimes)
             itemModel.SetUseTimesType(useLimit);
         else
@@ -204,6 +219,9 @@ public class ItemModelTest
 
         refreshCurrentTimerEvent = Substitute.For<Action<float>>();
         itemModel.OnRefreshCurrentTimer += refreshCurrentTimerEvent;
+
+        // useItemEvent = Substitute.For<Action<ItemType>>();
+        // itemModel.OnUseItemOneTime += useItemEvent;
 
         return itemModel;
     }
