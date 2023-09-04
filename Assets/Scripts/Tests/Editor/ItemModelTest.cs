@@ -8,6 +8,8 @@ public class ItemModelTest
     private Action<int> refreshCurrentUseTimesEvent;
     private Action<float> refreshCurrentTimerEvent;
     private Action<ItemType> useItemEvent;
+    private Action<ItemType> startItemEffectEvent;
+    private Action<ItemType> endItemEffectEvent;
 
     [Test]
     //使用次數限制型道具, 僅限制1次, 使用完即消失
@@ -70,14 +72,14 @@ public class ItemModelTest
         ItemModel itemModel = CreateModel(ItemType.Protection, ItemUseType.PassTime, 3);
 
         itemModel.UseItem();
-
         itemModel.UpdateTimer(1);
+
         ShouldReceiveItemUseCompleteEvent(0);
         ShouldReceiveRefreshTimerEvent(1, 2);
 
         itemModel.UseItem();
-
         itemModel.UpdateTimer(1);
+
         ShouldReceiveItemUseCompleteEvent(0);
         ShouldReceiveRefreshTimerEvent(1, 1);
     }
@@ -188,6 +190,43 @@ public class ItemModelTest
         ShouldReceiveUseItemEvent(2, ItemType.Shoes);
     }
 
+    [Test]
+    //使用秒數型道具, 使用時跟時間結束會發事件, 過程中再次按使用不會再發事件
+    public void use_pass_time_item_should_send_event_when_use_and_time_up()
+    {
+        ItemModel itemModel = CreateModel(ItemType.Protection, ItemUseType.PassTime, 3);
+
+        itemModel.UseItem();
+        itemModel.UpdateTimer(1);
+
+        ShouldReceiveStartItemEffectEvent(1, ItemType.Protection);
+        ShouldReceivedEndItemEffectEvent(0, ItemType.Protection);
+
+        itemModel.UseItem();
+        itemModel.UpdateTimer(1);
+
+        ShouldReceiveStartItemEffectEvent(1, ItemType.Protection);
+        ShouldReceivedEndItemEffectEvent(0, ItemType.Protection);
+
+        itemModel.UpdateTimer(1);
+
+        ShouldReceiveStartItemEffectEvent(1, ItemType.Protection);
+        ShouldReceivedEndItemEffectEvent(1, ItemType.Protection);
+    }
+
+    private void ShouldReceivedEndItemEffectEvent(int triggerTimes, ItemType expectedItemType)
+    {
+        if (triggerTimes == 0)
+            endItemEffectEvent.DidNotReceive().Invoke(expectedItemType);
+        else
+            endItemEffectEvent.Received(triggerTimes).Invoke(expectedItemType);
+    }
+
+    private void ShouldReceiveStartItemEffectEvent(int triggerTimes, ItemType expectedItemType)
+    {
+        startItemEffectEvent.Received(triggerTimes).Invoke(expectedItemType);
+    }
+
     private void ShouldReceiveUseItemEvent(int triggerTimes, ItemType itemType)
     {
         useItemEvent.Received(triggerTimes).Invoke(itemType);
@@ -232,6 +271,12 @@ public class ItemModelTest
 
         useItemEvent = Substitute.For<Action<ItemType>>();
         itemModel.OnUseItemOneTime += useItemEvent;
+
+        startItemEffectEvent = Substitute.For<Action<ItemType>>();
+        itemModel.OnStartItemEffect += startItemEffectEvent;
+
+        endItemEffectEvent = Substitute.For<Action<ItemType>>();
+        itemModel.OnEndItemEffect += endItemEffectEvent;
 
         return itemModel;
     }

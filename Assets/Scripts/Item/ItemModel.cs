@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 public class ItemModel
 {
@@ -15,6 +16,8 @@ public class ItemModel
 
     public event Action<float> OnRefreshCurrentTimer;
     public event Action<ItemType> OnUseItemOneTime;
+    public event Action<ItemType> OnStartItemEffect;
+    public event Action<ItemType> OnEndItemEffect;
 
     public ItemModel(ItemType itemType)
     {
@@ -33,6 +36,7 @@ public class ItemModel
         if (currentTimer <= 0)
         {
             isUsed = true;
+            OnEndItemEffect?.Invoke(itemType);
             OnItemUseComplete?.Invoke();
         }
     }
@@ -62,7 +66,12 @@ public class ItemModel
 
         if (itemUseType == ItemUseType.PassTime)
         {
-            startUsePassTimeItem = true;
+            if (startUsePassTimeItem == false)
+            {
+                startUsePassTimeItem = true;
+                OnStartItemEffect?.Invoke(itemType);
+            }
+            
             return;
         }
 
