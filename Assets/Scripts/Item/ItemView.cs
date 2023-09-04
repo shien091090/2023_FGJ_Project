@@ -9,8 +9,9 @@ public class ItemView : MonoBehaviour, IItem
     [SerializeField] private GameObject go_passTimePanel;
     [SerializeField] private Text txt_timer;
     [SerializeField] private Text txt_remainUseTimes;
+    [SerializeField] private ItemType itemType;
 
-    public ItemType ItemType { get; }
+    public ItemType ItemType => itemType;
     private RectTransform rectTransform;
     private ItemModel itemModel;
 
