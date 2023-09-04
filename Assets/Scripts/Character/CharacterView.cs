@@ -11,7 +11,7 @@ public class CharacterView : MonoBehaviour, ITransform
     [SerializeField] private float jumpDelaySeconds;
     [SerializeField] private Transform footPoint;
     [SerializeField] private float footRadius;
-    [SerializeField] private TeleportComponent te1eportComponent;
+    [SerializeField] private TeleportComponent teleportComponent;
     [SerializeField] private float fallDownToOriginPosTime;
     [SerializeField] private float interactDistance;
     [SerializeField] private Animator anim;
@@ -54,7 +54,7 @@ public class CharacterView : MonoBehaviour, ITransform
 
     private void Start()
     {
-        characterModel = new CharacterModel(new CharacterMoveController(), new CharacterKeyController(), te1eportComponent, this);
+        characterModel = new CharacterModel(new CharacterMoveController(), new CharacterKeyController(), teleportComponent, this);
         characterModel.SetJumpDelay(jumpDelaySeconds);
         characterModel.SetFallDownTime(fallDownToOriginPosTime);
         characterModel.SetInteractDistance(interactDistance);
@@ -138,7 +138,7 @@ public class CharacterView : MonoBehaviour, ITransform
         yield return new WaitForSeconds(1.5f);
 
         anim.Play("character_normal", 0);
-        te1eportComponent.BackToOrigin();
+        teleportComponent.BackToOrigin();
         isDying = false;
         isProtected = false;
     }

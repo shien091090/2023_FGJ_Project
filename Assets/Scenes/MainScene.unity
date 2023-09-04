@@ -37128,7 +37128,7 @@ PrefabInstance:
       value: Character
       objectReference: {fileID: 0}
     - target: {fileID: 2578510518347061705, guid: ed727472ad1abd5418776d584244a5d6, type: 3}
-      propertyPath: te1eportComponent
+      propertyPath: teleportComponent
       value: 
       objectReference: {fileID: 692761707}
     - target: {fileID: 2885771242994926933, guid: ed727472ad1abd5418776d584244a5d6, type: 3}
@@ -37137,7 +37137,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2885771242994926933, guid: ed727472ad1abd5418776d584244a5d6, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 1.95
       objectReference: {fileID: 0}
     - target: {fileID: 2885771242994926933, guid: ed727472ad1abd5418776d584244a5d6, type: 3}
       propertyPath: m_LocalPosition.z
@@ -37170,10 +37170,6 @@ PrefabInstance:
     - target: {fileID: 2885771242994926933, guid: ed727472ad1abd5418776d584244a5d6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7918636506258862006, guid: ed727472ad1abd5418776d584244a5d6, type: 3}
-      propertyPath: m_SortingOrder
-      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
