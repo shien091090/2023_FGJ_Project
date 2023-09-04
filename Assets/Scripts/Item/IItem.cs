@@ -3,7 +3,7 @@ using UnityEngine;
 
 public interface IItem
 {
-    event Action<IItem> OnItemUsed;
+    event Action<IItem> OnItemUseCompleted;
     ItemType ItemType { get; }
     void SetPos(Vector3 pos);
     void RemoveItem();

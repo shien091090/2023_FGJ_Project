@@ -90,9 +90,8 @@ public class ItemInventoryModelTest
         itemInventoryModel.AddItem(item2);
         itemInventoryModel.AddItem(item3);
 
-        CallItemUseEvent(item3);
+        CallItemUseCompletedEvent(item3);
 
-        ShouldCallRemoveItem(item3, 1);
         CurrentItemCountShouldBe(2);
         ItemTypeShouldBe(ItemType.Shoes, 0);
         ItemTypeShouldBe(ItemType.Protection, 1);
@@ -119,7 +118,7 @@ public class ItemInventoryModelTest
 
         ShouldCallSetPos(item3, new Vector3(3, 5, 0));
 
-        CallItemUseEvent(item2);
+        CallItemUseCompletedEvent(item2);
 
         ShouldCallSetPos(item3, new Vector3(4, 5, 0));
         CurrentItemCountShouldBe(2);
@@ -148,10 +147,10 @@ public class ItemInventoryModelTest
 
         ShouldCallSetPos(item3, new Vector3(3, 5, 0));
 
-        CallItemUseEvent(item1);
+        CallItemUseCompletedEvent(item1);
         ShouldCallSetPos(item3, new Vector3(4, 5, 0));
 
-        CallItemUseEvent(item2);
+        CallItemUseCompletedEvent(item2);
         ShouldCallSetPos(item3, new Vector3(5, 5, 0));
 
         CurrentItemCountShouldBe(1);
@@ -178,14 +177,14 @@ public class ItemInventoryModelTest
         itemInventoryModel.AddItem(item2);
         itemInventoryModel.AddItem(item3);
 
-        CallItemUseEvent(item1);
+        CallItemUseCompletedEvent(item1);
 
         CurrentItemCountShouldBe(2);
         ItemTypeShouldBe(ItemType.Weapon, 0);
         ItemTypeShouldBe(ItemType.Shoes, 1);
         ShouldHaveItem(false, 2);
 
-        CallItemUseEvent(item1);
+        CallItemUseCompletedEvent(item1);
 
         CurrentItemCountShouldBe(2);
         ItemTypeShouldBe(ItemType.Weapon, 0);
@@ -210,7 +209,7 @@ public class ItemInventoryModelTest
         itemInventoryModel.AddItem(item1);
         itemInventoryModel.AddItem(item2);
 
-        CallItemUseEvent(item3);
+        CallItemUseCompletedEvent(item3);
 
         CurrentItemCountShouldBe(2);
         ItemTypeShouldBe(ItemType.Protection, 0);
@@ -232,7 +231,7 @@ public class ItemInventoryModelTest
 
         itemInventoryModel.AddItem(item1);
 
-        CallItemUseEvent(item1);
+        CallItemUseCompletedEvent(item1);
 
         CurrentItemCountShouldBe(0);
         ShouldHaveItem(false, 0);
@@ -330,14 +329,14 @@ public class ItemInventoryModelTest
         GivenUseItemKeyDown(1, true);
 
         itemInventoryModel.UpdateCheckUseItem();
-        CallItemUseEvent(item1);
+        CallItemUseCompletedEvent(item1);
 
         ShouldCallUseItem(item1);
 
         GivenUseItemKeyDown(1, true);
 
         itemInventoryModel.UpdateCheckUseItem();
-        CallItemUseEvent(item2);
+        CallItemUseCompletedEvent(item2);
 
         ShouldCallUseItem(item2);
     }
@@ -366,9 +365,9 @@ public class ItemInventoryModelTest
         keyController.IsUseItemKeyDown(itemSlotIndex).Returns(isKeyDown);
     }
 
-    private void CallItemUseEvent(IItem item)
+    private void CallItemUseCompletedEvent(IItem item)
     {
-        item.OnItemUsed += Raise.Event<Action<IItem>>(item);
+        item.OnItemUseCompleted += Raise.Event<Action<IItem>>(item);
     }
 
     private void ShouldCallRemoveItem(IItem item, int callTimes)

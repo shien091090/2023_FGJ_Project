@@ -56,8 +56,8 @@ public class ItemInventoryModel
             GetItems[index] = item;
             item.SetPos(itemSlotPosArray[index]);
 
-            item.OnItemUsed -= OnItemUse;
-            item.OnItemUsed += OnItemUse;
+            item.OnItemUseCompleted -= OnItemUseCompleted;
+            item.OnItemUseCompleted += OnItemUseCompleted;
 
             return;
         }
@@ -90,10 +90,10 @@ public class ItemInventoryModel
         }
     }
 
-    private void OnItemUse(IItem item)
+    private void OnItemUseCompleted(IItem item)
     {
         RemoveItemAndShift(item);
         item.RemoveItem();
-        item.OnItemUsed -= OnItemUse;
+        item.OnItemUseCompleted -= OnItemUseCompleted;
     }
 }

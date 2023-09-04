@@ -26,7 +26,7 @@ public class ItemView : MonoBehaviour, IItem
         }
     }
 
-    public event Action<IItem> OnItemUsed;
+    public event Action<IItem> OnItemUseCompleted;
 
     public void SetPos(Vector3 pos)
     {
@@ -108,6 +108,6 @@ public class ItemView : MonoBehaviour, IItem
 
     private void OnItemUseComplete()
     {
-        OnItemUsed?.Invoke(this);
+        OnItemUseCompleted?.Invoke(this);
     }
 }
