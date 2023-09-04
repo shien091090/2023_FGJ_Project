@@ -41,3 +41,21 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Background
+    uniqueID: 2907122045
+    locked: 0
+  - name: SceneObject
+    uniqueID: 590008357
+    locked: 0
+  - name: Platform
+    uniqueID: 3842344879
+    locked: 0
+  - name: Entity
+    uniqueID: 2532006793
+    locked: 0
+  - name: Effect
+    uniqueID: 2293122887
+    locked: 0
+  - name: MissingTexture
+    uniqueID: 1626112139
+    locked: 0
