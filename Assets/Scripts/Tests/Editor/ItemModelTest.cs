@@ -169,19 +169,29 @@ public class ItemModelTest
         ShouldReceiveRefreshUseTimesEvent(1, 0);
     }
 
-    // [Test]
-    // //使用次數型道具, 每使用一次會發出使用事件
-    // public void use_times_item_should_send_event_when_use()
-    // {
-    //     ItemModel itemModel = CreateModel(ItemType.Shoes, ItemUseType.UseTimes, 2);
-    //
-    //     itemModel.UseItem();
-    //
-    //     itemModel.UseItem();
-    //
-    //     ShouldReceiveItemUseCompleteEvent(1);
-    //     ShouldReceiveRefreshUseTimesEvent(1, 0);
-    // }
+    [Test]
+    //使用次數型道具, 每使用一次會發出使用事件
+    public void use_times_item_should_send_event_when_use()
+    {
+        ItemModel itemModel = CreateModel(ItemType.Shoes, ItemUseType.UseTimes, 2);
+
+        itemModel.UseItem();
+
+        ShouldReceiveUseItemEvent(1, ItemType.Shoes);
+
+        itemModel.UseItem();
+
+        ShouldReceiveUseItemEvent(2, ItemType.Shoes);
+
+        itemModel.UseItem();
+
+        ShouldReceiveUseItemEvent(2, ItemType.Shoes);
+    }
+
+    private void ShouldReceiveUseItemEvent(int triggerTimes, ItemType itemType)
+    {
+        useItemEvent.Received(triggerTimes).Invoke(itemType);
+    }
 
     private void ShouldNotReceiveAnyRefreshTimerEvent()
     {
@@ -220,8 +230,8 @@ public class ItemModelTest
         refreshCurrentTimerEvent = Substitute.For<Action<float>>();
         itemModel.OnRefreshCurrentTimer += refreshCurrentTimerEvent;
 
-        // useItemEvent = Substitute.For<Action<ItemType>>();
-        // itemModel.OnUseItemOneTime += useItemEvent;
+        useItemEvent = Substitute.For<Action<ItemType>>();
+        itemModel.OnUseItemOneTime += useItemEvent;
 
         return itemModel;
     }

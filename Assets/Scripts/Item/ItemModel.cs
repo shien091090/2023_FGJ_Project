@@ -14,7 +14,7 @@ public class ItemModel
     public event Action<int> OnRefreshCurrentUseTimes;
 
     public event Action<float> OnRefreshCurrentTimer;
-    // public event Action<ItemType> OnUseItemOneTime;
+    public event Action<ItemType> OnUseItemOneTime;
 
     public ItemModel(ItemType itemType)
     {
@@ -68,7 +68,7 @@ public class ItemModel
 
         currentUseTimes--;
 
-        // OnUseItemOneTime?.Invoke(itemType);
+        OnUseItemOneTime?.Invoke(itemType);
         OnRefreshCurrentUseTimes?.Invoke(currentUseTimes);
 
         if (currentUseTimes <= 0)
