@@ -49,8 +49,6 @@ public class MonsterView : MonoBehaviour
 
     private void RefreshAnimationState(MonsterState state)
     {
-        Debug.Log(GetMovableAnimKey);
-        Debug.Log(GetStunAnimKey);
         switch (state)
         {
             case MonsterState.Normal:

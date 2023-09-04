@@ -36,31 +36,14 @@ public class CharacterModel
         OnHorizontalMove?.Invoke(moveController.GetHorizontalAxis() * deltaTime * speed);
     }
 
-    public void UpdateCheckSuperJump(float jumpForce)
-    {
-        if (jumpTimer < jumpDelaySeconds)
-            return;
-
-        if (keyController.IsSuperJumpKeyDown && IsJumping == false)
-        {
-            // Debug.Log("OnJump");
-            jumpTimer = 0;
-            IsJumping = true;
-            OnJump?.Invoke(jumpForce);
-        }
-    }
-
     public void UpdateCheckJump(float jumpForce)
     {
         if (jumpTimer < jumpDelaySeconds)
             return;
 
-        if (keyController.IsJumpKeyDown && IsJumping == false)
+        if (keyController.IsJumpKeyDown)
         {
-            // Debug.Log("OnJump");
-            jumpTimer = 0;
-            IsJumping = true;
-            OnJump?.Invoke(jumpForce);
+            Jump(jumpForce);
         }
     }
 
@@ -125,6 +108,16 @@ public class CharacterModel
     public void SetInteractDistance(float distance)
     {
         InteractiveDistance = distance;
+    }
+
+    public void Jump(float jumpForce)
+    {
+        if (IsJumping == false)
+        {
+            jumpTimer = 0;
+            IsJumping = true;
+            OnJump?.Invoke(jumpForce);
+        }
     }
 
     public void TriggerFloor()

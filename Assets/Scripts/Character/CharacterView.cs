@@ -64,7 +64,6 @@ public class CharacterView : MonoBehaviour, ITransform
     {
         characterModel.UpdateJumpTimer(Time.deltaTime);
         characterModel.UpdateCheckJump(jumpForce);
-        characterModel.UpdateCheckSuperJump(superJumpForce);
         characterModel.UpdateMove(Time.deltaTime, speed);
         characterModel.UpdateFallDownTimer(Time.deltaTime);
         characterModel.UpdateCheckInteract();
@@ -77,6 +76,15 @@ public class CharacterView : MonoBehaviour, ITransform
 
         characterModel.OnJump -= OnJump;
         characterModel.OnJump += OnJump;
+
+        ItemStateManager.Instance.OnUseItemOneTime -= OnUseItemOneTime;
+        ItemStateManager.Instance.OnUseItemOneTime += OnUseItemOneTime;
+
+        ItemStateManager.Instance.OnStartItemEffect -= OnStartItemEffect;
+        ItemStateManager.Instance.OnStartItemEffect += OnStartItemEffect;
+
+        ItemStateManager.Instance.OnEndItemEffect -= OnEndItemEffect;
+        ItemStateManager.Instance.OnEndItemEffect += OnEndItemEffect;
     }
 
     private void CheckChangeDirection(float moveValue)
@@ -102,11 +110,25 @@ public class CharacterView : MonoBehaviour, ITransform
     {
         FmodAudioManager.Instance.PlayOneShot("Damage");
         anim.Play("character_die");
-        
+
         yield return new WaitForSeconds(1.5f);
-        
+
         anim.Play("character_normal");
         te1eportComponent.BackToOrigin();
+    }
+
+    private void OnEndItemEffect(ItemType itemType)
+    {
+    }
+
+    private void OnStartItemEffect(ItemType itemType)
+    {
+    }
+
+    private void OnUseItemOneTime(ItemType itemType)
+    {
+        if (itemType == ItemType.Shoes)
+            characterModel.Jump(superJumpForce);
     }
 
     public void OnCollisionStay2D(Collision2D col)
@@ -127,7 +149,6 @@ public class CharacterView : MonoBehaviour, ITransform
 
     public void OnTriggerEnter2D(Collider2D col)
     {
-        Debug.Log($"layer = {col.gameObject.layer}");
         if (col.gameObject.layer == (int)GameConst.GameObjectLayerType.Monster)
         {
             Die();
