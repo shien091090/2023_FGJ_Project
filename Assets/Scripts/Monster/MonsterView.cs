@@ -17,6 +17,7 @@ public class MonsterView : MonoBehaviour
 
     public string GetStunAnimKey => string.Format(ANIM_KEY_STUN_FORMAT, monsterType);
     public string GetMovableAnimKey => string.Format(ANIM_KEY_NORMAL_FORMAT, monsterType);
+    public MonsterState CurrentState => monsterModel.CurrentState;
 
     private MissingTexturePart GetMissingTexturePart
     {

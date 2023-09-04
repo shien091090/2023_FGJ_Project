@@ -151,7 +151,10 @@ public class CharacterView : MonoBehaviour, ITransform
     {
         if (col.gameObject.layer == (int)GameConst.GameObjectLayerType.Monster)
         {
-            Die();
+            MonsterView monsterView = col.gameObject.GetComponent<MonsterView>();
+            if (monsterView == null || monsterView.CurrentState == MonsterState.Normal)
+                Die();
+
             return;
         }
 
