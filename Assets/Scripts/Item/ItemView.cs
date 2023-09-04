@@ -59,11 +59,13 @@ public class ItemView : MonoBehaviour, IItem
             case ItemType.Weapon:
                 SetPanelType(ItemType);
                 itemModel.SetUseTimesType((int)useLimit);
+                RefreshCurrentUseTimes((int)useLimit);
                 break;
 
             case ItemType.Shoes:
                 SetPanelType(ItemType);
                 itemModel.SetUseTimesType((int)useLimit);
+                RefreshCurrentUseTimes((int)useLimit);
                 break;
         }
 
