@@ -19,11 +19,20 @@ public class BulletView : MonoBehaviour
             transform.Translate(Vector3.up * Time.deltaTime * speed);
 
         if (timer > disappearTime)
-        {
-            gameObject.SetActive(false);
-            timer = 0;
-        }
+            Hide();
         else
             timer += Time.deltaTime;
+    }
+
+    private void Hide()
+    {
+        gameObject.SetActive(false);
+        timer = 0;
+    }
+
+    public void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.gameObject.layer == (int)GameConst.GameObjectLayerType.Monster)
+            Hide();
     }
 }

@@ -13,8 +13,21 @@ public class MonsterView : MonoBehaviour
     private MonsterModel monsterModel;
     private Animator anim;
 
+    private MissingTexturePart missingTexturePart;
+
     public string GetStunAnimKey => string.Format(ANIM_KEY_STUN_FORMAT, monsterType);
     public string GetMovableAnimKey => string.Format(ANIM_KEY_NORMAL_FORMAT, monsterType);
+
+    private MissingTexturePart GetMissingTexturePart
+    {
+        get
+        {
+            if (missingTexturePart == null)
+                missingTexturePart = GetComponent<MissingTexturePart>();
+
+            return missingTexturePart;
+        }
+    }
 
     private Animator GetAnim
     {
@@ -72,6 +85,7 @@ public class MonsterView : MonoBehaviour
         if (col.gameObject.layer == (int)GameConst.GameObjectLayerType.Weapon)
         {
             monsterModel.BeAttack();
+            GetMissingTexturePart.ClearMissingTexture();
         }
     }
 }

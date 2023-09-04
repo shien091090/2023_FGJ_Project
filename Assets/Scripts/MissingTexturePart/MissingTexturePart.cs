@@ -10,18 +10,18 @@ public class MissingTexturePart : MonoBehaviour
         SetMissingTextureActive(true);
     }
 
-    private void SetMissingTextureActive(bool isActive)
-    {
-        go_missingTexture.SetActive(isActive);
-    }
-
-    private void ClearMissingTexture()
+    public void ClearMissingTexture()
     {
         if (go_missingTexture.activeSelf == false)
             return;
-        
+
         SetMissingTextureActive(false);
         MissingTextureManager.Instance.SubtractMissingTextureCount();
+    }
+
+    private void SetMissingTextureActive(bool isActive)
+    {
+        go_missingTexture.SetActive(isActive);
     }
 
     public void OnTriggerEnter2D(Collider2D col)
