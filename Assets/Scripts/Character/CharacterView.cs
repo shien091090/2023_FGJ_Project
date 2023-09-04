@@ -15,6 +15,7 @@ public class CharacterView : MonoBehaviour, ITransform
     [SerializeField] private float fallDownToOriginPosTime;
     [SerializeField] private float interactDistance;
     [SerializeField] private Animator anim;
+    [SerializeField] private GameObject go_protectionEffect;
 
     public Vector3 position
     {
@@ -23,10 +24,11 @@ public class CharacterView : MonoBehaviour, ITransform
     }
 
     private Rigidbody2D rigidbody;
+    private SpriteRenderer spriteRenderer;
     private CharacterModel characterModel;
     private bool isFaceRight;
-    private SpriteRenderer spriteRenderer;
     private bool isDying;
+    private bool isProtected;
 
     public SpriteRenderer GetSpriteRenderer
     {
@@ -58,19 +60,33 @@ public class CharacterView : MonoBehaviour, ITransform
         characterModel.SetInteractDistance(interactDistance);
 
         SetEventRegister();
-        anim.Play("character_normal");
+        InitState();
     }
 
     private void Update()
     {
-        if(isDying)
+        if (isDying)
             return;
-        
+
         characterModel.UpdateJumpTimer(Time.deltaTime);
         characterModel.UpdateCheckJump(jumpForce);
         characterModel.UpdateMove(Time.deltaTime, speed);
         characterModel.UpdateFallDownTimer(Time.deltaTime);
         characterModel.UpdateCheckInteract();
+    }
+
+    private void InitState()
+    {
+        anim.Play("character_normal", 0);
+        isDying = false;
+        isProtected = false;
+        isFaceRight = true;
+        SetProtectionActive(false);
+    }
+
+    private void SetProtectionActive(bool isActive)
+    {
+        go_protectionEffect.SetActive(isActive);
     }
 
     private void SetEventRegister()
@@ -107,9 +123,9 @@ public class CharacterView : MonoBehaviour, ITransform
 
     private void Die()
     {
-        if(isDying)
+        if (isDying)
             return;
-        
+
         StartCoroutine(Cor_Die());
     }
 
@@ -124,14 +140,25 @@ public class CharacterView : MonoBehaviour, ITransform
         anim.Play("character_normal", 0);
         te1eportComponent.BackToOrigin();
         isDying = false;
+        isProtected = false;
     }
 
     private void OnEndItemEffect(ItemType itemType)
     {
+        if (itemType == ItemType.Protection)
+        {
+            isProtected = false;
+            SetProtectionActive(false);
+        }
     }
 
     private void OnStartItemEffect(ItemType itemType)
     {
+        if (itemType == ItemType.Protection)
+        {
+            isProtected = true;
+            SetProtectionActive(true);
+        }
     }
 
     private void OnUseItemOneTime(ItemType itemType)
@@ -158,7 +185,7 @@ public class CharacterView : MonoBehaviour, ITransform
 
     public void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject.layer == (int)GameConst.GameObjectLayerType.Monster)
+        if (col.gameObject.layer == (int)GameConst.GameObjectLayerType.Monster && isProtected == false)
         {
             MonsterView monsterView = col.gameObject.GetComponent<MonsterView>();
             if (monsterView == null || monsterView.CurrentState == MonsterState.Normal)
