@@ -26,7 +26,8 @@ public class MissingTexturePart : MonoBehaviour
 
     public void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject.layer == (int)GameConst.GameObjectLayerType.Player)
+        if (col.gameObject.layer == (int)GameConst.GameObjectLayerType.Player ||
+            col.gameObject.layer == (int)GameConst.GameObjectLayerType.Weapon)
         {
             ClearMissingTexture();
         }
