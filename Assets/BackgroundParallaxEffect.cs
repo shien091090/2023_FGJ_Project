@@ -3,44 +3,29 @@ using UnityEngine;
 
 public class BackgroundParallaxEffect : MonoBehaviour
 {
-    [SerializeField] private SpriteRenderer sp_background;
-    [SerializeField] private Vector2 sceneRightUpPos;
-    [SerializeField] private Vector2 sceneLeftDownPos;
-    [SerializeField] private Vector2 backgroundRightUpPos;
-    [SerializeField] private Vector2 backgroundLeftDownPos;
-    [SerializeField] private float parallaxSpeed; // 背景移動速度 (0沒有移動，1與角色相同速度)
+    [SerializeField] private Transform background;
+    [SerializeField] private Vector2 sceneUpRightPos;
+    [SerializeField] private Vector2 sceneDownLeftPos;
+    [SerializeField] private Vector2 backgroundUpRightPos;
+    [SerializeField] private Vector2 backgroundDownLeftPos;
+    private float SceneRightPosX => sceneUpRightPos.x;
+    private float SceneLeftPosX => sceneDownLeftPos.x;
+    private float BackgroundRightPosX => backgroundUpRightPos.x;
+    private float BackgroundLeftPosX => backgroundDownLeftPos.x;
+    private float SceneUpPosY => sceneUpRightPos.y;
+    private float SceneDownPosY => sceneDownLeftPos.y;
+    private float BackgroundUpPosY => backgroundUpRightPos.y;
+    private float BackgroundDownPosY => backgroundDownLeftPos.y;
+    private Vector3 CameraPos => Camera.main.transform.position;
+    private float GetSceneWidth => SceneRightPosX - SceneLeftPosX;
+    private float GetBackgroundWidth => BackgroundRightPosX - BackgroundLeftPosX;
+    private float GetSceneHeight => SceneUpPosY - SceneDownPosY;
+    private float GetBackgroundHeight => BackgroundUpPosY - BackgroundDownPosY;
 
-    // public Transform cameraTransform; // 攝影機的Transform
-
-    private Vector3 lastCameraPosition; // 上一幀攝影機的位置
-    private Vector3 initialPosition; // 初始位置
-
-    private Transform cameraTransform => Camera.main.transform;
-
-    void Start()
+    private void Update()
     {
-        lastCameraPosition = cameraTransform.position;
-        initialPosition = transform.position;
-    }
-
-    void Update()
-    {
-        Vector3 deltaMovement = cameraTransform.position - lastCameraPosition; // 攝影機從上一幀到這一幀的移動差
-
-        // 計算背景的移動，但只考慮x和y
-        Vector3 parallaxPosition = new Vector3(initialPosition.x + deltaMovement.x * parallaxSpeed, initialPosition.y + deltaMovement.y * parallaxSpeed,
-            transform.position.z);
-
-        float backgroundWidth = GetComponent<SpriteRenderer>().bounds.size.x;
-        float backgroundHeight = GetComponent<SpriteRenderer>().bounds.size.y;
-        float camWidth = cameraTransform.GetComponent<Camera>().orthographicSize * cameraTransform.GetComponent<Camera>().aspect;
-        float camHeight = cameraTransform.GetComponent<Camera>().orthographicSize;
-
-        parallaxPosition.x = Mathf.Clamp(parallaxPosition.x, initialPosition.x - (backgroundWidth - camWidth), initialPosition.x + (backgroundWidth - camWidth));
-        parallaxPosition.y = Mathf.Clamp(parallaxPosition.y, initialPosition.y - (backgroundHeight - camHeight), initialPosition.y + (backgroundHeight - camHeight));
-
-        transform.position = parallaxPosition; // 更新背景位置
-
-        lastCameraPosition = cameraTransform.position; // 更新攝影機的位置
+        float backgroundPosX = BackgroundRightPosX + CameraPos.x - GetBackgroundWidth * (CameraPos.x - SceneLeftPosX) / GetSceneWidth;
+        float backgroundPosY = BackgroundUpPosY + CameraPos.y - GetBackgroundHeight * (CameraPos.y - SceneDownPosY) / GetSceneHeight;
+        background.position = new Vector3(backgroundPosX, backgroundPosY, background.position.z);
     }
 }
