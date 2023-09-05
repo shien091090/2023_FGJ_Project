@@ -59,3 +59,6 @@ TagManager:
   - name: MissingTexture
     uniqueID: 1626112139
     locked: 0
+  - name: Bullet
+    uniqueID: 2172085379
+    locked: 0
