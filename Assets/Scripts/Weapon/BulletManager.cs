@@ -7,7 +7,7 @@ public class BulletManager : MonoBehaviour
     [SerializeField] private GameObject prefab;
     [SerializeField] private Transform objHolder;
     [SerializeField] private Transform character;
-    
+
     private List<GameObject> bulletObjectPool;
 
     private void Start()
@@ -40,6 +40,9 @@ public class BulletManager : MonoBehaviour
 
     private void OnUseItemOneTime(ItemType itemType)
     {
+        if (itemType != ItemType.Weapon)
+            return;
+
         GameObject bulletObject = GetBulletObject();
 
         Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
