@@ -1,15 +1,24 @@
+using System;
 using SNShien.Common.AudioTools;
 using UnityEngine;
 
 public class TeleportComponent : MonoBehaviour, ITeleport
 {
-    [SerializeField] private Transform character;
+    [SerializeField] private Rigidbody2D character;
+    [SerializeField] private float bottomPos;
+
     private Vector3 originPos;
 
     public void BackToOrigin()
     {
         FmodAudioManager.Instance.PlayOneShot("Teleport");
         character.position = originPos;
+    }
+
+    private void Update()
+    {
+        if (character.transform.position.y < bottomPos)
+            BackToOrigin();
     }
 
     private void Start()

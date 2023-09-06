@@ -71,7 +71,7 @@ public class CharacterView : MonoBehaviour, ITransform
         characterModel.UpdateJumpTimer(Time.deltaTime);
         characterModel.UpdateCheckJump(jumpForce);
         characterModel.UpdateMove(Time.deltaTime, speed);
-        characterModel.UpdateFallDownTimer(Time.deltaTime);
+        // characterModel.UpdateFallDownTimer(Time.deltaTime);
         characterModel.UpdateCheckInteract();
     }
 

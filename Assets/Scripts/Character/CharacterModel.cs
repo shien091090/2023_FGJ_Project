@@ -55,22 +55,22 @@ public class CharacterModel
         jumpTimer = Math.Min(jumpTimer + deltaTime, jumpDelaySeconds);
     }
 
-    public void UpdateFallDownTimer(float deltaTime)
-    {
-        if (IsStayOnFloor)
-        {
-            fallDownTimer = 0;
-            return;
-        }
-
-        fallDownTimer += deltaTime;
-        if (fallDownTimer >= FallDownTime)
-        {
-            IsStayOnFloor = true;
-            fallDownTimer = 0;
-            teleport.BackToOrigin();
-        }
-    }
+    // public void UpdateFallDownTimer(float deltaTime)
+    // {
+    //     if (IsStayOnFloor)
+    //     {
+    //         fallDownTimer = 0;
+    //         return;
+    //     }
+    //
+    //     fallDownTimer += deltaTime;
+    //     if (fallDownTimer >= FallDownTime)
+    //     {
+    //         IsStayOnFloor = true;
+    //         fallDownTimer = 0;
+    //         teleport.BackToOrigin();
+    //     }
+    // }
 
     public void UpdateCheckInteract()
     {
