@@ -211,7 +211,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5827d0cfbf6f4ce780052be3f9095fe0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useLimit: 4
+  useLimit: 99
   go_useTimesPanel: {fileID: 949653444731048328}
   go_passTimePanel: {fileID: 3537287845957374898}
   txt_timer: {fileID: 1947338997272570511}
