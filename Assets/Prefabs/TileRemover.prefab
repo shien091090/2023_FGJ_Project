@@ -45,6 +45,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   upRange: 2
-  downRange: 5
+  downRange: 6
   targetTilemap: {fileID: 0}
   character: {fileID: 0}
