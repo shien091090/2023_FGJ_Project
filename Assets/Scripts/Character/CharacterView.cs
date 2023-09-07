@@ -139,6 +139,8 @@ public class CharacterView : MonoBehaviour, ITransform
 
         anim.Play("character_normal", 0);
         teleportComponent.BackToOrigin();
+
+        yield return new WaitForSeconds(0.5f);
         isDying = false;
         isProtected = false;
     }

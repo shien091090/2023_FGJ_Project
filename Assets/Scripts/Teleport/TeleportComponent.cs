@@ -13,6 +13,7 @@ public class TeleportComponent : MonoBehaviour, ITeleport
     {
         FmodAudioManager.Instance.PlayOneShot("Teleport");
         character.position = originPos;
+        character.velocity = Vector2.zero;
     }
 
     private void Update()
