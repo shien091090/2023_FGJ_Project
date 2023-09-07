@@ -3,7 +3,7 @@ using System.Collections;
 using SNShien.Common.AudioTools;
 using UnityEngine;
 
-public class CharacterView : MonoBehaviour, ITransform
+public class CharacterView : MonoBehaviour, IRigidbody
 {
     [SerializeField] private float jumpForce;
     [SerializeField] private float superJumpForce;
@@ -23,12 +23,18 @@ public class CharacterView : MonoBehaviour, ITransform
         set => transform.position = value;
     }
 
+    public Vector2 velocity
+    {
+        get => GetRigidbody.velocity;
+        set => GetRigidbody.velocity = value;
+    }
+
     private Rigidbody2D rigidbody;
     private SpriteRenderer spriteRenderer;
     private CharacterModel characterModel;
-    private bool isFaceRight;
     private bool isDying;
     private bool isProtected;
+    public bool IsFaceRight { get; private set; }
 
     public SpriteRenderer GetSpriteRenderer
     {
@@ -80,7 +86,7 @@ public class CharacterView : MonoBehaviour, ITransform
         anim.Play("character_normal", 0);
         isDying = false;
         isProtected = false;
-        isFaceRight = true;
+        IsFaceRight = true;
         SetProtectionActive(false);
     }
 
@@ -109,14 +115,14 @@ public class CharacterView : MonoBehaviour, ITransform
 
     private void CheckChangeDirection(float moveValue)
     {
-        if (isFaceRight && moveValue < 0)
+        if (IsFaceRight && moveValue < 0)
         {
-            isFaceRight = false;
+            IsFaceRight = false;
             GetSpriteRenderer.flipX = true;
         }
-        else if (isFaceRight == false && moveValue > 0)
+        else if (IsFaceRight == false && moveValue > 0)
         {
-            isFaceRight = true;
+            IsFaceRight = true;
             GetSpriteRenderer.flipX = false;
         }
     }

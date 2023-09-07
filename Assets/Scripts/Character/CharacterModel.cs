@@ -6,8 +6,8 @@ public class CharacterModel
     private readonly IMoveController moveController;
     private readonly IKeyController keyController;
     private readonly ITeleport teleport;
-    private readonly ITransform characterTransform;
-    private readonly ITransform selfTransform;
+    private readonly IRigidbody characterRigidbody;
+    private readonly IRigidbody selfRigidbody;
     private float jumpTimer;
     private float jumpDelaySeconds;
     private float fallDownTimer;
@@ -23,12 +23,12 @@ public class CharacterModel
     public float InteractiveDistance { get; set; }
     public bool HaveInteractGate => CurrentTriggerTeleportGate != null;
 
-    public CharacterModel(IMoveController moveController, IKeyController keyController, ITeleport teleport, ITransform characterTransform)
+    public CharacterModel(IMoveController moveController, IKeyController keyController, ITeleport teleport, IRigidbody characterRigidbody)
     {
         this.moveController = moveController;
         this.keyController = keyController;
         this.teleport = teleport;
-        selfTransform = characterTransform;
+        selfRigidbody = characterRigidbody;
     }
 
     public void UpdateMove(float deltaTime, float speed)
@@ -77,13 +77,13 @@ public class CharacterModel
         if (!keyController.IsInteractKeyDown)
             return;
 
-        if (selfTransform == null)
+        if (selfRigidbody == null)
             return;
 
         if (HaveInteractGate == false)
             return;
 
-        float distance = Vector3.Distance(selfTransform.position, CurrentTriggerTeleportGate.GetPos);
+        float distance = Vector3.Distance(selfRigidbody.position, CurrentTriggerTeleportGate.GetPos);
         if (distance > InteractiveDistance)
         {
             CurrentTriggerTeleportGate = null;
@@ -91,7 +91,7 @@ public class CharacterModel
         }
 
         if (HaveInteractGate)
-            CurrentTriggerTeleportGate.Teleport(selfTransform);
+            CurrentTriggerTeleportGate.Teleport(selfRigidbody);
     }
 
     public void SetJumpDelay(float jumpDelaySeconds)
