@@ -6,7 +6,7 @@ public class BulletManager : MonoBehaviour
 {
     [SerializeField] private GameObject prefab;
     [SerializeField] private Transform objHolder;
-    [SerializeField] private Transform character;
+    [SerializeField] private CharacterView character;
 
     private List<GameObject> bulletObjectPool;
 
@@ -31,11 +31,12 @@ public class BulletManager : MonoBehaviour
         }
     }
 
-    private void FaceToTargetPos(Transform transform, Vector3 facePos)
+    private void FaceToCharacterFaceDirection(GameObject bulletObject)
     {
-        Vector3 dir = facePos - transform.position;
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.AngleAxis(angle - 90, Vector3.forward);
+        if (character.IsFaceRight)
+            bulletObject.transform.rotation = Quaternion.Euler(0, 0, -90);
+        else
+            bulletObject.transform.rotation = Quaternion.Euler(0, 0, 90);
     }
 
     private void OnUseItemOneTime(ItemType itemType)
@@ -45,11 +46,8 @@ public class BulletManager : MonoBehaviour
 
         GameObject bulletObject = GetBulletObject();
 
-        Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        pos.z = 0;
-
         bulletObject.SetActive(true);
         bulletObject.transform.position = character.position;
-        FaceToTargetPos(bulletObject.transform, pos);
+        FaceToCharacterFaceDirection(bulletObject);
     }
 }
