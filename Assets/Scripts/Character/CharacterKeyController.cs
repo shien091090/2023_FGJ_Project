@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class CharacterKeyController : IKeyController
 {
-    public bool IsJumpKeyDown => Input.GetKeyDown(KeyCode.W);
-    public bool IsInteractKeyDown => Input.GetKeyDown(KeyCode.E);
+    public bool IsJumpKeyDown => Input.GetKeyDown(KeyCode.UpArrow);
+    public bool IsInteractKeyDown => Input.GetKeyDown(KeyCode.Space);
     public bool IsUseItemKeyDown(int itemSlotIndex)
     {
         switch (itemSlotIndex)
