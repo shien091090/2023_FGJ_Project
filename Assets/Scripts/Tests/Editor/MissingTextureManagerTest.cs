@@ -25,9 +25,17 @@ public class MissingTextureManagerTest
         view.Received(callTimes).RefreshRemainCount(expectedRemainCountText);
     }
 
+    [Test]
     //初始化時設置目前進度為100%
+    public void init_current_count_to_100_percent()
+    {
+        MissingTextureManager missingTextureManager = new MissingTextureManager(10, view);
+
+        ShouldCallRefreshRemainCount(1, "100");
+    }
+    
+    //破圖數量減少時, 非0%或100%的狀況以四捨五入顯示
     //破圖數量減少時, 即使四捨五入後為100%, 仍顯示99%
     //破圖數量減少時, 即使四捨五入後為0%, 仍顯示1%
-    //破圖數量減少時, 非0%或100%的狀況以四捨五入顯示
     //破圖數量減少到0時, 發出通知事件
 }

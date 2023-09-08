@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class MissingTextureManager
 {
     private readonly int totalMissingTextureCount;
@@ -18,7 +20,7 @@ public class MissingTextureManager
             return;
 
         currentMissingTextureCount--;
-        view.RefreshRemainCount(currentMissingTextureCount.ToString());
+        view.RefreshRemainCount(ConvertCurrentPercentText());
 
         if (currentMissingTextureCount <= 0)
         {
@@ -31,6 +33,15 @@ public class MissingTextureManager
     {
         currentMissingTextureCount = totalMissingTextureCount;
         isGameCompleted = false;
-        view.RefreshRemainCount(currentMissingTextureCount.ToString());
+        view.RefreshRemainCount(ConvertCurrentPercentText());
+    }
+
+    private string ConvertCurrentPercentText()
+    {
+        if (totalMissingTextureCount == 0)
+            return "0";
+
+        float percent = currentMissingTextureCount / (float)totalMissingTextureCount;
+        return Mathf.RoundToInt(percent * 100).ToString();
     }
 }
