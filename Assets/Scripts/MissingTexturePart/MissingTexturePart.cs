@@ -16,7 +16,7 @@ public class MissingTexturePart : MonoBehaviour
             return;
 
         SetMissingTextureActive(false);
-        MissingTextureManager.Instance.SubtractMissingTextureCount();
+        MissingTextureManagerView.Instance.SubtractMissingTextureCount();
     }
 
     private void SetMissingTextureActive(bool isActive)

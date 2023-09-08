@@ -1,54 +1,36 @@
-using System;
-using UnityEngine;
-using UnityEngine.UI;
-
-public class MissingTextureManager : MonoBehaviour
+public class MissingTextureManager
 {
-    private static MissingTextureManager _instance;
-
-    [SerializeField] private int totalMissingTextureCount;
-    [SerializeField] private Text txt_remainCount;
+    private readonly int totalMissingTextureCount;
+    private readonly IMissingTextureManagerView view;
     private bool isGameCompleted;
+    private int currentMissingTextureCount;
 
-    public static event Action OnMissingTextureAllClear;
-
-    public int GetTotalMissingTextureCount => totalMissingTextureCount;
-    public static MissingTextureManager Instance => _instance;
-
-    public int CurrentMissingTextureCount { get; set; }
+    public MissingTextureManager(int totalMissingTextureCount, IMissingTextureManagerView view)
+    {
+        this.totalMissingTextureCount = totalMissingTextureCount;
+        this.view = view;
+        ResetGame();
+    }
 
     public void SubtractMissingTextureCount()
     {
         if (isGameCompleted)
             return;
 
-        CurrentMissingTextureCount--;
-        RefreshRemainCount();
+        currentMissingTextureCount--;
+        view.RefreshRemainCount(currentMissingTextureCount.ToString());
 
-        if (CurrentMissingTextureCount <= 0)
+        if (currentMissingTextureCount <= 0)
         {
-            OnMissingTextureAllClear?.Invoke();
+            view.SendMissingTextureAllClearEvent();
             isGameCompleted = true;
         }
     }
 
     public void ResetGame()
     {
-        CurrentMissingTextureCount = totalMissingTextureCount;
+        currentMissingTextureCount = totalMissingTextureCount;
         isGameCompleted = false;
-        RefreshRemainCount();
-    }
-
-    private void RefreshRemainCount()
-    {
-        txt_remainCount.text = CurrentMissingTextureCount.ToString();
-    }
-
-    private void Awake()
-    {
-        if (_instance == null)
-            _instance = this;
-
-        ResetGame();
+        view.RefreshRemainCount(currentMissingTextureCount.ToString());
     }
 }

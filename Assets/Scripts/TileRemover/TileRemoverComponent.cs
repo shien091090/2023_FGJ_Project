@@ -12,13 +12,13 @@ public class TileRemoverComponent : MonoBehaviour, ITileMap
 
     public int GetTotalTilesCount()
     {
-        return MissingTextureManager.Instance.GetTotalMissingTextureCount;
+        return MissingTextureManagerView.Instance.GetTotalMissingTextureCount;
     }
 
     public void SetTile(Vector3 pos, Tile tile)
     {
         targetTilemap.SetTile(targetTilemap.WorldToCell(pos), null);
-        MissingTextureManager.Instance.SubtractMissingTextureCount();
+        MissingTextureManagerView.Instance.SubtractMissingTextureCount();
     }
 
     public bool HaveTile(Vector3 pos)

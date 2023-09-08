@@ -23,17 +23,17 @@ public class GameCompleteManager : MonoBehaviour
 
     private void Start()
     {
-        FmodAudioManager.Instance.PlayOneShot("BGM");
+        FmodAudioManager.Instance.Play("BGM", 1);
         GetAnim.Play(ANIM_KEY_IDLE);
-        MissingTextureManager.OnMissingTextureAllClear -= OnMissingTextureAllClear;
-        MissingTextureManager.OnMissingTextureAllClear += OnMissingTextureAllClear;
+        MissingTextureManagerView.Instance.OnMissingTextureAllClear -= OnMissingTextureAllClear;
+        MissingTextureManagerView.Instance.OnMissingTextureAllClear += OnMissingTextureAllClear;
     }
 
     private IEnumerator Cor_GameComplete()
     {
         yield return new WaitForSeconds(4f);
 
-        MissingTextureManager.Instance.ResetGame();
+        MissingTextureManagerView.Instance.ResetGame();
         SceneManager.LoadScene("MainScene");
     }
 
