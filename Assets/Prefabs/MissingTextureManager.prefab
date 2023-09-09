@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8205406969913155529}
+  - component: {fileID: 2705271517957028281}
   m_Layer: 0
   m_Name: RemainPartPanel
   m_TagString: Untagged
@@ -39,6 +40,27 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -30.85}
   m_SizeDelta: {x: 180, y: 140}
   m_Pivot: {x: 0.5, y: 1}
+--- !u!95 &2705271517957028281
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1707436015906639531}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e821e51db68933248812450e3af9a0dd, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2111149344504127925
 GameObject:
   m_ObjectHideFlags: 0
@@ -85,7 +107,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   totalMissingTextureCount: 3781
-  txt_remainCount: {fileID: 6488202431044688856}
+  txt_remainPercent: {fileID: 6488202431044688856}
+  img_progressFill: {fileID: 3494895975983807717}
+  anim: {fileID: 2705271517957028281}
 --- !u!1 &4054913352099484672
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,11 +4,14 @@ using UnityEngine.UI;
 
 public class MissingTextureManagerView : MonoBehaviour, IMissingTextureManagerView
 {
+    private const string ANIM_KEY_CLEAR = "missing_texture_clear";
+
     private static MissingTextureManagerView _instance;
 
     [SerializeField] private int totalMissingTextureCount;
     [SerializeField] private Text txt_remainPercent;
-    [SerializeField] private Slider sld_progress;
+    [SerializeField] private Image img_progressFill;
+    [SerializeField] private Animator anim;
 
     private MissingTextureManager missingTextureManager;
 
@@ -24,7 +27,7 @@ public class MissingTextureManagerView : MonoBehaviour, IMissingTextureManagerVi
 
     public void RefreshProgress(float progress)
     {
-        sld_progress.value = progress;
+        img_progressFill.fillAmount = progress;
     }
 
     public void SendMissingTextureAllClearEvent()
@@ -35,6 +38,7 @@ public class MissingTextureManagerView : MonoBehaviour, IMissingTextureManagerVi
     public void SubtractMissingTextureCount()
     {
         missingTextureManager.SubtractMissingTextureCount();
+        anim.Play(ANIM_KEY_CLEAR, 0);
     }
 
     public void ResetGame()
