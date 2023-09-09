@@ -54,6 +54,9 @@ public class MissingTextureManager
 
         float percent = GetProgressPercent();
         float round = Mathf.Round(percent * 100);
-        return round.ToString();
+        if (round == 100 && currentMissingTextureCount < totalMissingTextureCount)
+            return (round - 1).ToString();
+        else
+            return round.ToString();
     }
 }
