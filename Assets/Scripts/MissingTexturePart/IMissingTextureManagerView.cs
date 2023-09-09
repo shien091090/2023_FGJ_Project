@@ -1,5 +1,6 @@
 public interface IMissingTextureManagerView
 {
-    void RefreshRemainCount(string remainCountText);
+    void RefreshRemainPercentText(string remainPercentText);
+    void RefreshProgress(float progress);
     void SendMissingTextureAllClearEvent();
 }

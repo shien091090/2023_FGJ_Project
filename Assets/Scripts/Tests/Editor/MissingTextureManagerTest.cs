@@ -17,12 +17,8 @@ public class MissingTextureManagerTest
     {
         MissingTextureManager missingTextureManager = new MissingTextureManager(0, view);
 
-        ShouldCallRefreshRemainCount(1, "0");
-    }
-
-    private void ShouldCallRefreshRemainCount(int callTimes, string expectedRemainCountText)
-    {
-        view.Received(callTimes).RefreshRemainCount(expectedRemainCountText);
+        ShouldCallRefreshRemainCount("0");
+        ShouldCallRefreshProgress(0);
     }
 
     [Test]
@@ -31,10 +27,29 @@ public class MissingTextureManagerTest
     {
         MissingTextureManager missingTextureManager = new MissingTextureManager(10, view);
 
-        ShouldCallRefreshRemainCount(1, "100");
+        ShouldCallRefreshRemainCount("100");
+        ShouldCallRefreshProgress(1);
     }
-    
-    //破圖數量減少時, 非0%或100%的狀況以四捨五入顯示
+
+    private void ShouldCallRefreshProgress(float expectedProgress, int callTimes = 1)
+    {
+        view.Received(callTimes).RefreshProgress(expectedProgress);
+    }
+
+    // [Test]
+    // //破圖數量減少時, 非0%或100%的狀況以四捨五入顯示
+    // public void subtract_missing_texture_count()
+    // {
+    //     MissingTextureManager missingTextureManager = new MissingTextureManager(1000, view);
+    //
+    //     missingTextureManager.SubtractMissingTextureCount();
+    //
+    // }
+
+    private void ShouldCallRefreshRemainCount(string expectedRemainCountText, int callTimes = 1)
+    {
+        view.Received(callTimes).RefreshRemainPercentText(expectedRemainCountText);
+    }
     //破圖數量減少時, 即使四捨五入後為100%, 仍顯示99%
     //破圖數量減少時, 即使四捨五入後為0%, 仍顯示1%
     //破圖數量減少到0時, 發出通知事件

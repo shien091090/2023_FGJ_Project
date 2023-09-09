@@ -14,13 +14,14 @@ public class MissingTextureManager
         ResetGame();
     }
 
-    public void SubtractMissingTextureCount()
+    public void SubtractMissingTextureCount(int count = 1)
     {
         if (isGameCompleted)
             return;
 
-        currentMissingTextureCount--;
-        view.RefreshRemainCount(ConvertCurrentPercentText());
+        currentMissingTextureCount -= count;
+        view.RefreshRemainPercentText(ConvertCurrentPercentText());
+        view.RefreshProgress(GetProgressPercent());
 
         if (currentMissingTextureCount <= 0)
         {
@@ -33,7 +34,17 @@ public class MissingTextureManager
     {
         currentMissingTextureCount = totalMissingTextureCount;
         isGameCompleted = false;
-        view.RefreshRemainCount(ConvertCurrentPercentText());
+        view.RefreshRemainPercentText(ConvertCurrentPercentText());
+        view.RefreshProgress(GetProgressPercent());
+    }
+
+    private float GetProgressPercent()
+    {
+        if (totalMissingTextureCount <= 0)
+            return 0;
+
+        float percent = currentMissingTextureCount / (float)totalMissingTextureCount;
+        return percent;
     }
 
     private string ConvertCurrentPercentText()
@@ -41,7 +52,7 @@ public class MissingTextureManager
         if (totalMissingTextureCount == 0)
             return "0";
 
-        float percent = currentMissingTextureCount / (float)totalMissingTextureCount;
+        float percent = GetProgressPercent();
         return Mathf.RoundToInt(percent * 100).ToString();
     }
 }

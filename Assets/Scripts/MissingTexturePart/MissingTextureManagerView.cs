@@ -7,7 +7,8 @@ public class MissingTextureManagerView : MonoBehaviour, IMissingTextureManagerVi
     private static MissingTextureManagerView _instance;
 
     [SerializeField] private int totalMissingTextureCount;
-    [SerializeField] private Text txt_remainCount;
+    [SerializeField] private Text txt_remainPercent;
+    [SerializeField] private Slider sld_progress;
 
     private MissingTextureManager missingTextureManager;
 
@@ -16,9 +17,14 @@ public class MissingTextureManagerView : MonoBehaviour, IMissingTextureManagerVi
     public int GetTotalMissingTextureCount => totalMissingTextureCount;
     public static MissingTextureManagerView Instance => _instance;
 
-    public void RefreshRemainCount(string remainCountText)
+    public void RefreshRemainPercentText(string remainPercentText)
     {
-        txt_remainCount.text = remainCountText;
+        txt_remainPercent.text = remainPercentText;
+    }
+
+    public void RefreshProgress(float progress)
+    {
+        sld_progress.value = progress;
     }
 
     public void SendMissingTextureAllClearEvent()
