@@ -17,7 +17,7 @@ public class MissingTextureManagerTest
     {
         MissingTextureManager missingTextureManager = new MissingTextureManager(0, view);
 
-        ShouldCallRefreshRemainCount("0");
+        ShouldCallRefreshRemainPercentText("0");
         ShouldCallRefreshProgress(0);
     }
 
@@ -27,8 +27,19 @@ public class MissingTextureManagerTest
     {
         MissingTextureManager missingTextureManager = new MissingTextureManager(10, view);
 
-        ShouldCallRefreshRemainCount("100");
+        ShouldCallRefreshRemainPercentText("100");
         ShouldCallRefreshProgress(1);
+    }
+
+    [Test]
+    //破圖數量減少時, 非0%或100%的狀況以四捨五入顯示
+    public void subtract_missing_texture_count()
+    {
+        MissingTextureManager missingTextureManager = new MissingTextureManager(1000, view);
+
+        missingTextureManager.SubtractMissingTextureCount(254);
+        ShouldCallRefreshRemainPercentText("75");
+        ShouldCallRefreshProgress(0.746f);
     }
 
     private void ShouldCallRefreshProgress(float expectedProgress, int callTimes = 1)
@@ -36,17 +47,7 @@ public class MissingTextureManagerTest
         view.Received(callTimes).RefreshProgress(expectedProgress);
     }
 
-    // [Test]
-    // //破圖數量減少時, 非0%或100%的狀況以四捨五入顯示
-    // public void subtract_missing_texture_count()
-    // {
-    //     MissingTextureManager missingTextureManager = new MissingTextureManager(1000, view);
-    //
-    //     missingTextureManager.SubtractMissingTextureCount();
-    //
-    // }
-
-    private void ShouldCallRefreshRemainCount(string expectedRemainCountText, int callTimes = 1)
+    private void ShouldCallRefreshRemainPercentText(string expectedRemainCountText, int callTimes = 1)
     {
         view.Received(callTimes).RefreshRemainPercentText(expectedRemainCountText);
     }

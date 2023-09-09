@@ -53,6 +53,7 @@ public class MissingTextureManager
             return "0";
 
         float percent = GetProgressPercent();
-        return Mathf.RoundToInt(percent * 100).ToString();
+        float round = Mathf.Round(percent * 100);
+        return round.ToString();
     }
 }
