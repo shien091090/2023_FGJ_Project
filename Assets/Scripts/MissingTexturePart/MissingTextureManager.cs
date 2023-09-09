@@ -56,6 +56,8 @@ public class MissingTextureManager
         float round = Mathf.Round(percent * 100);
         if (round == 100 && currentMissingTextureCount < totalMissingTextureCount)
             return (round - 1).ToString();
+        else if (round == 0 && currentMissingTextureCount > 0)
+            return (round + 1).ToString();
         else
             return round.ToString();
     }
