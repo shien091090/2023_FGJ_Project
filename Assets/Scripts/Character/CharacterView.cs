@@ -12,7 +12,6 @@ public class CharacterView : MonoBehaviour, IRigidbody
     [SerializeField] private Transform footPoint;
     [SerializeField] private float footRadius;
     [SerializeField] private TeleportComponent teleportComponent;
-    [SerializeField] private float fallDownToOriginPosTime;
     [SerializeField] private float interactDistance;
     [SerializeField] private Animator anim;
     [SerializeField] private GameObject go_protectionEffect;
@@ -62,7 +61,6 @@ public class CharacterView : MonoBehaviour, IRigidbody
     {
         characterModel = new CharacterModel(new CharacterMoveController(), new CharacterKeyController(), teleportComponent, this);
         characterModel.SetJumpDelay(jumpDelaySeconds);
-        characterModel.SetFallDownTime(fallDownToOriginPosTime);
         characterModel.SetInteractDistance(interactDistance);
 
         SetEventRegister();
@@ -77,7 +75,6 @@ public class CharacterView : MonoBehaviour, IRigidbody
         characterModel.UpdateJumpTimer(Time.deltaTime);
         characterModel.UpdateCheckJump(jumpForce);
         characterModel.UpdateMove(Time.deltaTime, speed);
-        // characterModel.UpdateFallDownTimer(Time.deltaTime);
         characterModel.UpdateCheckInteract();
     }
 

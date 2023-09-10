@@ -17,7 +17,6 @@ public class CharacterModel
     public ITeleportGate CurrentTriggerTeleportGate { get; private set; }
 
     public bool IsJumping { get; private set; }
-    public float FallDownTime { get; set; }
     public bool IsStayOnFloor { get; set; }
 
     public float InteractiveDistance { get; set; }
@@ -98,11 +97,6 @@ public class CharacterModel
     {
         this.jumpDelaySeconds = jumpDelaySeconds;
         jumpTimer = jumpDelaySeconds;
-    }
-
-    public void SetFallDownTime(float fallDownTime)
-    {
-        FallDownTime = fallDownTime;
     }
 
     public void SetInteractDistance(float distance)
