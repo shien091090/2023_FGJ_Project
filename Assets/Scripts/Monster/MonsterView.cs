@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class MonsterView : MonoBehaviour
+public class MonsterView : MonoBehaviour, IMonsterView
 {
     private const string ANIM_KEY_STUN_FORMAT = "monster_{0}_stun";
     private const string ANIM_KEY_NORMAL_FORMAT = "monster_{0}_movable";

@@ -1,43 +1,50 @@
 using System;
+using SNShien.Common.AudioTools;
 using UnityEngine;
 
 public class CharacterModel
 {
+    public bool isProtected;
     private readonly IMoveController moveController;
     private readonly IKeyController keyController;
     private readonly ITeleport teleport;
-    private readonly IRigidbody characterRigidbody;
     private readonly IRigidbody selfRigidbody;
+    private readonly IAudioManager audioManager;
+    private ICharacterView characterView;
+
     private float jumpTimer;
-    private float jumpDelaySeconds;
-    private float fallDownTimer;
+    private ITimeModel timeModel;
 
-    public event Action<float> OnHorizontalMove;
-    public event Action<float> OnJump;
+    // public event Action<float> OnHorizontalMove;
+    // public event Action<float> OnJump;
     public ITeleportGate CurrentTriggerTeleportGate { get; private set; }
-
     public bool IsJumping { get; private set; }
     public bool IsStayOnFloor { get; set; }
-
-    public float InteractiveDistance { get; set; }
     public bool HaveInteractGate => CurrentTriggerTeleportGate != null;
+    public bool IsDying { get; set; }
+    public bool IsFaceRight { get; set; }
 
-    public CharacterModel(IMoveController moveController, IKeyController keyController, ITeleport teleport, IRigidbody characterRigidbody)
+    public CharacterModel(IMoveController moveController, IKeyController keyController, ITeleport teleport, IRigidbody characterRigidbody, IAudioManager audioManager,
+        ITimeModel timeModel)
     {
         this.moveController = moveController;
         this.keyController = keyController;
         this.teleport = teleport;
+        this.audioManager = audioManager;
+        this.timeModel = timeModel;
         selfRigidbody = characterRigidbody;
     }
 
-    public void UpdateMove(float deltaTime, float speed)
+    private void UpdateMove(float deltaTime, float speed)
     {
-        OnHorizontalMove?.Invoke(moveController.GetHorizontalAxis() * deltaTime * speed);
+        float moveValue = moveController.GetHorizontalAxis() * deltaTime * speed;
+        CheckChangeDirection(moveValue);
+        characterView.Translate(new Vector2(moveValue, 0));
     }
 
-    public void UpdateCheckJump(float jumpForce)
+    private void UpdateCheckJump(float jumpForce)
     {
-        if (jumpTimer < jumpDelaySeconds)
+        if (jumpTimer < characterView.JumpDelaySeconds)
             return;
 
         if (keyController.IsJumpKeyDown)
@@ -46,32 +53,15 @@ public class CharacterModel
         }
     }
 
-    public void UpdateJumpTimer(float deltaTime)
+    private void UpdateJumpTimer(float deltaTime)
     {
-        if (jumpTimer >= jumpDelaySeconds)
+        if (jumpTimer >= characterView.JumpDelaySeconds)
             return;
 
-        jumpTimer = Math.Min(jumpTimer + deltaTime, jumpDelaySeconds);
+        jumpTimer = Math.Min(jumpTimer + deltaTime, characterView.JumpDelaySeconds);
     }
 
-    // public void UpdateFallDownTimer(float deltaTime)
-    // {
-    //     if (IsStayOnFloor)
-    //     {
-    //         fallDownTimer = 0;
-    //         return;
-    //     }
-    //
-    //     fallDownTimer += deltaTime;
-    //     if (fallDownTimer >= FallDownTime)
-    //     {
-    //         IsStayOnFloor = true;
-    //         fallDownTimer = 0;
-    //         teleport.BackToOrigin();
-    //     }
-    // }
-
-    public void UpdateCheckInteract()
+    private void UpdateCheckInteract()
     {
         if (!keyController.IsInteractKeyDown)
             return;
@@ -83,7 +73,7 @@ public class CharacterModel
             return;
 
         float distance = Vector3.Distance(selfRigidbody.position, CurrentTriggerTeleportGate.GetPos);
-        if (distance > InteractiveDistance)
+        if (distance > characterView.InteractDistance)
         {
             CurrentTriggerTeleportGate = null;
             return;
@@ -93,35 +83,64 @@ public class CharacterModel
             CurrentTriggerTeleportGate.Teleport(selfRigidbody);
     }
 
-    public void SetJumpDelay(float jumpDelaySeconds)
+    public void CallUpdate()
     {
-        this.jumpDelaySeconds = jumpDelaySeconds;
-        jumpTimer = jumpDelaySeconds;
+        if (IsDying)
+            return;
+
+        UpdateJumpTimer(timeModel.deltaTime);
+        UpdateCheckJump(characterView.JumpForce);
+        UpdateMove(timeModel.deltaTime, characterView.Speed);
+        UpdateCheckInteract();
     }
 
-    public void SetInteractDistance(float distance)
+    public void InitView(ICharacterView view)
     {
-        InteractiveDistance = distance;
+        characterView = view;
+        // jumpDelaySeconds = view.JumpDelaySeconds;
+        // InteractiveDistance = view.InteractDistance;
+        InitState();
     }
+
+    private void InitState()
+    {
+        characterView.PlayAnimation("character_normal");
+        jumpTimer = characterView.JumpDelaySeconds;
+        IsDying = false;
+        isProtected = false;
+        IsFaceRight = true;
+        IsStayOnFloor = true;
+        characterView.SetProtectionActive(false);
+    }
+
+    // public void SetJumpDelay(float jumpDelaySeconds)
+    // {
+    //     this.jumpDelaySeconds = jumpDelaySeconds;
+    //     jumpTimer = jumpDelaySeconds;
+    // }
+
+    // public void SetInteractDistance(float distance)
+    // {
+    //     InteractiveDistance = distance;
+    // }
 
     public void Jump(float jumpForce)
     {
-        if (IsJumping == false)
-        {
-            jumpTimer = 0;
-            IsJumping = true;
-            OnJump?.Invoke(jumpForce);
-        }
+        if (IsJumping || IsStayOnFloor == false)
+            return;
+
+        if (jumpForce == 0)
+            return;
+
+        jumpTimer = 0;
+        IsJumping = true;
+        audioManager.PlayOneShot("Jump");
+        selfRigidbody.AddForce(new Vector2(0, jumpForce));
     }
 
     public void TriggerFloor()
     {
         IsStayOnFloor = true;
-        fallDownTimer = 0;
-
-        if (jumpTimer < jumpDelaySeconds)
-            return;
-
         IsJumping = false;
     }
 
@@ -130,13 +149,64 @@ public class CharacterModel
         IsStayOnFloor = false;
     }
 
-    public void TriggerTeleportGate(ITeleportGate teleportGate)
-    {
-        CurrentTriggerTeleportGate = teleportGate;
-    }
-
     public void ExitTeleportGate()
     {
         CurrentTriggerTeleportGate = null;
+    }
+
+    public void Die()
+    {
+        if (IsDying)
+            return;
+
+        IsDying = true;
+        audioManager.PlayOneShot("Damage");
+        characterView.PlayAnimation("character_die");
+        characterView.Waiting(1.5f, () =>
+        {
+            characterView.PlayAnimation("character_normal");
+            teleport.BackToOrigin();
+            characterView.Waiting(0.5f, () =>
+            {
+                IsDying = false;
+                isProtected = false;
+            });
+        });
+    }
+
+    public void ColliderTriggerEnter(ICollider col)
+    {
+        if (col.Layer == (int)GameConst.GameObjectLayerType.Monster && isProtected == false)
+        {
+            IMonsterView monsterView = col.GetComponent<IMonsterView>();
+            if (monsterView == null || monsterView.CurrentState == MonsterState.Normal)
+                Die();
+
+            return;
+        }
+
+        if (col.Layer != (int)GameConst.GameObjectLayerType.TeleportGate)
+            return;
+
+        ITeleportGate teleportGateComponent = col.GetComponent<ITeleportGate>();
+        if (teleportGateComponent == null)
+            return;
+
+        CurrentTriggerTeleportGate = teleportGateComponent;
+    }
+
+
+    private void CheckChangeDirection(float moveValue)
+    {
+        if (IsFaceRight && moveValue < 0)
+        {
+            IsFaceRight = false;
+            characterView.SetSpriteFlix(true);
+        }
+        else if (IsFaceRight == false && moveValue > 0)
+        {
+            IsFaceRight = true;
+            characterView.SetSpriteFlix(false);
+        }
     }
 }

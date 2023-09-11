@@ -1,17 +1,19 @@
 using System;
 using NSubstitute;
 using NUnit.Framework;
+using SNShien.Common.AudioTools;
 using UnityEngine;
 
 public class CharacterTest
 {
-    private Action<float> horizontalMoveEvent;
     private IMoveController moveController;
     private CharacterModel characterModel;
-    private Action<float> jumpEvent;
     private IKeyController keyController;
     private ITeleport teleport;
     private IRigidbody characterRigidbody;
+    private IAudioManager audioManager;
+    private ITimeModel timeModel;
+    private ICharacterView characterView;
 
     private static void GivenTeleportGatePos(ITeleportGate teleportGate, Vector3 pos)
     {
@@ -25,13 +27,18 @@ public class CharacterTest
         keyController = Substitute.For<IKeyController>();
         teleport = Substitute.For<ITeleport>();
         characterRigidbody = Substitute.For<IRigidbody>();
+        audioManager = Substitute.For<IAudioManager>();
+        timeModel = Substitute.For<ITimeModel>();
+        characterView = Substitute.For<ICharacterView>();
 
-        characterModel = new CharacterModel(moveController, keyController, teleport, characterRigidbody);
+        GivenDeltaTime(1);
+        GivenSpeed(1);
+        GivenJumpForce(1);
+        GivenJumpDelay(1);
 
-        horizontalMoveEvent = Substitute.For<Action<float>>();
-        jumpEvent = Substitute.For<Action<float>>();
-        characterModel.OnHorizontalMove += horizontalMoveEvent;
-        characterModel.OnJump += jumpEvent;
+        characterModel = new CharacterModel(moveController, keyController, teleport, characterRigidbody, audioManager, timeModel);
+
+        characterModel.InitView(characterView);
     }
 
     [Test]
@@ -40,15 +47,15 @@ public class CharacterTest
     {
         GivenHorizontalAxis(0.5f);
 
-        characterModel.UpdateMove(1, 1);
+        characterModel.CallUpdate();
 
-        ShouldReceiveHorizontalMoveEvent(Arg.Is<float>(x => x >= 0));
+        ShouldCallTranslateAndMoveRight();
 
         GivenHorizontalAxis(-0.5f);
 
-        characterModel.UpdateMove(1, 1);
+        characterModel.CallUpdate();
 
-        ShouldReceiveHorizontalMoveEvent(Arg.Is<float>(x => x <= 0));
+        ShouldCallTranslateAndMoveLeft();
     }
 
     [Test]
@@ -58,224 +65,230 @@ public class CharacterTest
         ShouldIsJumping(false);
 
         GivenIsJumpKeyDown(false);
-        characterModel.UpdateCheckJump(1);
+        characterModel.CallUpdate();
 
-        ShouldReceiveJumpEvent(0);
-        ShouldIsJumping(false);
+        ShouldCallJump(0);
     }
 
     [Test]
     //跳躍時不能再跳
     public void jump_cannot_jump_again()
     {
-        ShouldIsJumping(false);
-
         GivenIsJumpKeyDown(true);
-        characterModel.UpdateCheckJump(1);
+        characterModel.CallUpdate();
 
-        ShouldReceiveJumpEvent(1);
+        ShouldCallJump(1);
         ShouldIsJumping(true);
 
         GivenIsJumpKeyDown(true);
-        characterModel.UpdateCheckJump(1);
+        characterModel.CallUpdate();
 
-        ShouldReceiveJumpEvent(1);
+        ShouldCallJump(1);
+    }
+
+    [Test]
+    //離地時不能跳
+    public void cannot_jump_when_not_on_floor()
+    {
+        characterModel.ExitFloor();
+
+        GivenIsJumpKeyDown(true);
+        characterModel.CallUpdate();
+
+        ShouldCallJump(0);
+    }
+
+    [Test]
+    //跳躍力道設定為0時, 按跳躍時不會跳
+    public void jump_force_is_zero()
+    {
+        GivenJumpForce(0);
+        GivenIsJumpKeyDown(true);
+        characterModel.CallUpdate();
+
+        ShouldCallJump(0);
     }
 
     [Test]
     //跳躍落地後可再跳
-    public void jump_can_jump_again()
+    public void can_jump_when_back_to_floor()
     {
-        ShouldIsJumping(false);
-
         GivenIsJumpKeyDown(true);
-        characterModel.UpdateCheckJump(1);
 
-        ShouldReceiveJumpEvent(1);
-        ShouldIsJumping(true);
+        characterModel.CallUpdate();
+        characterModel.ExitFloor();
+
+        ShouldCallJump(1);
 
         characterModel.TriggerFloor();
 
         ShouldIsJumping(false);
 
         GivenIsJumpKeyDown(true);
-        characterModel.UpdateCheckJump(1);
+        characterModel.CallUpdate();
 
-        ShouldReceiveJumpEvent(2);
-        ShouldIsJumping(true);
+        ShouldCallJump(2);
     }
 
     [Test]
     //跳躍後, 在跳躍延遲時間內觸發地板, 不可再跳, 過延遲時間後再次觸發地板才可跳
     public void cannot_jump_again_until_delay_time()
     {
-        characterModel.SetJumpDelay(0.5f);
+        GivenJumpDelay(0.5f);
+        GivenDeltaTime(0.3f);
 
         GivenIsJumpKeyDown(true);
-        characterModel.UpdateJumpTimer(0.3f);
-        characterModel.UpdateCheckJump(1);
+        characterModel.CallUpdate();
+        characterModel.ExitFloor();
 
-        ShouldReceiveJumpEvent(1);
+        ShouldIsJumping(true);
+        ShouldCallJump(1);
 
         characterModel.TriggerFloor();
 
-        GivenIsJumpKeyDown(true);
-        characterModel.UpdateJumpTimer(0.3f);
-        characterModel.UpdateCheckJump(1);
-
-        ShouldReceiveJumpEvent(1);
+        ShouldIsJumping(false);
 
         GivenIsJumpKeyDown(true);
-        characterModel.UpdateJumpTimer(0.3f);
-        characterModel.UpdateCheckJump(1);
+        characterModel.CallUpdate();
 
-        ShouldReceiveJumpEvent(1);
-
-        characterModel.TriggerFloor();
+        ShouldCallJump(1);
 
         GivenIsJumpKeyDown(true);
-        characterModel.UpdateJumpTimer(0.3f);
-        characterModel.UpdateCheckJump(1);
+        characterModel.CallUpdate();
+        characterModel.ExitFloor();
 
-        ShouldReceiveJumpEvent(2);
+        ShouldIsJumping(true);
+        ShouldCallJump(2);
     }
 
     [Test]
     //跳躍後, 在跳躍延遲時間過後觸發地板, 可再跳
     public void can_jump_again_after_delay_time()
     {
-        characterModel.SetJumpDelay(0.5f);
+        GivenJumpDelay(0.5f);
 
         GivenIsJumpKeyDown(true);
-        characterModel.UpdateJumpTimer(0.3f);
-        characterModel.UpdateCheckJump(1);
+        characterModel.CallUpdate();
+        characterModel.ExitFloor();
 
-        ShouldReceiveJumpEvent(1);
+        ShouldCallJump(1);
 
-        GivenIsJumpKeyDown(true);
-        characterModel.UpdateJumpTimer(0.5f);
+        characterModel.CallUpdate();
         characterModel.TriggerFloor();
-        characterModel.UpdateCheckJump(1);
 
-        ShouldReceiveJumpEvent(2);
+        ShouldIsJumping(false);
+
+        GivenIsJumpKeyDown(true);
+        characterModel.CallUpdate();
+        characterModel.ExitFloor();
+
+        ShouldCallJump(2);
     }
-
-    // [Test]
-    // //墜落一定時間後, 傳送回原點
-    // public void fall_down_and_teleport()
-    // {
-    //     characterModel.SetFallDownTime(1f);
-    //
-    //     characterModel.ExitFloor();
-    //     characterModel.UpdateFallDownTimer(0.5f);
-    //
-    //     ShouldCallBackToOrigin(0);
-    //
-    //     characterModel.UpdateFallDownTimer(0.5f);
-    //
-    //     ShouldCallBackToOrigin(1);
-    // }
-
-    // [Test]
-    // //墜落一段時間後落地, 不會傳送回原點
-    // public void fall_down_and_trigger_floor()
-    // {
-    //     characterModel.SetFallDownTime(1f);
-    //
-    //     characterModel.ExitFloor();
-    //     characterModel.UpdateFallDownTimer(0.5f);
-    //
-    //     ShouldCallBackToOrigin(0);
-    //
-    //     characterModel.TriggerFloor();
-    //     characterModel.UpdateFallDownTimer(0.5f);
-    //
-    //     ShouldCallBackToOrigin(0);
-    // }
-
-    // [Test]
-    // //墜落一段時間後落地, 再墜落時會重算回原點時間
-    // public void fall_down_and_trigger_floor_and_fall_down_again()
-    // {
-    //     characterModel.SetFallDownTime(1f);
-    //
-    //     characterModel.ExitFloor();
-    //     characterModel.UpdateFallDownTimer(0.5f);
-    //
-    //     ShouldCallBackToOrigin(0);
-    //
-    //     characterModel.TriggerFloor();
-    //     characterModel.UpdateFallDownTimer(0.5f);
-    //
-    //     ShouldCallBackToOrigin(0);
-    //
-    //     characterModel.ExitFloor();
-    //     characterModel.UpdateFallDownTimer(0.5f);
-    //
-    //     ShouldCallBackToOrigin(0);
-    //
-    //     characterModel.UpdateFallDownTimer(0.5f);
-    //
-    //     ShouldCallBackToOrigin(1);
-    // }
-
-    // [Test]
-    // //墜落傳送回原點後, 不會繼續觸發回原點
-    // public void fall_down_and_teleport_and_not_trigger_again()
-    // {
-    //     characterModel.SetFallDownTime(1f);
-    //
-    //     characterModel.ExitFloor();
-    //     characterModel.UpdateFallDownTimer(1f);
-    //
-    //     ShouldCallBackToOrigin(1);
-    //
-    //     characterModel.UpdateFallDownTimer(1f);
-    //
-    //     ShouldCallBackToOrigin(1);
-    // }
 
     [Test]
     //接觸傳送門時, 點擊按鍵後傳送
     public void teleport_when_touch_teleport()
     {
-        GivenInteractKeyDown(true);
+        ICollider collider = CreateCollider((int)GameConst.GameObjectLayerType.TeleportGate);
+        ITeleportGate teleportGate = CreateTeleportGateComponent();
+        GivenGetComponent(collider, teleportGate);
 
-        ITeleportGate teleportGate = Substitute.For<ITeleportGate>();
-        characterModel.TriggerTeleportGate(teleportGate);
-        characterModel.UpdateCheckInteract();
+        characterModel.ColliderTriggerEnter(collider);
+
+        ShouldHaveTriggerTeleportGate(true);
+
+        GivenInteractKeyDown(true);
+        characterModel.CallUpdate();
 
         ShouldCallTeleport(teleportGate, 1);
+    }
+
+    [Test]
+    //接觸其他物件而非傳送門時, 點擊按鍵不會觸發傳送
+    public void not_teleport_when_touch_other_object()
+    {
+        ICollider collider = CreateCollider((int)GameConst.GameObjectLayerType.Weapon);
+
+        characterModel.ColliderTriggerEnter(collider);
+
+        ShouldHaveTriggerTeleportGate(false);
+
+        GivenInteractKeyDown(true);
+        characterModel.CallUpdate();
+
+        ShouldHaveTriggerTeleportGate(false);
+    }
+
+    [Test]
+    //接觸傳送門但取不到Component, 點擊按鍵不會觸發傳送
+    public void not_teleport_when_touch_teleport_gate_but_can_not_get_component()
+    {
+        ICollider collider = CreateCollider((int)GameConst.GameObjectLayerType.TeleportGate);
+        GivenGetComponent(collider, default(ITeleportGate));
+
+        characterModel.ColliderTriggerEnter(collider);
+
+        ShouldHaveTriggerTeleportGate(false);
+
+        GivenInteractKeyDown(true);
+        characterModel.CallUpdate();
+
+        ShouldHaveTriggerTeleportGate(false);
+    }
+
+    [Test]
+    //沒有觸碰任何物件時, 點擊按鍵不會觸發傳送
+    public void not_teleport_when_not_touch_anything()
+    {
+        GivenInteractKeyDown(true);
+        characterModel.CallUpdate();
+
+        ShouldHaveTriggerTeleportGate(false);
     }
 
     [Test]
     //接觸傳送門時, 點擊按鍵但超過距離, 不傳送
     public void not_teleport_when_touch_teleport_but_over_distance()
     {
+        GivenInteractDistance(2f);
+        GivenCharacterPosition(new Vector3(1, 0, 0));
         GivenInteractKeyDown(true);
 
-        GivenCharacterPosition(new Vector3(1, 0, 0));
-        characterModel.SetInteractDistance(2f);
-
-        ITeleportGate teleportGate = Substitute.For<ITeleportGate>();
+        ICollider collider = CreateCollider((int)GameConst.GameObjectLayerType.TeleportGate);
+        ITeleportGate teleportGate = CreateTeleportGateComponent();
+        GivenGetComponent(collider, teleportGate);
         GivenTeleportGatePos(teleportGate, new Vector3(5, 0, 0));
 
-        characterModel.TriggerTeleportGate(teleportGate);
-        characterModel.UpdateCheckInteract();
+        // characterModel.TriggerTeleportGate(teleportGate);
+        characterModel.CallUpdate();
 
         ShouldCallTeleport(teleportGate, 0);
         ShouldHaveTriggerTeleportGate(false);
     }
 
-    [Test]
-    //沒有接觸傳送門時, 點擊按鍵不會觸發傳送
-    public void not_teleport_when_not_touch_teleport()
+    private void GivenInteractDistance(float distance)
     {
-        GivenInteractKeyDown(true);
+        characterView.InteractDistance.Returns(distance);
+    }
 
-        characterModel.UpdateCheckInteract();
+    private void GivenJumpDelay(float delaySeconds)
+    {
+        characterView.JumpDelaySeconds.Returns(delaySeconds);
+    }
 
-        ShouldHaveTriggerTeleportGate(false);
+    private void GivenJumpForce(int jumpForce)
+    {
+        characterView.JumpForce.Returns(jumpForce);
+    }
+
+    private void GivenSpeed(int speed)
+    {
+        characterView.Speed.Returns(speed);
+    }
+
+    private void GivenDeltaTime(float deltaTime)
+    {
+        timeModel.deltaTime.Returns(deltaTime);
     }
 
     private void GivenCharacterPosition(Vector3 pos)
@@ -298,6 +311,11 @@ public class CharacterTest
         moveController.GetHorizontalAxis().Returns(axisValue);
     }
 
+    private void GivenGetComponent<T>(ICollider collider, T component)
+    {
+        collider.GetComponent<T>().Returns(component);
+    }
+
     private void ShouldHaveTriggerTeleportGate(bool expectedHave)
     {
         Assert.AreEqual(expectedHave, characterModel.HaveInteractGate);
@@ -313,9 +331,10 @@ public class CharacterTest
         teleport.Received(callTimes).BackToOrigin();
     }
 
-    private void ShouldReceiveJumpEvent(int triggerTimes)
+    private void ShouldCallJump(int triggerTimes)
     {
-        jumpEvent.Received(triggerTimes).Invoke(Arg.Any<float>());
+        characterRigidbody.Received(triggerTimes).AddForce(Arg.Is<Vector2>(v => v.y > 0 && v.x == 0));
+        audioManager.Received(triggerTimes).PlayOneShot("Jump");
     }
 
     private void ShouldIsJumping(bool expectedIsJumping)
@@ -323,8 +342,25 @@ public class CharacterTest
         Assert.AreEqual(expectedIsJumping, characterModel.IsJumping);
     }
 
-    private void ShouldReceiveHorizontalMoveEvent(float expectedLogic)
+    private void ShouldCallTranslateAndMoveRight()
     {
-        horizontalMoveEvent.Received(1).Invoke(expectedLogic);
+        characterView.Received(1).Translate(Arg.Is<Vector3>(v => v.x > 0));
+    }
+
+    private void ShouldCallTranslateAndMoveLeft()
+    {
+        characterView.Received(1).Translate(Arg.Is<Vector3>(v => v.x < 0));
+    }
+
+    private ICollider CreateCollider(int collisionLayer)
+    {
+        ICollider collider = Substitute.For<ICollider>();
+        collider.Layer.Returns(collisionLayer);
+        return collider;
+    }
+
+    private ITeleportGate CreateTeleportGateComponent()
+    {
+        return Substitute.For<ITeleportGate>();
     }
 }

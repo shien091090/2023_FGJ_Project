@@ -3,7 +3,7 @@ using System.Collections;
 using SNShien.Common.AudioTools;
 using UnityEngine;
 
-public class CharacterView : MonoBehaviour, IRigidbody
+public class CharacterView : MonoBehaviour, IRigidbody, ICharacterView
 {
     [SerializeField] private float jumpForce;
     [SerializeField] private float superJumpForce;
@@ -15,6 +15,11 @@ public class CharacterView : MonoBehaviour, IRigidbody
     [SerializeField] private float interactDistance;
     [SerializeField] private Animator anim;
     [SerializeField] private GameObject go_protectionEffect;
+
+    public float JumpForce => jumpForce;
+    public float Speed => speed;
+    public float JumpDelaySeconds => jumpDelaySeconds;
+    public float InteractDistance => interactDistance;
 
     public Vector3 position
     {
@@ -30,9 +35,10 @@ public class CharacterView : MonoBehaviour, IRigidbody
 
     private Rigidbody2D rigidbody;
     private SpriteRenderer spriteRenderer;
+
     private CharacterModel characterModel;
-    private bool isDying;
-    private bool isProtected;
+
+    // private bool isProtected;
     public bool IsFaceRight { get; private set; }
 
     public SpriteRenderer GetSpriteRenderer
@@ -57,48 +63,60 @@ public class CharacterView : MonoBehaviour, IRigidbody
         }
     }
 
-    private void Start()
+    public void PlayAnimation(string animationKey)
     {
-        characterModel = new CharacterModel(new CharacterMoveController(), new CharacterKeyController(), teleportComponent, this);
-        characterModel.SetJumpDelay(jumpDelaySeconds);
-        characterModel.SetInteractDistance(interactDistance);
-
-        SetEventRegister();
-        InitState();
+        anim.Play(animationKey, 0, 0);
     }
 
-    private void Update()
-    {
-        if (isDying)
-            return;
 
-        characterModel.UpdateJumpTimer(Time.deltaTime);
-        characterModel.UpdateCheckJump(jumpForce);
-        characterModel.UpdateMove(Time.deltaTime, speed);
-        characterModel.UpdateCheckInteract();
-    }
-
-    private void InitState()
-    {
-        anim.Play("character_normal", 0);
-        isDying = false;
-        isProtected = false;
-        IsFaceRight = true;
-        SetProtectionActive(false);
-    }
-
-    private void SetProtectionActive(bool isActive)
+    public void SetProtectionActive(bool isActive)
     {
         go_protectionEffect.SetActive(isActive);
     }
 
+    public void Waiting(float seconds, Action callback)
+    {
+        StartCoroutine(Cor_WaitingCoroutine(seconds, callback));
+    }
+
+    public void SetSpriteFlix(bool flipX)
+    {
+        GetSpriteRenderer.flipX = flipX;
+    }
+
+    public void Translate(Vector3 moveVector)
+    {
+        transform.Translate(moveVector);
+    }
+
+    public void AddForce(Vector2 forceVector, ForceMode2D forceMode = ForceMode2D.Force)
+    {
+        GetRigidbody.AddForce(forceVector, forceMode);
+    }
+
+    private void Start()
+    {
+        characterModel = new CharacterModel(new CharacterMoveController(), new CharacterKeyController(), teleportComponent, this, FmodAudioManager.Instance,
+            new TimeModel());
+        characterModel.InitView(this);
+        // characterModel.SetJumpDelay(JumpDelaySeconds);
+        // characterModel.SetInteractDistance(InteractDistance);
+
+        SetEventRegister();
+    }
+
+    private void Update()
+    {
+        characterModel.CallUpdate();
+    }
+
     private void SetEventRegister()
     {
-        characterModel.OnHorizontalMove -= OnHorizontalMove;
-        characterModel.OnHorizontalMove += OnHorizontalMove;
+        // characterModel.OnHorizontalMove -= OnHorizontalMove;
+        // characterModel.OnHorizontalMove += OnHorizontalMove;
 
-        characterModel.OnJump -= OnJump;
-        characterModel.OnJump += OnJump;
+        // characterModel.OnJump -= OnJump;
+        // characterModel.OnJump += OnJump;
 
         ItemStateManager.Instance.OnUseItemOneTime -= OnUseItemOneTime;
         ItemStateManager.Instance.OnUseItemOneTime += OnUseItemOneTime;
@@ -110,49 +128,18 @@ public class CharacterView : MonoBehaviour, IRigidbody
         ItemStateManager.Instance.OnEndItemEffect += OnEndItemEffect;
     }
 
-    private void CheckChangeDirection(float moveValue)
+    private IEnumerator Cor_WaitingCoroutine(float seconds, Action callback)
     {
-        if (IsFaceRight && moveValue < 0)
-        {
-            IsFaceRight = false;
-            GetSpriteRenderer.flipX = true;
-        }
-        else if (IsFaceRight == false && moveValue > 0)
-        {
-            IsFaceRight = true;
-            GetSpriteRenderer.flipX = false;
-        }
+        yield return new WaitForSeconds(seconds);
+        callback?.Invoke();
     }
 
-    private void Die()
-    {
-        if (isDying)
-            return;
-
-        StartCoroutine(Cor_Die());
-    }
-
-    private IEnumerator Cor_Die()
-    {
-        isDying = true;
-        FmodAudioManager.Instance.PlayOneShot("Damage");
-        anim.Play("character_die", 0);
-
-        yield return new WaitForSeconds(1.5f);
-
-        anim.Play("character_normal", 0);
-        teleportComponent.BackToOrigin();
-
-        yield return new WaitForSeconds(0.5f);
-        isDying = false;
-        isProtected = false;
-    }
 
     private void OnEndItemEffect(ItemType itemType)
     {
         if (itemType == ItemType.Protection)
         {
-            isProtected = false;
+            characterModel.isProtected = false;
             SetProtectionActive(false);
         }
     }
@@ -161,7 +148,7 @@ public class CharacterView : MonoBehaviour, IRigidbody
     {
         if (itemType == ItemType.Protection)
         {
-            isProtected = true;
+            characterModel.isProtected = true;
             SetProtectionActive(true);
         }
     }
@@ -190,23 +177,24 @@ public class CharacterView : MonoBehaviour, IRigidbody
 
     public void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject.layer == (int)GameConst.GameObjectLayerType.Monster && isProtected == false)
-        {
-            MonsterView monsterView = col.gameObject.GetComponent<MonsterView>();
-            if (monsterView == null || monsterView.CurrentState == MonsterState.Normal)
-                Die();
-
-            return;
-        }
-
-        if (col.gameObject.layer != (int)GameConst.GameObjectLayerType.TeleportGate)
-            return;
-
-        TeleportGateComponent teleportGateComponent = col.gameObject.GetComponent<TeleportGateComponent>();
-        if (teleportGateComponent == null)
-            return;
-
-        characterModel.TriggerTeleportGate(teleportGateComponent);
+        characterModel.ColliderTriggerEnter(new ColliderFacade(col));
+        // if (col.gameObject.layer == (int)GameConst.GameObjectLayerType.Monster && characterModel.isProtected == false)
+        // {
+        //     IMonsterView monsterView = col.gameObject.GetComponent<IMonsterView>();
+        //     if (monsterView == null || monsterView.CurrentState == MonsterState.Normal)
+        //         characterModel.Die();
+        //
+        //     return;
+        // }
+        //
+        // if (col.gameObject.layer != (int)GameConst.GameObjectLayerType.TeleportGate)
+        //     return;
+        //
+        // TeleportGateComponent teleportGateComponent = col.gameObject.GetComponent<TeleportGateComponent>();
+        // if (teleportGateComponent == null)
+        //     return;
+        //
+        // characterModel.TriggerTeleportGate(teleportGateComponent);
     }
 
     public void OnTriggerExit2D(Collider2D col)
@@ -221,15 +209,9 @@ public class CharacterView : MonoBehaviour, IRigidbody
         characterModel.ExitTeleportGate();
     }
 
-    private void OnJump(float jumpForce)
+    public void OnJump(float jumpForce)
     {
         FmodAudioManager.Instance.PlayOneShot("Jump");
         GetRigidbody.AddForce(new Vector2(0, jumpForce));
-    }
-
-    private void OnHorizontalMove(float moveValue)
-    {
-        CheckChangeDirection(moveValue);
-        transform.Translate(new Vector2(moveValue, 0));
     }
 }
