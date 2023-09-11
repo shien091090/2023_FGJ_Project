@@ -149,11 +149,6 @@ public class CharacterModel
         IsStayOnFloor = false;
     }
 
-    public void ExitTeleportGate()
-    {
-        CurrentTriggerTeleportGate = null;
-    }
-
     public void Die()
     {
         if (IsDying)
@@ -195,6 +190,17 @@ public class CharacterModel
         CurrentTriggerTeleportGate = teleportGateComponent;
     }
 
+    public void ColliderTriggerExit(ICollider col)
+    {
+        if (col.Layer != (int)GameConst.GameObjectLayerType.TeleportGate)
+            return;
+
+        ITeleportGate teleportGateComponent = col.GetComponent<ITeleportGate>();
+        if (teleportGateComponent == null)
+            return;
+
+        CurrentTriggerTeleportGate = null;
+    }
 
     private void CheckChangeDirection(float moveValue)
     {

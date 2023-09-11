@@ -260,6 +260,25 @@ public class CharacterTest
         ShouldCallTeleport(teleportGate, 0);
         ShouldHaveTriggerTeleportGate(false);
     }
+    
+    [Test]
+    //接觸傳送門後再離開, 點擊按鍵後不會觸發傳送
+    public void not_teleport_when_touch_teleport_but_exit()
+    {
+        ICollider collider = CreateCollider((int)GameConst.GameObjectLayerType.TeleportGate);
+        ITeleportGate teleportGate = CreateTeleportGateComponent();
+        GivenGetComponent(collider, teleportGate);
+
+        characterModel.ColliderTriggerEnter(collider);
+        characterModel.ColliderTriggerExit(collider);
+
+        ShouldHaveTriggerTeleportGate(false);
+
+        GivenInteractKeyDown(true);
+        characterModel.CallUpdate();
+
+        ShouldCallTeleport(teleportGate, 0);
+    }
 
     private void GivenInteractDistance(float distance)
     {

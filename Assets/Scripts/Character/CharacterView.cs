@@ -178,15 +178,11 @@ public class CharacterView : MonoBehaviour, IRigidbody, ICharacterView
     public void OnTriggerEnter2D(Collider2D col)
     {
         characterModel.ColliderTriggerEnter(new ColliderFacade(col));
-        // if (col.gameObject.layer == (int)GameConst.GameObjectLayerType.Monster && characterModel.isProtected == false)
-        // {
-        //     IMonsterView monsterView = col.gameObject.GetComponent<IMonsterView>();
-        //     if (monsterView == null || monsterView.CurrentState == MonsterState.Normal)
-        //         characterModel.Die();
-        //
-        //     return;
-        // }
-        //
+    }
+
+    public void OnTriggerExit2D(Collider2D col)
+    {
+        characterModel.ColliderTriggerExit(new ColliderFacade(col));
         // if (col.gameObject.layer != (int)GameConst.GameObjectLayerType.TeleportGate)
         //     return;
         //
@@ -194,19 +190,7 @@ public class CharacterView : MonoBehaviour, IRigidbody, ICharacterView
         // if (teleportGateComponent == null)
         //     return;
         //
-        // characterModel.TriggerTeleportGate(teleportGateComponent);
-    }
-
-    public void OnTriggerExit2D(Collider2D col)
-    {
-        if (col.gameObject.layer != (int)GameConst.GameObjectLayerType.TeleportGate)
-            return;
-
-        TeleportGateComponent teleportGateComponent = col.gameObject.GetComponent<TeleportGateComponent>();
-        if (teleportGateComponent == null)
-            return;
-
-        characterModel.ExitTeleportGate();
+        // characterModel.ExitTeleportGate();
     }
 
     public void OnJump(float jumpForce)
