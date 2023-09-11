@@ -1,5 +1,6 @@
 using System;
 using NSubstitute;
+using NSubstitute.Core;
 using NUnit.Framework;
 using SNShien.Common.AudioTools;
 using UnityEngine;
@@ -14,11 +15,6 @@ public class CharacterTest
     private IAudioManager audioManager;
     private ITimeModel timeModel;
     private ICharacterView characterView;
-
-    private static void GivenTeleportGatePos(ITeleportGate teleportGate, Vector3 pos)
-    {
-        teleportGate.GetPos.Returns(pos);
-    }
 
     [SetUp]
     public void Setup()
@@ -255,11 +251,10 @@ public class CharacterTest
         GivenInteractKeyDown(true);
 
         ICollider collider = CreateCollider((int)GameConst.GameObjectLayerType.TeleportGate);
-        ITeleportGate teleportGate = CreateTeleportGateComponent();
+        ITeleportGate teleportGate = CreateTeleportGateComponent(new Vector3(5, 0, 0));
         GivenGetComponent(collider, teleportGate);
-        GivenTeleportGatePos(teleportGate, new Vector3(5, 0, 0));
 
-        // characterModel.TriggerTeleportGate(teleportGate);
+        characterModel.ColliderTriggerEnter(collider);
         characterModel.CallUpdate();
 
         ShouldCallTeleport(teleportGate, 0);
@@ -359,8 +354,10 @@ public class CharacterTest
         return collider;
     }
 
-    private ITeleportGate CreateTeleportGateComponent()
+    private ITeleportGate CreateTeleportGateComponent(Vector3 pos = default)
     {
-        return Substitute.For<ITeleportGate>();
+        ITeleportGate teleportGate = Substitute.For<ITeleportGate>();
+        teleportGate.GetPos.Returns(pos);
+        return teleportGate;
     }
 }
