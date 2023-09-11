@@ -86,7 +86,7 @@ public class CharacterTest
     //離地時不能跳
     public void cannot_jump_when_not_on_floor()
     {
-        characterModel.ExitFloor();
+        characterModel.CollisionExit(CreateCollision((int)GameConst.GameObjectLayerType.Platform));
 
         GivenIsJumpKeyDown(true);
         characterModel.CallUpdate();
@@ -112,11 +112,12 @@ public class CharacterTest
         GivenIsJumpKeyDown(true);
 
         characterModel.CallUpdate();
-        characterModel.ExitFloor();
+        characterModel.CollisionExit(CreateCollision((int)GameConst.GameObjectLayerType.Platform));
 
         ShouldCallJump(1);
 
-        characterModel.TriggerFloor();
+        characterModel.CallUpdate();
+        characterModel.CollisionEnter(CreateCollision((int)GameConst.GameObjectLayerType.Platform, true));
 
         ShouldIsJumping(false);
 
@@ -130,17 +131,18 @@ public class CharacterTest
     //跳躍後, 在跳躍延遲時間內觸發地板, 不可再跳, 過延遲時間後再次觸發地板才可跳
     public void cannot_jump_again_until_delay_time()
     {
-        GivenJumpDelay(0.5f);
+        GivenJumpDelay(0.7f);
         GivenDeltaTime(0.3f);
 
         GivenIsJumpKeyDown(true);
         characterModel.CallUpdate();
-        characterModel.ExitFloor();
+        characterModel.CollisionExit(CreateCollision((int)GameConst.GameObjectLayerType.Platform));
 
         ShouldIsJumping(true);
         ShouldCallJump(1);
 
-        characterModel.TriggerFloor();
+        characterModel.CallUpdate();
+        characterModel.CollisionEnter(CreateCollision((int)GameConst.GameObjectLayerType.Platform, true));
 
         ShouldIsJumping(false);
 
@@ -151,7 +153,7 @@ public class CharacterTest
 
         GivenIsJumpKeyDown(true);
         characterModel.CallUpdate();
-        characterModel.ExitFloor();
+        characterModel.CollisionExit(CreateCollision((int)GameConst.GameObjectLayerType.Platform));
 
         ShouldIsJumping(true);
         ShouldCallJump(2);
@@ -165,18 +167,18 @@ public class CharacterTest
 
         GivenIsJumpKeyDown(true);
         characterModel.CallUpdate();
-        characterModel.ExitFloor();
+        characterModel.CollisionExit(CreateCollision((int)GameConst.GameObjectLayerType.Platform));
 
         ShouldCallJump(1);
 
         characterModel.CallUpdate();
-        characterModel.TriggerFloor();
+        characterModel.CollisionEnter(CreateCollision((int)GameConst.GameObjectLayerType.Platform, true));
 
         ShouldIsJumping(false);
 
         GivenIsJumpKeyDown(true);
         characterModel.CallUpdate();
-        characterModel.ExitFloor();
+        characterModel.CollisionExit(CreateCollision((int)GameConst.GameObjectLayerType.Platform));
 
         ShouldCallJump(2);
     }
@@ -260,7 +262,7 @@ public class CharacterTest
         ShouldCallTeleport(teleportGate, 0);
         ShouldHaveTriggerTeleportGate(false);
     }
-    
+
     [Test]
     //接觸傳送門後再離開, 點擊按鍵後不會觸發傳送
     public void not_teleport_when_touch_teleport_but_exit()
@@ -371,6 +373,14 @@ public class CharacterTest
         ICollider collider = Substitute.For<ICollider>();
         collider.Layer.Returns(collisionLayer);
         return collider;
+    }
+
+    private ICollision CreateCollision(int collisionLayer, bool isPhysicsOverlapCircle = false)
+    {
+        ICollision collision = Substitute.For<ICollision>();
+        collision.Layer.Returns(collisionLayer);
+        collision.CheckPhysicsOverlapCircle(Arg.Any<Vector3>(), Arg.Any<float>(), Arg.Any<GameConst.GameObjectLayerType>()).Returns(isPhysicsOverlapCircle);
+        return collision;
     }
 
     private ITeleportGate CreateTeleportGateComponent(Vector3 pos = default)

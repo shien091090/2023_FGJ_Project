@@ -20,6 +20,8 @@ public class CharacterView : MonoBehaviour, IRigidbody, ICharacterView
     public float Speed => speed;
     public float JumpDelaySeconds => jumpDelaySeconds;
     public float InteractDistance => interactDistance;
+    public Vector3 FootPointPosition => footPoint.position;
+    public float FootRadius => footRadius;
 
     public Vector3 position
     {
@@ -159,20 +161,14 @@ public class CharacterView : MonoBehaviour, IRigidbody, ICharacterView
             characterModel.Jump(superJumpForce);
     }
 
-    public void OnCollisionStay2D(Collision2D col)
+    public void OnCollisionEnter2D(Collision2D col)
     {
-        bool isOnFloor = Physics2D.OverlapCircle(footPoint.position, footRadius, LayerMask.GetMask(GameConst.GameObjectLayerType.Platform.ToString()));
-
-        if (col.gameObject.layer == (int)GameConst.GameObjectLayerType.Platform && isOnFloor)
-            characterModel.TriggerFloor();
+        characterModel.CollisionEnter(new CollisionFacade(col));
     }
 
     public void OnCollisionExit2D(Collision2D col)
     {
-        if (col.gameObject.layer == (int)GameConst.GameObjectLayerType.Platform)
-        {
-            characterModel.ExitFloor();
-        }
+        characterModel.CollisionExit(new CollisionFacade(col));
     }
 
     public void OnTriggerEnter2D(Collider2D col)
@@ -183,14 +179,6 @@ public class CharacterView : MonoBehaviour, IRigidbody, ICharacterView
     public void OnTriggerExit2D(Collider2D col)
     {
         characterModel.ColliderTriggerExit(new ColliderFacade(col));
-        // if (col.gameObject.layer != (int)GameConst.GameObjectLayerType.TeleportGate)
-        //     return;
-        //
-        // TeleportGateComponent teleportGateComponent = col.gameObject.GetComponent<TeleportGateComponent>();
-        // if (teleportGateComponent == null)
-        //     return;
-        //
-        // characterModel.ExitTeleportGate();
     }
 
     public void OnJump(float jumpForce)

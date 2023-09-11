@@ -7,6 +7,8 @@ public interface ICharacterView
     float Speed { get; }
     float JumpDelaySeconds { get; }
     float InteractDistance { get; }
+    Vector3 FootPointPosition { get; }
+    float FootRadius { get; }
     void SetProtectionActive(bool isActive);
     void SetSpriteFlix(bool flipX);
     void PlayAnimation(string animationKey);

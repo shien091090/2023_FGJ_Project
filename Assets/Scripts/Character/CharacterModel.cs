@@ -138,17 +138,6 @@ public class CharacterModel
         selfRigidbody.AddForce(new Vector2(0, jumpForce));
     }
 
-    public void TriggerFloor()
-    {
-        IsStayOnFloor = true;
-        IsJumping = false;
-    }
-
-    public void ExitFloor()
-    {
-        IsStayOnFloor = false;
-    }
-
     public void Die()
     {
         if (IsDying)
@@ -192,14 +181,32 @@ public class CharacterModel
 
     public void ColliderTriggerExit(ICollider col)
     {
-        if (col.Layer != (int)GameConst.GameObjectLayerType.TeleportGate)
-            return;
+        if (col.Layer == (int)GameConst.GameObjectLayerType.TeleportGate)
+        {
+            ITeleportGate teleportGateComponent = col.GetComponent<ITeleportGate>();
+            if (teleportGateComponent == null)
+                return;
 
-        ITeleportGate teleportGateComponent = col.GetComponent<ITeleportGate>();
-        if (teleportGateComponent == null)
-            return;
+            CurrentTriggerTeleportGate = null;
+        }
+    }
 
-        CurrentTriggerTeleportGate = null;
+    public void CollisionEnter(ICollision col)
+    {
+        bool isOnFloor = col.CheckPhysicsOverlapCircle(characterView.FootPointPosition, characterView.FootRadius, GameConst.GameObjectLayerType.Platform);
+        if (col.Layer == (int)GameConst.GameObjectLayerType.Platform && isOnFloor)
+        {
+            IsStayOnFloor = true;
+            IsJumping = false;
+        }
+    }
+
+    public void CollisionExit(ICollision col)
+    {
+        if (col.Layer == (int)GameConst.GameObjectLayerType.Platform)
+        {
+            IsStayOnFloor = false;
+        }
     }
 
     private void CheckChangeDirection(float moveValue)
