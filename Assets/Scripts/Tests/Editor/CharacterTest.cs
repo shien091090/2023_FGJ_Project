@@ -322,6 +322,23 @@ public class CharacterTest
         ShouldDying(false);
     }
 
+    [Test]
+    //接觸暈眩中的怪物, 怪物解除暈眩時會死亡
+    public void die_when_touch_stun_monster_and_monster_recover()
+    {
+        ICollider collider = CreateCollider((int)GameConst.GameObjectLayerType.Monster);
+        IMonsterView monster = CreateMonster(MonsterState.Stun);
+        GivenGetComponent(collider, monster);
+        characterModel.ColliderTriggerStay(collider);
+
+        ShouldDying(false);
+
+        GivenMonsterCurrentState(monster, MonsterState.Normal);
+        characterModel.ColliderTriggerStay(collider);
+
+        ShouldDying(true);
+    }
+
     private void GivenInteractDistance(float distance)
     {
         characterView.InteractDistance.Returns(distance);
@@ -370,6 +387,11 @@ public class CharacterTest
     private void GivenGetComponent<T>(ICollider collider, T component)
     {
         collider.GetComponent<T>().Returns(component);
+    }
+
+    private void GivenMonsterCurrentState(IMonsterView monsterView, MonsterState monsterState)
+    {
+        monsterView.CurrentState.Returns(monsterState);
     }
 
     private void CallCharacterViewWaitingCallback()
@@ -431,7 +453,7 @@ public class CharacterTest
     private IMonsterView CreateMonster(MonsterState monsterState)
     {
         IMonsterView monsterView = Substitute.For<IMonsterView>();
-        monsterView.CurrentState.Returns(monsterState);
+        GivenMonsterCurrentState(monsterView, monsterState);
         return monsterView;
     }
 
