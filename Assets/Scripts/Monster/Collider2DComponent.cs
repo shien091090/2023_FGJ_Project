@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class ColliderComponent : MonoBehaviour
@@ -32,5 +33,11 @@ public class ColliderComponent : MonoBehaviour
     {
         if (handleType == ColliderHandleType.Trigger)
             handler?.ColliderTriggerExit(new ColliderAdapter(col));
+    }
+
+    public void OnTriggerStay2D(Collider2D col)
+    {
+        if(handleType == ColliderHandleType.Trigger)
+            handler?.ColliderTriggerStay(new ColliderAdapter(col));
     }
 }

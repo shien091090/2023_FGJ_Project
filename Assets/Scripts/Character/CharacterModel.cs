@@ -33,15 +33,6 @@ public class CharacterModel : IColliderHandler
 
     public void ColliderTriggerEnter(ICollider col)
     {
-        if (col.Layer == (int)GameConst.GameObjectLayerType.Monster && isProtected == false)
-        {
-            IMonsterView monsterView = col.GetComponent<IMonsterView>();
-            if (monsterView == null || monsterView.CurrentState == MonsterState.Normal)
-                Die();
-
-            return;
-        }
-
         if (col.Layer != (int)GameConst.GameObjectLayerType.TeleportGate)
             return;
 
@@ -61,6 +52,16 @@ public class CharacterModel : IColliderHandler
                 return;
 
             CurrentTriggerTeleportGate = null;
+        }
+    }
+
+    public void ColliderTriggerStay(ICollider col)
+    {
+        if (col.Layer == (int)GameConst.GameObjectLayerType.Monster && isProtected == false)
+        {
+            IMonsterView monsterView = col.GetComponent<IMonsterView>();
+            if (monsterView == null || monsterView.CurrentState == MonsterState.Normal)
+                Die();
         }
     }
 

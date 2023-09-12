@@ -296,7 +296,7 @@ public class CharacterTest
     {
         ICollider collider = CreateCollider((int)GameConst.GameObjectLayerType.Monster);
         GivenGetComponent(collider, CreateMonster(MonsterState.Normal));
-        characterModel.ColliderTriggerEnter(collider);
+        characterModel.ColliderTriggerStay(collider);
 
         ShouldDying(true);
         ShouldPlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_DIE);
@@ -310,14 +310,14 @@ public class CharacterTest
 
         ShouldDying(false);
     }
-    
+
     [Test]
     //接觸暈眩中的怪不會死亡
     public void not_die_when_touch_stun_monster()
     {
         ICollider collider = CreateCollider((int)GameConst.GameObjectLayerType.Monster);
         GivenGetComponent(collider, CreateMonster(MonsterState.Stun));
-        characterModel.ColliderTriggerEnter(collider);
+        characterModel.ColliderTriggerStay(collider);
 
         ShouldDying(false);
     }
