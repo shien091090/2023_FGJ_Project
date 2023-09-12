@@ -310,6 +310,17 @@ public class CharacterTest
 
         ShouldDying(false);
     }
+    
+    [Test]
+    //接觸暈眩中的怪不會死亡
+    public void not_die_when_touch_stun_monster()
+    {
+        ICollider collider = CreateCollider((int)GameConst.GameObjectLayerType.Monster);
+        GivenGetComponent(collider, CreateMonster(MonsterState.Stun));
+        characterModel.ColliderTriggerEnter(collider);
+
+        ShouldDying(false);
+    }
 
     private void GivenInteractDistance(float distance)
     {
