@@ -9,6 +9,7 @@ public class MonsterView : MonoBehaviour, IMonsterView
     [SerializeField] private GameObject go_stunStateEffect;
     [SerializeField] private string monsterType;
     [SerializeField] private float keepStunTime;
+    public MonsterState CurrentState => monsterModel.CurrentState;
 
     private MonsterModel monsterModel;
     private Animator anim;
@@ -17,7 +18,6 @@ public class MonsterView : MonoBehaviour, IMonsterView
 
     public string GetStunAnimKey => string.Format(ANIM_KEY_STUN_FORMAT, monsterType);
     public string GetMovableAnimKey => string.Format(ANIM_KEY_NORMAL_FORMAT, monsterType);
-    public MonsterState CurrentState => monsterModel.CurrentState;
 
     private MissingTexturePart GetMissingTexturePart
     {
