@@ -10,13 +10,11 @@ public class CharacterModel : IColliderHandler
     private readonly ITeleport teleport;
     private readonly IRigidbody selfRigidbody;
     private readonly IAudioManager audioManager;
+    private readonly ITimeModel timeModel;
     private ICharacterView characterView;
-
     private float jumpTimer;
-    private ITimeModel timeModel;
     public bool IsJumping { get; private set; }
     public bool HaveInteractGate => CurrentTriggerTeleportGate != null;
-
     private ITeleportGate CurrentTriggerTeleportGate { get; set; }
     private bool IsStayOnFloor { get; set; }
     private bool IsDying { get; set; }

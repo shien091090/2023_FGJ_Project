@@ -3,7 +3,7 @@ using System.Collections;
 using SNShien.Common.AudioTools;
 using UnityEngine;
 
-public class CharacterView : MonoBehaviour, IRigidbody, ICharacterView
+public class CharacterView : MonoBehaviour, ICharacterView
 {
     [SerializeField] private float jumpForce;
     [SerializeField] private float superJumpForce;
@@ -16,6 +16,7 @@ public class CharacterView : MonoBehaviour, IRigidbody, ICharacterView
     [SerializeField] private Animator anim;
     [SerializeField] private GameObject go_protectionEffect;
     [SerializeField] private ColliderComponent colliderComponent;
+    [SerializeField] private RigidBody2DComponent rigidBodyComponent;
 
     public float JumpForce => jumpForce;
     public float Speed => speed;
@@ -24,21 +25,7 @@ public class CharacterView : MonoBehaviour, IRigidbody, ICharacterView
     public Vector3 FootPointPosition => footPoint.position;
     public float FootRadius => footRadius;
 
-    public Vector3 position
-    {
-        get => transform.position;
-        set => transform.position = value;
-    }
-
-    public Vector2 velocity
-    {
-        get => GetRigidbody.velocity;
-        set => GetRigidbody.velocity = value;
-    }
-
-    private Rigidbody2D rigidbody;
     private SpriteRenderer spriteRenderer;
-
     private CharacterModel characterModel;
 
     public bool IsFaceRight { get; private set; }
@@ -54,22 +41,10 @@ public class CharacterView : MonoBehaviour, IRigidbody, ICharacterView
         }
     }
 
-    private Rigidbody2D GetRigidbody
-    {
-        get
-        {
-            if (rigidbody == null)
-                rigidbody = GetComponent<Rigidbody2D>();
-
-            return rigidbody;
-        }
-    }
-
     public void PlayAnimation(string animationKey)
     {
         anim.Play(animationKey, 0, 0);
     }
-
 
     public void SetProtectionActive(bool isActive)
     {
@@ -91,14 +66,9 @@ public class CharacterView : MonoBehaviour, IRigidbody, ICharacterView
         transform.Translate(moveVector);
     }
 
-    public void AddForce(Vector2 forceVector, ForceMode2D forceMode = ForceMode2D.Force)
-    {
-        GetRigidbody.AddForce(forceVector, forceMode);
-    }
-
     private void Start()
     {
-        characterModel = new CharacterModel(new CharacterMoveController(), new CharacterKeyController(), teleportComponent, this, FmodAudioManager.Instance,
+        characterModel = new CharacterModel(new CharacterMoveController(), new CharacterKeyController(), teleportComponent, rigidBodyComponent, FmodAudioManager.Instance,
             new TimeModel());
         characterModel.InitView(this);
         colliderComponent.InitHandler(characterModel);
@@ -161,11 +131,5 @@ public class CharacterView : MonoBehaviour, IRigidbody, ICharacterView
     public void OnTriggerExit2D(Collider2D col)
     {
         characterModel.ColliderTriggerExit(new ColliderAdapter(col));
-    }
-
-    public void OnJump(float jumpForce)
-    {
-        FmodAudioManager.Instance.PlayOneShot("Jump");
-        GetRigidbody.AddForce(new Vector2(0, jumpForce));
     }
 }

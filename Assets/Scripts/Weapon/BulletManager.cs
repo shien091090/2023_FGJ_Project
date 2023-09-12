@@ -47,7 +47,7 @@ public class BulletManager : MonoBehaviour
         GameObject bulletObject = GetBulletObject();
 
         bulletObject.SetActive(true);
-        bulletObject.transform.position = character.position;
+        // bulletObject.transform.position = character.position;
         FaceToCharacterFaceDirection(bulletObject);
     }
 }
