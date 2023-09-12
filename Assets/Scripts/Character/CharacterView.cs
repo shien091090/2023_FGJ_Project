@@ -15,7 +15,8 @@ public class CharacterView : MonoBehaviour, ICharacterView
     [SerializeField] private float interactDistance;
     [SerializeField] private Animator anim;
     [SerializeField] private GameObject go_protectionEffect;
-    [SerializeField] private ColliderComponent colliderComponent;
+    [SerializeField] private ColliderComponent footColliderComponent;
+    [SerializeField] private ColliderComponent mainColliderComponent;
     [SerializeField] private RigidBody2DComponent rigidBodyComponent;
 
     public float JumpForce => jumpForce;
@@ -71,7 +72,8 @@ public class CharacterView : MonoBehaviour, ICharacterView
         characterModel = new CharacterModel(new CharacterMoveController(), new CharacterKeyController(), teleportComponent, rigidBodyComponent, FmodAudioManager.Instance,
             new TimeModel());
         characterModel.InitView(this);
-        colliderComponent.InitHandler(characterModel);
+        footColliderComponent.InitHandler(characterModel);
+        mainColliderComponent.InitHandler(characterModel);
         SetEventRegister();
     }
 
@@ -121,15 +123,5 @@ public class CharacterView : MonoBehaviour, ICharacterView
     {
         if (itemType == ItemType.Shoes)
             characterModel.Jump(superJumpForce);
-    }
-
-    public void OnTriggerEnter2D(Collider2D col)
-    {
-        characterModel.ColliderTriggerEnter(new ColliderAdapter(col));
-    }
-
-    public void OnTriggerExit2D(Collider2D col)
-    {
-        characterModel.ColliderTriggerExit(new ColliderAdapter(col));
     }
 }

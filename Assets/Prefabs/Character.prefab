@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 8825951375671192468}
   - component: {fileID: 8017394335448449450}
   - component: {fileID: 3509490483848623688}
+  - component: {fileID: 372943867970350209}
+  - component: {fileID: 4061099419244666293}
   m_Layer: 7
   m_Name: Character
   m_TagString: Untagged
@@ -60,7 +62,9 @@ MonoBehaviour:
   interactDistance: 3
   anim: {fileID: 3509490483848623688}
   go_protectionEffect: {fileID: 1122563522264065225}
-  colliderComponent: {fileID: 9058360614077808744}
+  footColliderComponent: {fileID: 9058360614077808744}
+  mainColliderComponent: {fileID: 4061099419244666293}
+  rigidBodyComponent: {fileID: 372943867970350209}
 --- !u!212 &7918636506258862006
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -206,6 +210,31 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &372943867970350209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 755202031072836492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4a76ff51f684b9a92a21271520109ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4061099419244666293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 755202031072836492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60a64f25de1b466d9527b351f1ca2178, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handleType: 0
 --- !u!1 &1122563522264065225
 GameObject:
   m_ObjectHideFlags: 0
