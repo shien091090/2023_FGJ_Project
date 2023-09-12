@@ -8,4 +8,9 @@ public class GameConst
         Monster = 9,
         Weapon = 10
     }
+
+    public const string AUDIO_KEY_DAMAGE = "Damage";
+    
+    public const string ANIMATION_KEY_CHARACTER_DIE = "character_die";
+    public const string ANIMATION_KEY_CHARACTER_NORMAL = "character_normal";
 }

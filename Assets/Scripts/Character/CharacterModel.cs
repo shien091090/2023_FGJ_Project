@@ -15,9 +15,9 @@ public class CharacterModel : IColliderHandler
     private float jumpTimer;
     public bool IsJumping { get; private set; }
     public bool HaveInteractGate => CurrentTriggerTeleportGate != null;
+    public bool IsDying { get; set; }
     private ITeleportGate CurrentTriggerTeleportGate { get; set; }
     private bool IsStayOnFloor { get; set; }
-    private bool IsDying { get; set; }
     private bool IsFaceRight { get; set; }
 
     public CharacterModel(IMoveController moveController, IKeyController keyController, ITeleport teleport, IRigidbody characterRigidbody, IAudioManager audioManager,
@@ -89,7 +89,7 @@ public class CharacterModel : IColliderHandler
 
     private void InitState()
     {
-        characterView.PlayAnimation("character_normal");
+        characterView.PlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_NORMAL);
         jumpTimer = characterView.JumpDelaySeconds;
         IsDying = false;
         isProtected = false;
@@ -129,11 +129,11 @@ public class CharacterModel : IColliderHandler
             return;
 
         IsDying = true;
-        audioManager.PlayOneShot("Damage");
-        characterView.PlayAnimation("character_die");
+        audioManager.PlayOneShot(GameConst.AUDIO_KEY_DAMAGE);
+        characterView.PlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_DIE);
         characterView.Waiting(1.5f, () =>
         {
-            characterView.PlayAnimation("character_normal");
+            characterView.PlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_NORMAL);
             teleport.BackToOrigin();
             characterView.Waiting(0.5f, () =>
             {

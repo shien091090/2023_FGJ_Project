@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using NSubstitute;
 using NSubstitute.Core;
 using NUnit.Framework;
@@ -16,6 +17,8 @@ public class CharacterTest
     private ITimeModel timeModel;
     private ICharacterView characterView;
 
+    private Action characterViewWaitingCallback;
+
     [SetUp]
     public void Setup()
     {
@@ -25,7 +28,12 @@ public class CharacterTest
         characterRigidbody = Substitute.For<IRigidbody>();
         audioManager = Substitute.For<IAudioManager>();
         timeModel = Substitute.For<ITimeModel>();
+
         characterView = Substitute.For<ICharacterView>();
+        characterView.Waiting(Arg.Any<float>(), Arg.Do<Action>(callback =>
+        {
+            characterViewWaitingCallback = callback;
+        }));
 
         GivenDeltaTime(1);
         GivenSpeed(1);
@@ -282,6 +290,27 @@ public class CharacterTest
         ShouldCallTeleport(teleportGate, 0);
     }
 
+    [Test]
+    //接觸怪物會死亡
+    public void die_when_touch_monster()
+    {
+        ICollider collider = CreateCollider((int)GameConst.GameObjectLayerType.Monster);
+        GivenGetComponent(collider, CreateMonster(MonsterState.Normal));
+        characterModel.ColliderTriggerEnter(collider);
+
+        ShouldDying(true);
+        ShouldPlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_DIE);
+
+        CallCharacterViewWaitingCallback();
+
+        ShouldPlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_NORMAL);
+        ShouldCallBackToOrigin();
+
+        CallCharacterViewWaitingCallback();
+
+        ShouldDying(false);
+    }
+
     private void GivenInteractDistance(float distance)
     {
         characterView.InteractDistance.Returns(distance);
@@ -332,6 +361,26 @@ public class CharacterTest
         collider.GetComponent<T>().Returns(component);
     }
 
+    private void CallCharacterViewWaitingCallback()
+    {
+        characterViewWaitingCallback.Invoke();
+    }
+
+    private void ShouldPlayAnimation(string expectedAnimationKey)
+    {
+        string argument = (string)characterView
+            .ReceivedCalls()
+            .Last(x => x.GetMethodInfo().Name == "PlayAnimation")
+            .GetArguments()[0];
+
+        Assert.AreEqual(expectedAnimationKey, argument);
+    }
+
+    private void ShouldDying(bool expectedIsDying)
+    {
+        Assert.AreEqual(expectedIsDying, characterModel.IsDying);
+    }
+
     private void ShouldHaveTriggerTeleportGate(bool expectedHave)
     {
         Assert.AreEqual(expectedHave, characterModel.HaveInteractGate);
@@ -342,7 +391,7 @@ public class CharacterTest
         teleportGate.Received(callTimes).Teleport(Arg.Any<IRigidbody>());
     }
 
-    private void ShouldCallBackToOrigin(int callTimes)
+    private void ShouldCallBackToOrigin(int callTimes = 1)
     {
         teleport.Received(callTimes).BackToOrigin();
     }
@@ -366,6 +415,13 @@ public class CharacterTest
     private void ShouldCallTranslateAndMoveLeft()
     {
         characterView.Received(1).Translate(Arg.Is<Vector3>(v => v.x < 0));
+    }
+
+    private IMonsterView CreateMonster(MonsterState monsterState)
+    {
+        IMonsterView monsterView = Substitute.For<IMonsterView>();
+        monsterView.CurrentState.Returns(monsterState);
+        return monsterView;
     }
 
     private ICollider CreateCollider(int collisionLayer)
