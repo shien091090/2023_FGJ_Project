@@ -15,6 +15,7 @@ public class CharacterView : MonoBehaviour, IRigidbody, ICharacterView
     [SerializeField] private float interactDistance;
     [SerializeField] private Animator anim;
     [SerializeField] private GameObject go_protectionEffect;
+    [SerializeField] private ColliderComponent colliderComponent;
 
     public float JumpForce => jumpForce;
     public float Speed => speed;
@@ -100,7 +101,7 @@ public class CharacterView : MonoBehaviour, IRigidbody, ICharacterView
         characterModel = new CharacterModel(new CharacterMoveController(), new CharacterKeyController(), teleportComponent, this, FmodAudioManager.Instance,
             new TimeModel());
         characterModel.InitView(this);
-
+        colliderComponent.InitHandler(characterModel);
         SetEventRegister();
     }
 
@@ -152,24 +153,14 @@ public class CharacterView : MonoBehaviour, IRigidbody, ICharacterView
             characterModel.Jump(superJumpForce);
     }
 
-    public void OnCollisionEnter2D(Collision2D col)
-    {
-        characterModel.CollisionEnter(new CollisionFacade(col));
-    }
-
-    public void OnCollisionExit2D(Collision2D col)
-    {
-        characterModel.CollisionExit(new CollisionFacade(col));
-    }
-
     public void OnTriggerEnter2D(Collider2D col)
     {
-        characterModel.ColliderTriggerEnter(new ColliderFacade(col));
+        characterModel.ColliderTriggerEnter(new ColliderAdapter(col));
     }
 
     public void OnTriggerExit2D(Collider2D col)
     {
-        characterModel.ColliderTriggerExit(new ColliderFacade(col));
+        characterModel.ColliderTriggerExit(new ColliderAdapter(col));
     }
 
     public void OnJump(float jumpForce)

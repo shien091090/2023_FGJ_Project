@@ -1,11 +1,11 @@
 using UnityEngine;
 
-public class CollisionFacade : ICollision
+public class CollisionAdapter : ICollision
 {
     public int Layer => collision.gameObject.layer;
     private readonly Collision2D collision;
 
-    public CollisionFacade(Collision2D col)
+    public CollisionAdapter(Collision2D col)
     {
         collision = col;
     }

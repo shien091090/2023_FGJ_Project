@@ -57,10 +57,10 @@ MonoBehaviour:
   footPoint: {fileID: 7716344304938210079}
   footRadius: 0.1
   teleportComponent: {fileID: 0}
-  fallDownToOriginPosTime: 4
   interactDistance: 3
   anim: {fileID: 3509490483848623688}
   go_protectionEffect: {fileID: 1122563522264065225}
+  colliderComponent: {fileID: 9058360614077808744}
 --- !u!212 &7918636506258862006
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -300,6 +300,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7716344304938210079}
   - component: {fileID: 4461834441445652315}
+  - component: {fileID: 9058360614077808744}
   m_Layer: 7
   m_Name: FootPoint
   m_TagString: Untagged
@@ -316,7 +317,7 @@ Transform:
   m_GameObject: {fileID: 2126122441746452686}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.28, z: 0}
+  m_LocalPosition: {x: -0.169, y: -0.246, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -357,3 +358,16 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.1
+--- !u!114 &9058360614077808744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2126122441746452686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60a64f25de1b466d9527b351f1ca2178, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handleType: 1

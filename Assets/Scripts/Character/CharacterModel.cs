@@ -14,11 +14,11 @@ public class CharacterModel : IColliderHandler
 
     private float jumpTimer;
     private ITimeModel timeModel;
+    public bool IsJumping { get; private set; }
+    public bool HaveInteractGate => CurrentTriggerTeleportGate != null;
 
     private ITeleportGate CurrentTriggerTeleportGate { get; set; }
-    public bool IsJumping { get; private set; }
     private bool IsStayOnFloor { get; set; }
-    public bool HaveInteractGate => CurrentTriggerTeleportGate != null;
     private bool IsDying { get; set; }
     private bool IsFaceRight { get; set; }
 
@@ -68,13 +68,10 @@ public class CharacterModel : IColliderHandler
 
     public void CollisionEnter(ICollision col)
     {
-        bool isOnFloor = col.CheckPhysicsOverlapCircle(characterView.FootPointPosition, characterView.FootRadius, GameConst.GameObjectLayerType.Platform);
-        Debug.Log($"CollisionEnter, isOnFloor: {isOnFloor}, col.Layer: {col.Layer}");
-        if (col.Layer == (int)GameConst.GameObjectLayerType.Platform && isOnFloor)
+        if (col.Layer == (int)GameConst.GameObjectLayerType.Platform)
         {
             IsStayOnFloor = true;
             IsJumping = false;
-            Debug.Log($"isStayOnFloor: {IsStayOnFloor}, isJumping: {IsJumping}");
         }
     }
 
@@ -82,7 +79,6 @@ public class CharacterModel : IColliderHandler
     {
         if (col.Layer == (int)GameConst.GameObjectLayerType.Platform)
         {
-            Debug.Log("CollisionExit");
             IsStayOnFloor = false;
         }
     }
@@ -118,16 +114,10 @@ public class CharacterModel : IColliderHandler
     public void Jump(float jumpForce)
     {
         if (IsJumping || IsStayOnFloor == false)
-        {
-            Debug.Log($"Jumping: {IsJumping}, StayOnFloor: {IsStayOnFloor}");
             return;
-        }
 
         if (jumpForce == 0)
-        {
-            Debug.Log("JumpForce is 0");
             return;
-        }
 
         jumpTimer = 0;
         IsJumping = true;
@@ -179,16 +169,10 @@ public class CharacterModel : IColliderHandler
     private void UpdateCheckJump(float jumpForce)
     {
         if (jumpTimer < characterView.JumpDelaySeconds)
-        {
-            Debug.Log($"jumpTimer: {jumpTimer}, characterView.JumpDelaySeconds: {characterView.JumpDelaySeconds}");
             return;
-        }
 
         if (keyController.IsJumpKeyDown)
-        {
-            Debug.Log("Jump");
             Jump(jumpForce);
-        }
     }
 
     private void UpdateJumpTimer(float deltaTime)

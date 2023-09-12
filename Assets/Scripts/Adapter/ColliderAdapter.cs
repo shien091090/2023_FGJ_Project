@@ -1,11 +1,11 @@
 using UnityEngine;
 
-public class ColliderFacade : ICollider
+public class ColliderAdapter : ICollider
 {
     public int Layer => collider.gameObject.layer;
     private readonly Collider2D collider;
 
-    public ColliderFacade(Collider2D collider)
+    public ColliderAdapter(Collider2D collider)
     {
         this.collider = collider;
     }
