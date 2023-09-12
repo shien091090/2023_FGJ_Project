@@ -339,6 +339,25 @@ public class CharacterTest
         ShouldDying(true);
     }
 
+    [Test]
+    //接觸怪物死亡時持續接觸, 死亡流程只會觸發一次
+    public void die_when_touch_monster_and_stay()
+    {
+        ICollider collider = CreateCollider((int)GameConst.GameObjectLayerType.Monster);
+        IMonsterView monster = CreateMonster(MonsterState.Normal);
+        GivenGetComponent(collider, monster);
+        characterModel.ColliderTriggerStay(collider);
+        characterModel.ColliderTriggerStay(collider);
+
+        CallCharacterViewWaitingCallback();
+
+        characterModel.ColliderTriggerStay(collider);
+        characterModel.ColliderTriggerStay(collider);
+
+        ShouldCallBackToOrigin(1);
+        ShouldPlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_DIE, 1);
+    }
+
     private void GivenInteractDistance(float distance)
     {
         characterView.InteractDistance.Returns(distance);
@@ -407,6 +426,11 @@ public class CharacterTest
             .GetArguments()[0];
 
         Assert.AreEqual(expectedAnimationKey, argument);
+    }
+
+    private void ShouldPlayAnimation(string expectedAnimationKey, int triggerTimes)
+    {
+        characterView.Received(triggerTimes).PlayAnimation(expectedAnimationKey);
     }
 
     private void ShouldDying(bool expectedIsDying)
