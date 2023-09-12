@@ -90,8 +90,6 @@ public class CharacterModel : IColliderHandler
     public void InitView(ICharacterView view)
     {
         characterView = view;
-        // jumpDelaySeconds = view.JumpDelaySeconds;
-        // InteractiveDistance = view.InteractDistance;
         InitState();
     }
 
@@ -116,17 +114,6 @@ public class CharacterModel : IColliderHandler
         UpdateMove(timeModel.deltaTime, characterView.Speed);
         UpdateCheckInteract();
     }
-
-    // public void SetJumpDelay(float jumpDelaySeconds)
-    // {
-    //     this.jumpDelaySeconds = jumpDelaySeconds;
-    //     jumpTimer = jumpDelaySeconds;
-    // }
-
-    // public void SetInteractDistance(float distance)
-    // {
-    //     InteractiveDistance = distance;
-    // }
 
     public void Jump(float jumpForce)
     {

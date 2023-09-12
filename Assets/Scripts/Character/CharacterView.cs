@@ -40,7 +40,6 @@ public class CharacterView : MonoBehaviour, IRigidbody, ICharacterView
 
     private CharacterModel characterModel;
 
-    // private bool isProtected;
     public bool IsFaceRight { get; private set; }
 
     public SpriteRenderer GetSpriteRenderer
@@ -101,8 +100,6 @@ public class CharacterView : MonoBehaviour, IRigidbody, ICharacterView
         characterModel = new CharacterModel(new CharacterMoveController(), new CharacterKeyController(), teleportComponent, this, FmodAudioManager.Instance,
             new TimeModel());
         characterModel.InitView(this);
-        // characterModel.SetJumpDelay(JumpDelaySeconds);
-        // characterModel.SetInteractDistance(InteractDistance);
 
         SetEventRegister();
     }
@@ -114,12 +111,6 @@ public class CharacterView : MonoBehaviour, IRigidbody, ICharacterView
 
     private void SetEventRegister()
     {
-        // characterModel.OnHorizontalMove -= OnHorizontalMove;
-        // characterModel.OnHorizontalMove += OnHorizontalMove;
-
-        // characterModel.OnJump -= OnJump;
-        // characterModel.OnJump += OnJump;
-
         ItemStateManager.Instance.OnUseItemOneTime -= OnUseItemOneTime;
         ItemStateManager.Instance.OnUseItemOneTime += OnUseItemOneTime;
 
