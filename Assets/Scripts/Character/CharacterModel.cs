@@ -15,6 +15,7 @@ public class CharacterModel : IColliderHandler
     private float jumpTimer;
     public bool IsJumping { get; private set; }
     public bool HaveInteractGate => CurrentTriggerTeleportGate != null;
+    public Vector3 RecordOriginPos { get; private set; }
     public bool IsDying { get; set; }
     private ITeleportGate CurrentTriggerTeleportGate { get; set; }
     private bool IsStayOnFloor { get; set; }
@@ -96,6 +97,7 @@ public class CharacterModel : IColliderHandler
         isProtected = false;
         IsFaceRight = true;
         IsStayOnFloor = true;
+        RecordOriginPos = selfRigidbody.position;
         characterView.SetProtectionActive(false);
     }
 
