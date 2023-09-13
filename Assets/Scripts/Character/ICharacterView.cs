@@ -9,6 +9,7 @@ public interface ICharacterView
     float InteractDistance { get; }
     Vector3 FootPointPosition { get; }
     float FootRadius { get; }
+    float FallDownLimitPosY { get; }
     void SetProtectionActive(bool isActive);
     void SetSpriteFlix(bool flipX);
     void PlayAnimation(string animationKey);

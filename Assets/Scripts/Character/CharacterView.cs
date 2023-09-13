@@ -9,10 +9,11 @@ public class CharacterView : MonoBehaviour, ICharacterView
     [SerializeField] private float superJumpForce;
     [SerializeField] private float speed;
     [SerializeField] private float jumpDelaySeconds;
-    [SerializeField] private Transform footPoint;
     [SerializeField] private float footRadius;
-    [SerializeField] private TeleportComponent teleportComponent;
     [SerializeField] private float interactDistance;
+    [SerializeField] private float fallDownLimitHeight;
+    [SerializeField] private Transform footPoint;
+    [SerializeField] private TeleportComponent teleportComponent;
     [SerializeField] private Animator anim;
     [SerializeField] private GameObject go_protectionEffect;
     [SerializeField] private ColliderComponent footColliderComponent;
@@ -25,6 +26,7 @@ public class CharacterView : MonoBehaviour, ICharacterView
     public float InteractDistance => interactDistance;
     public Vector3 FootPointPosition => footPoint.position;
     public float FootRadius => footRadius;
+    public float FallDownLimitPosY => fallDownLimitHeight;
 
     private SpriteRenderer spriteRenderer;
     private CharacterModel characterModel;

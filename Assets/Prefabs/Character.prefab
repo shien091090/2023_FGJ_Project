@@ -56,10 +56,11 @@ MonoBehaviour:
   superJumpForce: 700
   speed: 10
   jumpDelaySeconds: 0.3
-  footPoint: {fileID: 7716344304938210079}
   footRadius: 0.1
-  teleportComponent: {fileID: 0}
   interactDistance: 3
+  fallDownLimitHeight: -49
+  footPoint: {fileID: 7716344304938210079}
+  teleportComponent: {fileID: 0}
   anim: {fileID: 3509490483848623688}
   go_protectionEffect: {fileID: 1122563522264065225}
   footColliderComponent: {fileID: 9058360614077808744}

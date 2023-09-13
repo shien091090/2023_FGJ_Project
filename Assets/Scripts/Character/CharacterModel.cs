@@ -106,6 +106,12 @@ public class CharacterModel : IColliderHandler
         if (IsDying)
             return;
 
+        if (selfRigidbody.position.y <= characterView.FallDownLimitPosY)
+        {
+            BackToOrigin();
+            return;
+        }
+
         UpdateJumpTimer(timeModel.deltaTime);
         UpdateCheckJump(characterView.JumpForce);
         UpdateMove(timeModel.deltaTime, characterView.Speed);
@@ -143,6 +149,18 @@ public class CharacterModel : IColliderHandler
                 IsDying = false;
                 isProtected = false;
             });
+        });
+    }
+
+    public void BackToOrigin()
+    {
+        IsDying = true;
+        audioManager.PlayOneShot("Teleport");
+        selfRigidbody.position = RecordOriginPos;
+        selfRigidbody.velocity = Vector2.zero;
+        characterView.Waiting(0.5f, () =>
+        {
+            IsDying = false;
         });
     }
 

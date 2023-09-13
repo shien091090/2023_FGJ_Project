@@ -369,6 +369,36 @@ public class CharacterTest
         RecordOriginPosShouldBe(new Vector3(5, 4, 0));
     }
 
+    [Test]
+    //墜落至指定高度時傳回原點
+    public void back_to_origin_when_fall_to_specified_height()
+    {
+        GivenFallDownLimitPos(-5);
+        GivenCharacterPosition(new Vector3(0, 1, 0));
+
+        characterModel.InitView(characterView);
+
+        GivenCharacterPosition(new Vector3(-5, -4, 0));
+        characterModel.CallUpdate();
+
+        ShouldDying(false);
+
+        GivenCharacterPosition(new Vector3(-5, -5, 0));
+        characterModel.CallUpdate();
+
+        ShouldDying(true);
+        CurrentCharacterPosShouldBe(new Vector3(0, 1, 0));
+
+        CallCharacterViewWaitingCallback();
+
+        ShouldDying(false);
+    }
+
+    private void GivenFallDownLimitPos(float pos)
+    {
+        characterView.FallDownLimitPosY.Returns(pos);
+    }
+
     private void GivenInteractDistance(float distance)
     {
         characterView.InteractDistance.Returns(distance);
@@ -427,6 +457,11 @@ public class CharacterTest
     private void CallCharacterViewWaitingCallback()
     {
         characterViewWaitingCallback.Invoke();
+    }
+
+    private void CurrentCharacterPosShouldBe(Vector3 expectedPos)
+    {
+        Assert.AreEqual(expectedPos, characterRigidbody.position);
     }
 
     private void ShouldPlayAnimation(string expectedAnimationKey)
