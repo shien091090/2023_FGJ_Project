@@ -358,6 +358,17 @@ public class CharacterTest
         ShouldPlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_DIE, 1);
     }
 
+    [Test]
+    //遊戲開始時, 紀錄初始點
+    public void record_origin_pos_when_game_start()
+    {
+        GivenCharacterPosition(new Vector3(5, 4, 0));
+
+        characterModel.InitView(characterView);
+
+        RecordOriginPosShouldBe(new Vector3(5, 4, 0));
+    }
+
     private void GivenInteractDistance(float distance)
     {
         characterView.InteractDistance.Returns(distance);
@@ -477,16 +488,6 @@ public class CharacterTest
     private void ShouldCallTranslateAndMoveLeft()
     {
         characterView.Received(1).Translate(Arg.Is<Vector3>(v => v.x < 0));
-    }
-
-    //遊戲開始時, 紀錄初始點
-    public void record_origin_pos_when_game_start()
-    {
-        GivenCharacterPosition(new Vector3(5, 4, 0));
-
-        characterModel.InitView(characterView);
-
-        RecordOriginPosShouldBe(new Vector3(5, 4, 0));
     }
 
     private IMonsterView CreateMonster(MonsterState monsterState)
