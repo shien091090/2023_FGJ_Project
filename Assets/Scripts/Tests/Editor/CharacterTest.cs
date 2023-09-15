@@ -39,6 +39,7 @@ public class CharacterTest
         GivenSpeed(1);
         GivenJumpForce(1);
         GivenJumpDelay(1);
+        GivenFallDownLimitPos(-10);
 
         characterModel = new CharacterModel(moveController, keyController, teleport, characterRigidbody, audioManager, timeModel);
 
@@ -387,7 +388,11 @@ public class CharacterTest
         characterModel.CallUpdate();
 
         ShouldDying(true);
+        ShouldAudioPlayOneShot("Teleport", 1);
         CurrentCharacterPosShouldBe(new Vector3(0, 1, 0));
+
+        characterModel.CallUpdate();
+        ShouldAudioPlayOneShot("Teleport", 1);
 
         CallCharacterViewWaitingCallback();
 
@@ -457,6 +462,11 @@ public class CharacterTest
     private void CallCharacterViewWaitingCallback()
     {
         characterViewWaitingCallback.Invoke();
+    }
+
+    private void ShouldAudioPlayOneShot(string audioKey, int callTimes = 1)
+    {
+        audioManager.Received(callTimes).PlayOneShot(audioKey);
     }
 
     private void CurrentCharacterPosShouldBe(Vector3 expectedPos)
