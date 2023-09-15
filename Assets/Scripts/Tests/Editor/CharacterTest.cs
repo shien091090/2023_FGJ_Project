@@ -94,6 +94,35 @@ public class CharacterTest
         ShouldFaceRight(true);
         SpriteFlipXShouldBe(false);
     }
+    
+    [Test]
+    //角色停止後, 維持原本面向
+    public void keep_face_when_stop()
+    {
+        GivenHorizontalAxis(0.5f);
+        characterModel.CallUpdate();
+
+        ShouldFaceRight(true);
+        SpriteFlipXShouldBe(false);
+
+        GivenHorizontalAxis(0);
+        characterModel.CallUpdate();
+
+        ShouldFaceRight(true);
+        SpriteFlipXShouldBe(false);
+        
+        GivenHorizontalAxis(-1);
+        characterModel.CallUpdate();
+        
+        ShouldFaceRight(false);
+        SpriteFlipXShouldBe(true);
+
+        GivenHorizontalAxis(0);
+        characterModel.CallUpdate();
+        
+        ShouldFaceRight(false);
+        SpriteFlipXShouldBe(true);
+    }
 
     [Test]
     //沒有按跳躍按鍵時, 不會跳躍
