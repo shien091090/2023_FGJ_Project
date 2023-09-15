@@ -517,7 +517,7 @@ public class CharacterTest
     private void ShouldCallJump(int triggerTimes)
     {
         characterRigidbody.Received(triggerTimes).AddForce(Arg.Is<Vector2>(v => v.y > 0 && v.x == 0));
-        audioManager.Received(triggerTimes).PlayOneShot("Jump");
+        audioManager.Received(triggerTimes).PlayOneShot(GameConst.AUDIO_KEY_JUMP);
     }
 
     private void ShouldIsJumping(bool expectedIsJumping)

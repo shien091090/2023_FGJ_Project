@@ -10,7 +10,9 @@ public class GameConst
     }
 
     public const string AUDIO_KEY_DAMAGE = "Damage";
-    
+    public const string AUDIO_KEY_JUMP = "Jump";
+    public const string AUDIO_KEY_TELEPORT = "Teleport";
+
     public const string ANIMATION_KEY_CHARACTER_DIE = "character_die";
     public const string ANIMATION_KEY_CHARACTER_NORMAL = "character_normal";
 }

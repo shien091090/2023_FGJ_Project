@@ -8,7 +8,7 @@ public class TeleportGateComponent : MonoBehaviour, ITeleportGate
 
     public void Teleport(IRigidbody target)
     {
-        FmodAudioManager.Instance.PlayOneShot("Teleport");
+        FmodAudioManager.Instance.PlayOneShot(GameConst.AUDIO_KEY_TELEPORT);
         target.position = teleportPos;
         target.velocity = Vector2.zero;
     }

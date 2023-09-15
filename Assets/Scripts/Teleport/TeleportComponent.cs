@@ -11,7 +11,7 @@ public class TeleportComponent : MonoBehaviour, ITeleport
 
     public void BackToOrigin()
     {
-        FmodAudioManager.Instance.PlayOneShot("Teleport");
+        FmodAudioManager.Instance.PlayOneShot(GameConst.AUDIO_KEY_TELEPORT);
         character.position = originPos;
         character.velocity = Vector2.zero;
     }

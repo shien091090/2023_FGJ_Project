@@ -128,7 +128,7 @@ public class CharacterModel : IColliderHandler
 
         jumpTimer = 0;
         IsJumping = true;
-        audioManager.PlayOneShot("Jump");
+        audioManager.PlayOneShot(GameConst.AUDIO_KEY_JUMP);
         selfRigidbody.AddForce(new Vector2(0, jumpForce));
     }
 
@@ -155,7 +155,7 @@ public class CharacterModel : IColliderHandler
     public void BackToOrigin()
     {
         IsDying = true;
-        audioManager.PlayOneShot("Teleport");
+        audioManager.PlayOneShot(GameConst.AUDIO_KEY_TELEPORT);
         selfRigidbody.position = RecordOriginPos;
         selfRigidbody.velocity = Vector2.zero;
         characterView.Waiting(0.5f, () =>
