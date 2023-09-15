@@ -62,6 +62,14 @@ public class CharacterTest
     }
 
     [Test]
+    //角色初始狀態預設面向右
+    public void default_face_right()
+    {
+        ShouldFaceRight(true);
+        ShouldCallSetSpriteFlipX(false);
+    }
+
+    [Test]
     //沒有按跳躍按鍵時, 不會跳躍
     public void jump_not_press_key()
     {
@@ -465,6 +473,16 @@ public class CharacterTest
     private void CallCharacterViewWaitingCallback()
     {
         characterViewWaitingCallback.Invoke();
+    }
+
+    private void ShouldCallSetSpriteFlipX(bool expectedIsFlipX, int callTimes = 1)
+    {
+        characterView.Received(callTimes).SetSpriteFlipX(expectedIsFlipX);
+    }
+
+    private void ShouldFaceRight(bool expectedIsFaceRight)
+    {
+        Assert.AreEqual(expectedIsFaceRight, characterModel.IsFaceRight);
     }
 
     private void ShouldAudioPlayOneShot(string audioKey, int callTimes = 1)

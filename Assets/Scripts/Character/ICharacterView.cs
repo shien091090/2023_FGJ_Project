@@ -11,7 +11,7 @@ public interface ICharacterView
     float FootRadius { get; }
     float FallDownLimitPosY { get; }
     void SetProtectionActive(bool isActive);
-    void SetSpriteFlix(bool flipX);
+    void SetSpriteFlipX(bool flipX);
     void PlayAnimation(string animationKey);
     void Waiting(float seconds, Action callback);
     void Translate(Vector3 moveVector);

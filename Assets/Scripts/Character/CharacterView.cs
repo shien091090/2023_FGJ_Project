@@ -58,7 +58,7 @@ public class CharacterView : MonoBehaviour, ICharacterView
         StartCoroutine(Cor_WaitingCoroutine(seconds, callback));
     }
 
-    public void SetSpriteFlix(bool flipX)
+    public void SetSpriteFlipX(bool flipX)
     {
         GetSpriteRenderer.flipX = flipX;
     }

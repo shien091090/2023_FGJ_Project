@@ -18,9 +18,9 @@ public class CharacterModel : IColliderHandler
     public bool HaveInteractGate => CurrentTriggerTeleportGate != null;
     public Vector3 RecordOriginPos { get; private set; }
     public bool IsDying { get; private set; }
+    public bool IsFaceRight { get; private set; }
     private ITeleportGate CurrentTriggerTeleportGate { get; set; }
     private bool IsStayOnFloor { get; set; }
-    private bool IsFaceRight { get; set; }
 
     public CharacterModel(IMoveController moveController, IKeyController keyController, IRigidbody characterRigidbody, IAudioManager audioManager,
         ITimeModel timeModel)
@@ -87,6 +87,13 @@ public class CharacterModel : IColliderHandler
     {
         characterView = view;
         InitState();
+        InitFaceDirection();
+    }
+
+    private void InitFaceDirection()
+    {
+        IsFaceRight = true;
+        characterView.SetSpriteFlipX(false);
     }
 
     private void InitState()
@@ -95,7 +102,6 @@ public class CharacterModel : IColliderHandler
         jumpTimer = characterView.JumpDelaySeconds;
         IsDying = false;
         isProtected = false;
-        IsFaceRight = true;
         IsStayOnFloor = true;
         RecordOriginPos = selfRigidbody.position;
         characterView.SetProtectionActive(false);
@@ -164,24 +170,24 @@ public class CharacterModel : IColliderHandler
         });
     }
 
-    private void CheckChangeDirection(float moveValue)
+    private void CheckChangeFaceDirection(float moveValue)
     {
         if (IsFaceRight && moveValue < 0)
         {
             IsFaceRight = false;
-            characterView.SetSpriteFlix(true);
+            characterView.SetSpriteFlipX(true);
         }
         else if (IsFaceRight == false && moveValue > 0)
         {
             IsFaceRight = true;
-            characterView.SetSpriteFlix(false);
+            characterView.SetSpriteFlipX(false);
         }
     }
 
     private void UpdateMove(float deltaTime, float speed)
     {
         float moveValue = moveController.GetHorizontalAxis() * deltaTime * speed;
-        CheckChangeDirection(moveValue);
+        CheckChangeFaceDirection(moveValue);
         characterView.Translate(new Vector2(moveValue, 0));
     }
 
