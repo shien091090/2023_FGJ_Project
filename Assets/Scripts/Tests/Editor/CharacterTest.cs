@@ -66,7 +66,33 @@ public class CharacterTest
     public void default_face_right()
     {
         ShouldFaceRight(true);
-        ShouldCallSetSpriteFlipX(false);
+        SpriteFlipXShouldBe(false);
+    }
+
+    [Test]
+    //角色變換面向
+    public void change_face()
+    {
+        ShouldFaceRight(true);
+        SpriteFlipXShouldBe(false);
+
+        GivenHorizontalAxis(0.5f);
+        characterModel.CallUpdate();
+
+        ShouldFaceRight(true);
+        SpriteFlipXShouldBe(false);
+
+        GivenHorizontalAxis(-0.5f);
+        characterModel.CallUpdate();
+
+        ShouldFaceRight(false);
+        SpriteFlipXShouldBe(true);
+
+        GivenHorizontalAxis(0.5f);
+        characterModel.CallUpdate();
+
+        ShouldFaceRight(true);
+        SpriteFlipXShouldBe(false);
     }
 
     [Test]
@@ -475,9 +501,16 @@ public class CharacterTest
         characterViewWaitingCallback.Invoke();
     }
 
-    private void ShouldCallSetSpriteFlipX(bool expectedIsFlipX, int callTimes = 1)
+    private void SpriteFlipXShouldBe(bool expectedIsFlipX)
     {
-        characterView.Received(callTimes).SetSpriteFlipX(expectedIsFlipX);
+        bool argument = (bool)characterView
+            .ReceivedCalls()
+            .Where(call => call.GetMethodInfo().Name == "SetSpriteFlipX")
+            .ToList()
+            .Last()
+            .GetArguments()[0];
+
+        Assert.AreEqual(expectedIsFlipX, argument);
     }
 
     private void ShouldFaceRight(bool expectedIsFaceRight)
