@@ -13,7 +13,6 @@ public class CharacterView : MonoBehaviour, ICharacterView
     [SerializeField] private float interactDistance;
     [SerializeField] private float fallDownLimitHeight;
     [SerializeField] private Transform footPoint;
-    [SerializeField] private TeleportComponent teleportComponent;
     [SerializeField] private Animator anim;
     [SerializeField] private GameObject go_protectionEffect;
     [SerializeField] private ColliderComponent footColliderComponent;
@@ -71,7 +70,7 @@ public class CharacterView : MonoBehaviour, ICharacterView
 
     private void Start()
     {
-        characterModel = new CharacterModel(new CharacterMoveController(), new CharacterKeyController(), teleportComponent, rigidBodyComponent, FmodAudioManager.Instance,
+        characterModel = new CharacterModel(new CharacterMoveController(), new CharacterKeyController(), rigidBodyComponent, FmodAudioManager.Instance,
             new TimeModel());
         characterModel.InitView(this);
         footColliderComponent.InitHandler(characterModel);

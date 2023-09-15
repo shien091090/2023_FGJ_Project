@@ -11,7 +11,6 @@ public class CharacterTest
     private IMoveController moveController;
     private CharacterModel characterModel;
     private IKeyController keyController;
-    private ITeleport teleport;
     private IRigidbody characterRigidbody;
     private IAudioManager audioManager;
     private ITimeModel timeModel;
@@ -24,7 +23,6 @@ public class CharacterTest
     {
         moveController = Substitute.For<IMoveController>();
         keyController = Substitute.For<IKeyController>();
-        teleport = Substitute.For<ITeleport>();
         characterRigidbody = Substitute.For<IRigidbody>();
         audioManager = Substitute.For<IAudioManager>();
         timeModel = Substitute.For<ITimeModel>();
@@ -41,7 +39,7 @@ public class CharacterTest
         GivenJumpDelay(1);
         GivenFallDownLimitPos(-10);
 
-        characterModel = new CharacterModel(moveController, keyController, teleport, characterRigidbody, audioManager, timeModel);
+        characterModel = new CharacterModel(moveController, keyController, characterRigidbody, audioManager, timeModel);
 
         characterModel.InitView(characterView);
     }
@@ -295,6 +293,10 @@ public class CharacterTest
     //接觸怪物會死亡
     public void die_when_touch_monster()
     {
+        GivenCharacterPosition(new Vector3(0, 0, 0));
+        characterModel.InitView(characterView);
+
+        GivenCharacterPosition(new Vector3(5, 2, 0));
         ICollider collider = CreateCollider((int)GameConst.GameObjectLayerType.Monster);
         GivenGetComponent(collider, CreateMonster(MonsterState.Normal));
         characterModel.ColliderTriggerStay(collider);
@@ -305,7 +307,8 @@ public class CharacterTest
         CallCharacterViewWaitingCallback();
 
         ShouldPlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_NORMAL);
-        ShouldCallBackToOrigin();
+        CurrentCharacterPosShouldBe(new Vector3(0, 0, 0));
+        ShouldAudioPlayOneShot(GameConst.AUDIO_KEY_TELEPORT);
 
         CallCharacterViewWaitingCallback();
 
@@ -355,8 +358,8 @@ public class CharacterTest
         characterModel.ColliderTriggerStay(collider);
         characterModel.ColliderTriggerStay(collider);
 
-        ShouldCallBackToOrigin(1);
         ShouldPlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_DIE, 1);
+        ShouldAudioPlayOneShot(GameConst.AUDIO_KEY_TELEPORT, 1);
     }
 
     [Test]
@@ -388,11 +391,11 @@ public class CharacterTest
         characterModel.CallUpdate();
 
         ShouldDying(true);
-        ShouldAudioPlayOneShot("Teleport", 1);
+        ShouldAudioPlayOneShot(GameConst.AUDIO_KEY_TELEPORT);
         CurrentCharacterPosShouldBe(new Vector3(0, 1, 0));
 
         characterModel.CallUpdate();
-        ShouldAudioPlayOneShot("Teleport", 1);
+        ShouldAudioPlayOneShot(GameConst.AUDIO_KEY_TELEPORT, 1);
 
         CallCharacterViewWaitingCallback();
 
@@ -507,11 +510,6 @@ public class CharacterTest
     private void ShouldCallTeleport(ITeleportGate teleportGate, int callTimes)
     {
         teleportGate.Received(callTimes).Teleport(Arg.Any<IRigidbody>());
-    }
-
-    private void ShouldCallBackToOrigin(int callTimes = 1)
-    {
-        teleport.Received(callTimes).BackToOrigin();
     }
 
     private void ShouldCallJump(int triggerTimes)

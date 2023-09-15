@@ -6,8 +6,9 @@ public class CharacterModel : IColliderHandler
 {
     public bool isProtected;
     private readonly IMoveController moveController;
+
     private readonly IKeyController keyController;
-    private readonly ITeleport teleport;
+
     private readonly IRigidbody selfRigidbody;
     private readonly IAudioManager audioManager;
     private readonly ITimeModel timeModel;
@@ -16,17 +17,16 @@ public class CharacterModel : IColliderHandler
     public bool IsJumping { get; private set; }
     public bool HaveInteractGate => CurrentTriggerTeleportGate != null;
     public Vector3 RecordOriginPos { get; private set; }
-    public bool IsDying { get; set; }
+    public bool IsDying { get; private set; }
     private ITeleportGate CurrentTriggerTeleportGate { get; set; }
     private bool IsStayOnFloor { get; set; }
     private bool IsFaceRight { get; set; }
 
-    public CharacterModel(IMoveController moveController, IKeyController keyController, ITeleport teleport, IRigidbody characterRigidbody, IAudioManager audioManager,
+    public CharacterModel(IMoveController moveController, IKeyController keyController, IRigidbody characterRigidbody, IAudioManager audioManager,
         ITimeModel timeModel)
     {
         this.moveController = moveController;
         this.keyController = keyController;
-        this.teleport = teleport;
         this.audioManager = audioManager;
         this.timeModel = timeModel;
         selfRigidbody = characterRigidbody;
@@ -143,7 +143,7 @@ public class CharacterModel : IColliderHandler
         characterView.Waiting(1.5f, () =>
         {
             characterView.PlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_NORMAL);
-            teleport.BackToOrigin();
+            BackToOrigin();
             characterView.Waiting(0.5f, () =>
             {
                 IsDying = false;
