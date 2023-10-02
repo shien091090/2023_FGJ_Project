@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using SNShien.Common.AudioTools;
 using UnityEngine;
 
@@ -14,6 +15,8 @@ public class CharacterModel : IColliderHandler
     private readonly ITimeModel timeModel;
     private ICharacterView characterView;
     private float jumpTimer;
+    private bool isCollideRightWall;
+    private bool isCollideLeftWall;
     public bool IsJumping { get; private set; }
     public bool HaveInteractGate => CurrentTriggerTeleportGate != null;
     public Vector3 RecordOriginPos { get; private set; }
@@ -34,14 +37,14 @@ public class CharacterModel : IColliderHandler
 
     public void ColliderTriggerEnter(ICollider col)
     {
-        if (col.Layer != (int)GameConst.GameObjectLayerType.TeleportGate)
-            return;
+        if (col.Layer == (int)GameConst.GameObjectLayerType.TeleportGate)
+        {
+            ITeleportGate teleportGateComponent = col.GetComponent<ITeleportGate>();
+            if (teleportGateComponent == null)
+                return;
 
-        ITeleportGate teleportGateComponent = col.GetComponent<ITeleportGate>();
-        if (teleportGateComponent == null)
-            return;
-
-        CurrentTriggerTeleportGate = teleportGateComponent;
+            CurrentTriggerTeleportGate = teleportGateComponent;
+        }
     }
 
     public void ColliderTriggerExit(ICollider col)
@@ -72,6 +75,7 @@ public class CharacterModel : IColliderHandler
         {
             IsStayOnFloor = true;
             IsJumping = false;
+            Vector3 contactPoint = col.ContactPoints.First();
         }
     }
 
@@ -122,6 +126,22 @@ public class CharacterModel : IColliderHandler
         UpdateCheckJump(characterView.JumpForce);
         UpdateMove(timeModel.deltaTime, characterView.Speed);
         UpdateCheckInteract();
+    }
+
+    public void ColliderTriggerExitWall(bool isRightWall)
+    {
+        if (isRightWall)
+            isCollideRightWall = false;
+        else
+            isCollideLeftWall = false;
+    }
+
+    public void ColliderTriggerEnterWall(bool isRightWall)
+    {
+        if (isRightWall)
+            isCollideRightWall = true;
+        else
+            isCollideLeftWall = true;
     }
 
     public void Jump(float jumpForce)
@@ -186,7 +206,11 @@ public class CharacterModel : IColliderHandler
 
     private void UpdateMove(float deltaTime, float speed)
     {
-        float moveValue = moveController.GetHorizontalAxis() * deltaTime * speed;
+        float horizontalAxis = moveController.GetHorizontalAxis();
+        if ((horizontalAxis > 0 && isCollideRightWall) || (horizontalAxis < 0 && isCollideLeftWall))
+            horizontalAxis = 0;
+
+        float moveValue = horizontalAxis * deltaTime * speed;
         CheckChangeFaceDirection(moveValue);
         characterView.Translate(new Vector2(moveValue, 0));
     }

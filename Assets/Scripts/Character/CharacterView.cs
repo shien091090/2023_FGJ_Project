@@ -16,7 +16,8 @@ public class CharacterView : MonoBehaviour, ICharacterView
     [SerializeField] private Animator anim;
     [SerializeField] private GameObject go_protectionEffect;
     [SerializeField] private ColliderComponent footColliderComponent;
-    [SerializeField] private ColliderComponent mainColliderComponent;
+    [SerializeField] private ColliderComponent rightColliderComponent;
+    [SerializeField] private ColliderComponent leftColliderComponent;
     [SerializeField] private RigidBody2DComponent rigidBodyComponent;
 
     public float JumpForce => jumpForce;
@@ -29,6 +30,8 @@ public class CharacterView : MonoBehaviour, ICharacterView
 
     private SpriteRenderer spriteRenderer;
     private CharacterModel characterModel;
+    private WallColliderHandler rightWallColliderHandler;
+    private WallColliderHandler leftWallColliderHandler;
 
     public bool IsFaceRight { get; private set; }
 
@@ -72,9 +75,14 @@ public class CharacterView : MonoBehaviour, ICharacterView
     {
         characterModel = new CharacterModel(new CharacterMoveController(), new CharacterKeyController(), rigidBodyComponent, FmodAudioManager.Instance,
             new TimeModel());
+
+        rightWallColliderHandler = new WallColliderHandler(true, characterModel);
+        leftWallColliderHandler = new WallColliderHandler(false,characterModel);
+
         characterModel.InitView(this);
         footColliderComponent.InitHandler(characterModel);
-        mainColliderComponent.InitHandler(characterModel);
+        rightColliderComponent.InitHandler(rightWallColliderHandler);
+        leftColliderComponent.InitHandler(leftWallColliderHandler);
         SetEventRegister();
     }
 
