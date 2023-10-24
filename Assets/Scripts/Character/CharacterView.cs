@@ -19,6 +19,7 @@ public class CharacterView : MonoBehaviour, ICharacterView
     [SerializeField] private ColliderComponent rightColliderComponent;
     [SerializeField] private ColliderComponent leftColliderComponent;
     [SerializeField] private RigidBody2DComponent rigidBodyComponent;
+    [SerializeField] private Transform tf_faceDirection;
 
     public float JumpForce => jumpForce;
     public float Speed => speed;
@@ -44,6 +45,11 @@ public class CharacterView : MonoBehaviour, ICharacterView
 
             return spriteRenderer;
         }
+    }
+
+    public void SetFaceDirectionScale(int scale)
+    {
+        tf_faceDirection.localScale = new Vector3(scale, 1, 1);
     }
 
     public void PlayAnimation(string animationKey)
@@ -77,7 +83,7 @@ public class CharacterView : MonoBehaviour, ICharacterView
             new TimeModel());
 
         rightWallColliderHandler = new WallColliderHandler(true, characterModel);
-        leftWallColliderHandler = new WallColliderHandler(false,characterModel);
+        leftWallColliderHandler = new WallColliderHandler(false, characterModel);
 
         characterModel.InitView(this);
         footColliderComponent.InitHandler(characterModel);

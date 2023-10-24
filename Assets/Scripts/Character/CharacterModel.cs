@@ -97,7 +97,8 @@ public class CharacterModel : IColliderHandler
     private void InitFaceDirection()
     {
         IsFaceRight = true;
-        characterView.SetSpriteFlipX(false);
+        // characterView.SetSpriteFlipX(false);
+        characterView.SetFaceDirectionScale(1);
     }
 
     private void InitState()
@@ -195,12 +196,14 @@ public class CharacterModel : IColliderHandler
         if (IsFaceRight && moveValue < 0)
         {
             IsFaceRight = false;
-            characterView.SetSpriteFlipX(true);
+            // characterView.SetSpriteFlipX(true);
+            characterView.SetFaceDirectionScale(-1);
         }
         else if (IsFaceRight == false && moveValue > 0)
         {
             IsFaceRight = true;
-            characterView.SetSpriteFlipX(false);
+            // characterView.SetSpriteFlipX(false);
+            characterView.SetFaceDirectionScale(1);
         }
     }
 

@@ -12,6 +12,7 @@ public interface ICharacterView
     float FallDownLimitPosY { get; }
     void SetProtectionActive(bool isActive);
     void SetSpriteFlipX(bool flipX);
+    void SetFaceDirectionScale(int scale);
     void PlayAnimation(string animationKey);
     void Waiting(float seconds, Action callback);
     void Translate(Vector3 moveVector);
