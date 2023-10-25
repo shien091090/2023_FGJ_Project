@@ -34,6 +34,9 @@ public class SceneItemView : MonoBehaviour
     private void Start()
     {
         InitSceneItem();
+
+        GameEventHandler.Instance.OnCharacterDie -= InitSceneItem;
+        GameEventHandler.Instance.OnCharacterDie += InitSceneItem;
     }
 
     private void InitSceneItem()
