@@ -77,7 +77,6 @@ public class CharacterModel : IColliderHandler
         {
             IsStayOnFloor = true;
             IsJumping = false;
-            Vector3 contactPoint = col.ContactPoints.First();
         }
     }
 

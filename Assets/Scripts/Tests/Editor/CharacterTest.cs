@@ -15,6 +15,7 @@ public class CharacterTest
     private IAudioManager audioManager;
     private ITimeModel timeModel;
     private ICharacterView characterView;
+    private ICharacterEventHandler gameEventHandler;
 
     private Action characterViewWaitingCallback;
 
@@ -26,6 +27,7 @@ public class CharacterTest
         characterRigidbody = Substitute.For<IRigidbody>();
         audioManager = Substitute.For<IAudioManager>();
         timeModel = Substitute.For<ITimeModel>();
+        gameEventHandler = Substitute.For<ICharacterEventHandler>();
 
         characterView = Substitute.For<ICharacterView>();
         characterView.Waiting(Arg.Any<float>(), Arg.Do<Action>(callback =>
@@ -39,7 +41,7 @@ public class CharacterTest
         GivenJumpDelay(1);
         GivenFallDownLimitPos(-10);
 
-        characterModel = new CharacterModel(moveController, keyController, characterRigidbody, audioManager, timeModel);
+        characterModel = new CharacterModel(moveController, keyController, characterRigidbody, audioManager, timeModel, gameEventHandler);
 
         characterModel.InitView(characterView);
     }
@@ -66,7 +68,7 @@ public class CharacterTest
     public void default_face_right()
     {
         ShouldFaceRight(true);
-        SpriteFlipXShouldBe(false);
+        FaceDirectionScaleShouldBe(1);
     }
 
     [Test]
@@ -74,27 +76,27 @@ public class CharacterTest
     public void change_face()
     {
         ShouldFaceRight(true);
-        SpriteFlipXShouldBe(false);
+        FaceDirectionScaleShouldBe(1);
 
         GivenHorizontalAxis(0.5f);
         characterModel.CallUpdate();
 
         ShouldFaceRight(true);
-        SpriteFlipXShouldBe(false);
+        FaceDirectionScaleShouldBe(1);
 
         GivenHorizontalAxis(-0.5f);
         characterModel.CallUpdate();
 
         ShouldFaceRight(false);
-        SpriteFlipXShouldBe(true);
+        FaceDirectionScaleShouldBe(-1);
 
         GivenHorizontalAxis(0.5f);
         characterModel.CallUpdate();
 
         ShouldFaceRight(true);
-        SpriteFlipXShouldBe(false);
+        FaceDirectionScaleShouldBe(1);
     }
-    
+
     [Test]
     //角色停止後, 維持原本面向
     public void keep_face_when_stop()
@@ -103,25 +105,25 @@ public class CharacterTest
         characterModel.CallUpdate();
 
         ShouldFaceRight(true);
-        SpriteFlipXShouldBe(false);
+        FaceDirectionScaleShouldBe(1);
 
         GivenHorizontalAxis(0);
         characterModel.CallUpdate();
 
         ShouldFaceRight(true);
-        SpriteFlipXShouldBe(false);
+        FaceDirectionScaleShouldBe(1);
         
         GivenHorizontalAxis(-1);
         characterModel.CallUpdate();
         
         ShouldFaceRight(false);
-        SpriteFlipXShouldBe(true);
+        FaceDirectionScaleShouldBe(-1);
 
         GivenHorizontalAxis(0);
         characterModel.CallUpdate();
         
         ShouldFaceRight(false);
-        SpriteFlipXShouldBe(true);
+        FaceDirectionScaleShouldBe(-1);
     }
 
     [Test]
@@ -530,16 +532,16 @@ public class CharacterTest
         characterViewWaitingCallback.Invoke();
     }
 
-    private void SpriteFlipXShouldBe(bool expectedIsFlipX)
+    private void FaceDirectionScaleShouldBe(int expectedScale)
     {
-        bool argument = (bool)characterView
+        int argument = (int)characterView
             .ReceivedCalls()
-            .Where(call => call.GetMethodInfo().Name == "SetSpriteFlipX")
+            .Where(call => call.GetMethodInfo().Name == "SetFaceDirectionScale")
             .ToList()
             .Last()
             .GetArguments()[0];
 
-        Assert.AreEqual(expectedIsFlipX, argument);
+        Assert.AreEqual(expectedScale, argument);
     }
 
     private void ShouldFaceRight(bool expectedIsFaceRight)
