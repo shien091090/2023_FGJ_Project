@@ -184,6 +184,7 @@ public class CharacterModel : IColliderHandler
     public void BackToOrigin()
     {
         IsDying = true;
+        characterEventHandler.TriggerDieEvent();
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_TELEPORT);
         selfRigidbody.position = RecordOriginPos;
         selfRigidbody.velocity = Vector2.zero;
