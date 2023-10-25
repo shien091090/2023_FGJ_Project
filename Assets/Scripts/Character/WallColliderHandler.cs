@@ -11,13 +11,17 @@ public class WallColliderHandler : IColliderHandler
 
     public void ColliderTriggerEnter(ICollider col)
     {
-        model.ColliderTriggerEnterWall(isRight);
+        if (col.Layer == (int)GameConst.GameObjectLayerType.Platform)
+            model.ColliderTriggerEnterWall(isRight);
+
         model.ColliderTriggerEnter(col);
     }
 
     public void ColliderTriggerExit(ICollider col)
     {
-        model.ColliderTriggerExitWall(isRight);
+        if (col.Layer == (int)GameConst.GameObjectLayerType.Platform)
+            model.ColliderTriggerExitWall(isRight);
+
         model.ColliderTriggerEnter(col);
     }
 
