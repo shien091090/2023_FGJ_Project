@@ -33,6 +33,11 @@ public class SceneItemView : MonoBehaviour
 
     private void Start()
     {
+        InitSceneItem();
+    }
+
+    private void InitSceneItem()
+    {
         gameObject.SetActive(true);
         GetAnim.Play("get_item_idle", 0);
     }

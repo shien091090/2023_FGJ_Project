@@ -80,7 +80,7 @@ public class CharacterView : MonoBehaviour, ICharacterView
     private void Start()
     {
         characterModel = new CharacterModel(new CharacterMoveController(), new CharacterKeyController(), rigidBodyComponent, FmodAudioManager.Instance,
-            new TimeModel());
+            new TimeModel(), GameEventHandler.Instance);
 
         rightWallColliderHandler = new WallColliderHandler(true, characterModel);
         leftWallColliderHandler = new WallColliderHandler(false, characterModel);

@@ -13,6 +13,7 @@ public class CharacterModel : IColliderHandler
     private readonly IRigidbody selfRigidbody;
     private readonly IAudioManager audioManager;
     private readonly ITimeModel timeModel;
+    private readonly ICharacterEventHandler characterEventHandler;
     private ICharacterView characterView;
     private float jumpTimer;
     private bool isCollideRightWall;
@@ -26,12 +27,13 @@ public class CharacterModel : IColliderHandler
     private bool IsStayOnFloor { get; set; }
 
     public CharacterModel(IMoveController moveController, IKeyController keyController, IRigidbody characterRigidbody, IAudioManager audioManager,
-        ITimeModel timeModel)
+        ITimeModel timeModel, ICharacterEventHandler characterEventHandler)
     {
         this.moveController = moveController;
         this.keyController = keyController;
         this.audioManager = audioManager;
         this.timeModel = timeModel;
+        this.characterEventHandler = characterEventHandler;
         selfRigidbody = characterRigidbody;
     }
 
@@ -165,6 +167,7 @@ public class CharacterModel : IColliderHandler
             return;
 
         IsDying = true;
+        characterEventHandler.TriggerDieEvent();
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_DAMAGE);
         characterView.PlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_DIE);
         characterView.Waiting(1.5f, () =>
