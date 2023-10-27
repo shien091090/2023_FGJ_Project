@@ -49,7 +49,7 @@ public class ItemView : MonoBehaviour, IItem
     {
         HideAllPanel();
 
-        itemModel = new ItemModel(itemType);
+        itemModel = new ItemModel(itemType, GameEventHandler.Instance);
         switch (ItemType)
         {
             case ItemType.Protection:

@@ -4,12 +4,20 @@ using NUnit.Framework;
 
 public class ItemModelTest
 {
+    private ICharacterEventHandler gameEventHandler;
+
     private Action itemUseCompleteEvent;
     private Action<int> refreshCurrentUseTimesEvent;
     private Action<float> refreshCurrentTimerEvent;
     private Action<ItemType> useItemEvent;
     private Action<ItemType> startItemEffectEvent;
     private Action<ItemType> endItemEffectEvent;
+
+    [SetUp]
+    public void Setup()
+    {
+        gameEventHandler = Substitute.For<ICharacterEventHandler>();
+    }
 
     [Test]
     //使用次數限制型道具, 僅限制1次, 使用完即消失
@@ -254,7 +262,7 @@ public class ItemModelTest
 
     private ItemModel CreateModel(ItemType itemType, ItemUseType itemUseType, int useLimit)
     {
-        ItemModel itemModel = new ItemModel(itemType);
+        ItemModel itemModel = new ItemModel(itemType, gameEventHandler);
         if (itemUseType == ItemUseType.UseTimes)
             itemModel.SetUseTimesType(useLimit);
         else
