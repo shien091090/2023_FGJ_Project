@@ -1,4 +1,4 @@
 public interface ICharacterEventHandler
 {
-    void TriggerDieEvent();
+    void ChangeCurrentCharacterState(CharacterState state);
 }

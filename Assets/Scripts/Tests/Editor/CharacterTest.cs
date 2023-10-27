@@ -367,7 +367,7 @@ public class CharacterTest
         characterModel.ColliderTriggerStay(collider);
 
         ShouldDying(true);
-        ShouldTriggerDieEvent();
+        ShouldChangeCurrentCharacterState(CharacterState.Die);
         ShouldPlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_DIE);
 
         CallCharacterViewWaitingCallback();
@@ -407,7 +407,7 @@ public class CharacterTest
         characterModel.ColliderTriggerStay(collider);
 
         ShouldDying(true);
-        ShouldTriggerDieEvent();
+        ShouldChangeCurrentCharacterState(CharacterState.Die);
     }
 
     [Test]
@@ -458,7 +458,7 @@ public class CharacterTest
         characterModel.CallUpdate();
 
         ShouldDying(true);
-        ShouldTriggerDieEvent();
+        ShouldChangeCurrentCharacterState(CharacterState.Die);
         ShouldAudioPlayOneShot(GameConst.AUDIO_KEY_TELEPORT);
         CurrentCharacterPosShouldBe(new Vector3(0, 1, 0));
 
@@ -535,9 +535,9 @@ public class CharacterTest
         characterViewWaitingCallback.Invoke();
     }
 
-    private void ShouldTriggerDieEvent(int triggerTimes = 1)
+    private void ShouldChangeCurrentCharacterState(CharacterState characterState, int triggerTimes = 1)
     {
-        gameEventHandler.Received(triggerTimes).TriggerDieEvent();
+        gameEventHandler.Received(triggerTimes).ChangeCurrentCharacterState(characterState);
     }
 
     private void FaceDirectionScaleShouldBe(int expectedScale)

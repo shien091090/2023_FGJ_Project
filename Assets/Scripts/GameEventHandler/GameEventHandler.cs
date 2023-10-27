@@ -5,11 +5,19 @@ public class GameEventHandler : MonoBehaviour, ICharacterEventHandler
 {
     private static GameEventHandler _instance;
     public event Action OnCharacterDie;
+
+    public CharacterState CurrentCharacterState { get; private set; }
     public static GameEventHandler Instance => _instance;
 
-    public void TriggerDieEvent()
+    public void ChangeCurrentCharacterState(CharacterState state)
     {
-        OnCharacterDie?.Invoke();
+        if (CurrentCharacterState == state)
+            return;
+        
+        CurrentCharacterState = state;
+        
+        if (state == CharacterState.Die)
+            OnCharacterDie?.Invoke();
     }
 
     private void Awake()

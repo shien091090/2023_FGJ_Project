@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using SNShien.Common.AudioTools;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CharacterModel : IColliderHandler
@@ -77,6 +78,7 @@ public class CharacterModel : IColliderHandler
         {
             IsStayOnFloor = true;
             IsJumping = false;
+            characterEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
         }
     }
 
@@ -111,6 +113,7 @@ public class CharacterModel : IColliderHandler
         IsStayOnFloor = true;
         RecordOriginPos = selfRigidbody.position;
         characterView.SetProtectionActive(false);
+        characterEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
     }
 
     public void CallUpdate()
@@ -156,6 +159,7 @@ public class CharacterModel : IColliderHandler
 
         jumpTimer = 0;
         IsJumping = true;
+        characterEventHandler.ChangeCurrentCharacterState(CharacterState.Jumping);
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_JUMP);
         selfRigidbody.AddForce(new Vector2(0, jumpForce));
     }
@@ -166,7 +170,7 @@ public class CharacterModel : IColliderHandler
             return;
 
         IsDying = true;
-        characterEventHandler.TriggerDieEvent();
+        characterEventHandler.ChangeCurrentCharacterState(CharacterState.Die);
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_DAMAGE);
         characterView.PlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_DIE);
         characterView.Waiting(1.5f, () =>
@@ -177,6 +181,7 @@ public class CharacterModel : IColliderHandler
             {
                 IsDying = false;
                 isProtected = false;
+                characterEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
             });
         });
     }
@@ -184,13 +189,14 @@ public class CharacterModel : IColliderHandler
     public void BackToOrigin()
     {
         IsDying = true;
-        characterEventHandler.TriggerDieEvent();
+        characterEventHandler.ChangeCurrentCharacterState(CharacterState.Die);
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_TELEPORT);
         selfRigidbody.position = RecordOriginPos;
         selfRigidbody.velocity = Vector2.zero;
         characterView.Waiting(0.5f, () =>
         {
             IsDying = false;
+            characterEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
         });
     }
 
