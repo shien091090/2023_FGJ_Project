@@ -25,8 +25,6 @@ public class CharacterView : MonoBehaviour, ICharacterView
     public float Speed => speed;
     public float JumpDelaySeconds => jumpDelaySeconds;
     public float InteractDistance => interactDistance;
-    public Vector3 FootPointPosition => footPoint.position;
-    public float FootRadius => footRadius;
     public float FallDownLimitPosY => fallDownLimitHeight;
 
     private SpriteRenderer spriteRenderer;
@@ -52,6 +50,11 @@ public class CharacterView : MonoBehaviour, ICharacterView
         tf_faceDirection.localScale = new Vector3(scale, 1, 1);
     }
 
+    public void SetActive(bool isActive)
+    {
+        tf_faceDirection.gameObject.SetActive(isActive);
+    }
+
     public void PlayAnimation(string animationKey)
     {
         anim.Play(animationKey, 0, 0);
@@ -65,11 +68,6 @@ public class CharacterView : MonoBehaviour, ICharacterView
     public void Waiting(float seconds, Action callback)
     {
         StartCoroutine(Cor_WaitingCoroutine(seconds, callback));
-    }
-
-    public void SetSpriteFlipX(bool flipX)
-    {
-        GetSpriteRenderer.flipX = flipX;
     }
 
     public void Translate(Vector3 moveVector)
@@ -95,6 +93,11 @@ public class CharacterView : MonoBehaviour, ICharacterView
     private void Update()
     {
         characterModel.CallUpdate();
+    }
+
+    public void SetSpriteFlipX(bool flipX)
+    {
+        GetSpriteRenderer.flipX = flipX;
     }
 
     private void SetEventRegister()

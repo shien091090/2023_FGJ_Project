@@ -60,6 +60,7 @@ public class CharacterModel : IColliderHandler
                         CurrentTriggerSavePoint = savePointComponent;
                         CurrentTriggerSavePoint.ShowRecordStateHint();
                     }
+
                     break;
                 }
         }
@@ -83,6 +84,7 @@ public class CharacterModel : IColliderHandler
                         CurrentTriggerSavePoint.HideAllUI();
                         CurrentTriggerSavePoint = null;
                     }
+
                     break;
                 }
         }
@@ -139,6 +141,7 @@ public class CharacterModel : IColliderHandler
         IsStayOnFloor = true;
         RecordOriginPos = selfRigidbody.position;
         characterView.SetProtectionActive(false);
+        characterView.SetActive(true);
         characterEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
     }
 
@@ -154,8 +157,13 @@ public class CharacterModel : IColliderHandler
         }
 
         UpdateJumpTimer(timeModel.deltaTime);
-        UpdateCheckJump(characterView.JumpForce);
-        UpdateMove(timeModel.deltaTime, characterView.Speed);
+        
+        if (characterEventHandler.CurrentCharacterState != CharacterState.IntoHouse)
+        {
+            UpdateCheckJump(characterView.JumpForce);
+            UpdateMove(timeModel.deltaTime, characterView.Speed);
+        }
+
         UpdateCheckInteract();
     }
 
@@ -208,6 +216,7 @@ public class CharacterModel : IColliderHandler
                 IsDying = false;
                 isProtected = false;
                 characterEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
+                characterView.SetActive(true);
             });
         });
     }
@@ -222,13 +231,6 @@ public class CharacterModel : IColliderHandler
             IsDying = false;
             characterEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
         });
-    }
-
-    private void Teleport(Vector3 targetPos)
-    {
-        audioManager.PlayOneShot(GameConst.AUDIO_KEY_TELEPORT);
-        selfRigidbody.position = targetPos;
-        selfRigidbody.velocity = Vector2.zero;
     }
 
     private void CheckChangeFaceDirection(float moveValue)
@@ -289,9 +291,18 @@ public class CharacterModel : IColliderHandler
             TriggerSavePoint();
     }
 
+    private void Teleport(Vector3 targetPos)
+    {
+        audioManager.PlayOneShot(GameConst.AUDIO_KEY_TELEPORT);
+        selfRigidbody.position = targetPos;
+        selfRigidbody.velocity = Vector2.zero;
+    }
+
     private void TriggerSavePoint()
     {
         CurrentTriggerSavePoint.Save();
+        characterEventHandler.ChangeCurrentCharacterState(CharacterState.IntoHouse);
+        characterView.SetActive(false);
     }
 
     private void TriggerTeleportGate()

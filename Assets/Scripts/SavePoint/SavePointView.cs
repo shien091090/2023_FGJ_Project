@@ -41,7 +41,6 @@ public class SavePointView : MonoBehaviour, ISavePointView
 
     public void RefreshRecordState(bool isRecorded)
     {
-        Debug.Log($"RefreshRecordState: {isRecorded}");
         sp_recordStateHint.sprite = isRecorded ?
             recordTypeSprite :
             notRecordTypeSprite;
