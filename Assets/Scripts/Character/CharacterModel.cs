@@ -54,10 +54,12 @@ public class CharacterModel : IColliderHandler
 
             case (int)GameConst.GameObjectLayerType.SavePoint:
                 {
-                    Debug.Log("SavePoint Enter");
                     ISavePointView savePointComponent = col.GetComponent<ISavePointView>();
                     if (savePointComponent != null)
+                    {
                         CurrentTriggerSavePoint = savePointComponent;
+                        CurrentTriggerSavePoint.ShowRecordStateHint();
+                    }
                     break;
                 }
         }
@@ -76,9 +78,11 @@ public class CharacterModel : IColliderHandler
 
             case (int)GameConst.GameObjectLayerType.SavePoint:
                 {
-                    Debug.Log("SavePoint Exit");
-                    if (col.GetComponent<ISavePointView>() != null)
+                    if (col.GetComponent<ISavePointView>() != null && CurrentTriggerSavePoint != null)
+                    {
+                        CurrentTriggerSavePoint.HideAllUI();
                         CurrentTriggerSavePoint = null;
+                    }
                     break;
                 }
         }
@@ -287,6 +291,7 @@ public class CharacterModel : IColliderHandler
 
     private void TriggerSavePoint()
     {
+        CurrentTriggerSavePoint.Save();
     }
 
     private void TriggerTeleportGate()
