@@ -22,7 +22,7 @@ public class WallColliderHandler : IColliderHandler
         if (col.Layer == (int)GameConst.GameObjectLayerType.Platform)
             model.ColliderTriggerExitWall(isRight);
 
-        model.ColliderTriggerEnter(col);
+        model.ColliderTriggerExit(col);
     }
 
     public void ColliderTriggerStay(ICollider col)
