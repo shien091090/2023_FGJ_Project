@@ -6,7 +6,8 @@ public class GameConst
         Player = 7,
         TeleportGate = 8,
         Monster = 9,
-        Weapon = 10
+        Weapon = 10,
+        SavePoint = 11,
     }
 
     public const string AUDIO_KEY_DAMAGE = "Damage";

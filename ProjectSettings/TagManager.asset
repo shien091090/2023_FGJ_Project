@@ -16,7 +16,7 @@ TagManager:
   - TeleportGate
   - Monster
   - Weapon
-  - 
+  - SavePoint
   - 
   - 
   - 
@@ -61,4 +61,7 @@ TagManager:
     locked: 0
   - name: Bullet
     uniqueID: 2172085379
+    locked: 0
+  - name: UI
+    uniqueID: 2840948199
     locked: 0

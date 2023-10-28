@@ -21,10 +21,12 @@ public class CharacterModel : IColliderHandler
     private bool isCollideLeftWall;
     public bool IsJumping { get; private set; }
     public bool HaveInteractGate => CurrentTriggerTeleportGate != null;
+    public bool HaveInteractSavePoint => CurrentTriggerSavePoint != null;
     public Vector3 RecordOriginPos { get; private set; }
     public bool IsDying { get; private set; }
     public bool IsFaceRight { get; private set; }
     private ITeleportGate CurrentTriggerTeleportGate { get; set; }
+    private ISavePointView CurrentTriggerSavePoint { get; set; }
     private bool IsStayOnFloor { get; set; }
 
     public CharacterModel(IMoveController moveController, IKeyController keyController, IRigidbody characterRigidbody, IAudioManager audioManager,
@@ -40,25 +42,45 @@ public class CharacterModel : IColliderHandler
 
     public void ColliderTriggerEnter(ICollider col)
     {
-        if (col.Layer == (int)GameConst.GameObjectLayerType.TeleportGate)
+        switch (col.Layer)
         {
-            ITeleportGate teleportGateComponent = col.GetComponent<ITeleportGate>();
-            if (teleportGateComponent == null)
-                return;
+            case (int)GameConst.GameObjectLayerType.TeleportGate:
+                {
+                    ITeleportGate teleportGateComponent = col.GetComponent<ITeleportGate>();
+                    if (teleportGateComponent != null)
+                        CurrentTriggerTeleportGate = teleportGateComponent;
+                    break;
+                }
 
-            CurrentTriggerTeleportGate = teleportGateComponent;
+            case (int)GameConst.GameObjectLayerType.SavePoint:
+                {
+                    Debug.Log("SavePoint Enter");
+                    ISavePointView savePointComponent = col.GetComponent<ISavePointView>();
+                    if (savePointComponent != null)
+                        CurrentTriggerSavePoint = savePointComponent;
+                    break;
+                }
         }
     }
 
     public void ColliderTriggerExit(ICollider col)
     {
-        if (col.Layer == (int)GameConst.GameObjectLayerType.TeleportGate)
+        switch (col.Layer)
         {
-            ITeleportGate teleportGateComponent = col.GetComponent<ITeleportGate>();
-            if (teleportGateComponent == null)
-                return;
+            case (int)GameConst.GameObjectLayerType.TeleportGate:
+                {
+                    if (col.GetComponent<ITeleportGate>() != null)
+                        CurrentTriggerTeleportGate = null;
+                    break;
+                }
 
-            CurrentTriggerTeleportGate = null;
+            case (int)GameConst.GameObjectLayerType.SavePoint:
+                {
+                    Debug.Log("SavePoint Exit");
+                    if (col.GetComponent<ISavePointView>() != null)
+                        CurrentTriggerSavePoint = null;
+                    break;
+                }
         }
     }
 
@@ -190,14 +212,19 @@ public class CharacterModel : IColliderHandler
     {
         IsDying = true;
         characterEventHandler.ChangeCurrentCharacterState(CharacterState.Die);
-        audioManager.PlayOneShot(GameConst.AUDIO_KEY_TELEPORT);
-        selfRigidbody.position = RecordOriginPos;
-        selfRigidbody.velocity = Vector2.zero;
+        Teleport(RecordOriginPos);
         characterView.Waiting(0.5f, () =>
         {
             IsDying = false;
             characterEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
         });
+    }
+
+    private void Teleport(Vector3 targetPos)
+    {
+        audioManager.PlayOneShot(GameConst.AUDIO_KEY_TELEPORT);
+        selfRigidbody.position = targetPos;
+        selfRigidbody.velocity = Vector2.zero;
     }
 
     private void CheckChangeFaceDirection(float moveValue)
@@ -252,9 +279,18 @@ public class CharacterModel : IColliderHandler
         if (selfRigidbody == null)
             return;
 
-        if (HaveInteractGate == false)
-            return;
+        if (HaveInteractGate)
+            TriggerTeleportGate();
+        else if (HaveInteractSavePoint)
+            TriggerSavePoint();
+    }
 
+    private void TriggerSavePoint()
+    {
+    }
+
+    private void TriggerTeleportGate()
+    {
         float distance = Vector3.Distance(selfRigidbody.position, CurrentTriggerTeleportGate.GetPos);
         if (distance > characterView.InteractDistance)
         {
@@ -263,6 +299,6 @@ public class CharacterModel : IColliderHandler
         }
 
         if (HaveInteractGate)
-            CurrentTriggerTeleportGate.Teleport(selfRigidbody);
+            Teleport(CurrentTriggerTeleportGate.GetTargetPos);
     }
 }

@@ -2,6 +2,6 @@ using UnityEngine;
 
 public interface ITeleportGate
 {
-    void Teleport(IRigidbody target);
     Vector3 GetPos { get; }
+    Vector3 GetTargetPos { get; }
 }
