@@ -53,7 +53,7 @@ public class CharacterModel : IColliderHandler
                     if (savePointComponent != null)
                     {
                         CurrentTriggerSavePoint = savePointComponent;
-                        CurrentTriggerSavePoint.ShowRecordStateHint();
+                        CurrentTriggerSavePoint.GetModel.ShowRecordStateHint();
                     }
 
                     break;
@@ -76,7 +76,7 @@ public class CharacterModel : IColliderHandler
                 {
                     if (col.GetComponent<ISavePointView>() != null && CurrentTriggerSavePoint != null)
                     {
-                        CurrentTriggerSavePoint.HideAllUI();
+                        CurrentTriggerSavePoint.GetModel.HideAllUI();
                         CurrentTriggerSavePoint = null;
                     }
 
@@ -293,7 +293,7 @@ public class CharacterModel : IColliderHandler
 
     private void TriggerSavePoint()
     {
-        CurrentTriggerSavePoint.Save();
+        CurrentTriggerSavePoint.GetModel.Save();
         characterEventHandler.ChangeCurrentCharacterState(CharacterState.IntoHouse);
         characterView.SetActive(false);
     }

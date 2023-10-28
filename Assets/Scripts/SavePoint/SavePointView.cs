@@ -11,13 +11,9 @@ public class SavePointView : MonoBehaviour, ISavePointView
     [SerializeField] private Sprite notRecordTypeSprite;
 
     public Vector3 SavePointPos => transform.position;
+    public ISavePointModel GetModel => savePointModel;
 
     private SavePointModel savePointModel;
-
-    public void ShowRecordStateHint()
-    {
-        savePointModel.ShowRecordStateHint();
-    }
 
     public void SetRecordStateHintActive(bool isActive)
     {
@@ -34,23 +30,11 @@ public class SavePointView : MonoBehaviour, ISavePointView
         go_rightArrow.SetActive(isActive);
     }
 
-    public void Save()
-    {
-        savePointModel.Save();
-    }
-
     public void RefreshRecordState(bool isRecorded)
     {
         sp_recordStateHint.sprite = isRecorded ?
             recordTypeSprite :
             notRecordTypeSprite;
-    }
-
-    public void HideAllUI()
-    {
-        sp_recordStateHint.gameObject.SetActive(false);
-        go_leftArrow.SetActive(false);
-        go_rightArrow.SetActive(false);
     }
 
     private void Start()
