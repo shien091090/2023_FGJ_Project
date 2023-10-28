@@ -1,16 +1,12 @@
 using System;
-using System.Linq;
 using SNShien.Common.AudioTools;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CharacterModel : IColliderHandler
 {
     public bool isProtected;
     private readonly IMoveController moveController;
-
     private readonly IKeyController keyController;
-
     private readonly IRigidbody selfRigidbody;
     private readonly IAudioManager audioManager;
     private readonly ITimeModel timeModel;
@@ -23,7 +19,6 @@ public class CharacterModel : IColliderHandler
     public bool HaveInteractGate => CurrentTriggerTeleportGate != null;
     public bool HaveInteractSavePoint => CurrentTriggerSavePoint != null;
     public Vector3 RecordOriginPos { get; private set; }
-    public bool IsDying { get; private set; }
     public bool IsFaceRight { get; private set; }
     private ITeleportGate CurrentTriggerTeleportGate { get; set; }
     private ISavePointView CurrentTriggerSavePoint { get; set; }
@@ -106,7 +101,8 @@ public class CharacterModel : IColliderHandler
         {
             IsStayOnFloor = true;
             IsJumping = false;
-            characterEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
+            if (characterEventHandler.CurrentCharacterState != CharacterState.Die)
+                characterEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
         }
     }
 
@@ -115,6 +111,8 @@ public class CharacterModel : IColliderHandler
         if (col.Layer == (int)GameConst.GameObjectLayerType.Platform)
         {
             IsStayOnFloor = false;
+            if (characterEventHandler.CurrentCharacterState != CharacterState.Die)
+                characterEventHandler.ChangeCurrentCharacterState(CharacterState.Jumping);
         }
     }
 
@@ -136,7 +134,6 @@ public class CharacterModel : IColliderHandler
     {
         characterView.PlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_NORMAL);
         jumpTimer = characterView.JumpDelaySeconds;
-        IsDying = false;
         isProtected = false;
         IsStayOnFloor = true;
         RecordOriginPos = selfRigidbody.position;
@@ -147,7 +144,7 @@ public class CharacterModel : IColliderHandler
 
     public void CallUpdate()
     {
-        if (IsDying)
+        if (characterEventHandler.CurrentCharacterState == CharacterState.Die)
             return;
 
         if (selfRigidbody.position.y <= characterView.FallDownLimitPosY)
@@ -157,7 +154,7 @@ public class CharacterModel : IColliderHandler
         }
 
         UpdateJumpTimer(timeModel.deltaTime);
-        
+
         if (characterEventHandler.CurrentCharacterState != CharacterState.IntoHouse)
         {
             UpdateCheckJump(characterView.JumpForce);
@@ -200,10 +197,9 @@ public class CharacterModel : IColliderHandler
 
     public void Die()
     {
-        if (IsDying)
+        if (characterEventHandler.CurrentCharacterState == CharacterState.Die)
             return;
 
-        IsDying = true;
         characterEventHandler.ChangeCurrentCharacterState(CharacterState.Die);
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_DAMAGE);
         characterView.PlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_DIE);
@@ -213,7 +209,6 @@ public class CharacterModel : IColliderHandler
             BackToOrigin();
             characterView.Waiting(0.5f, () =>
             {
-                IsDying = false;
                 isProtected = false;
                 characterEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
                 characterView.SetActive(true);
@@ -223,12 +218,10 @@ public class CharacterModel : IColliderHandler
 
     public void BackToOrigin()
     {
-        IsDying = true;
         characterEventHandler.ChangeCurrentCharacterState(CharacterState.Die);
         Teleport(RecordOriginPos);
         characterView.Waiting(0.5f, () =>
         {
-            IsDying = false;
             characterEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
         });
     }

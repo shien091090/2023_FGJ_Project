@@ -14,6 +14,7 @@ public class GameEventHandler : MonoBehaviour, ICharacterEventHandler
         if (CurrentCharacterState == state)
             return;
 
+        Debug.Log($"ChangeCurrentCharacterState: {state}");
         CurrentCharacterState = state;
 
         if (state == CharacterState.Die)
