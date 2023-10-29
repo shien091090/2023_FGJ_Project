@@ -52,6 +52,7 @@ public class CharacterModel : IColliderHandler
                     ISavePointView savePointComponent = col.GetComponent<ISavePointView>();
                     if (savePointComponent != null)
                     {
+                        Debug.Log("SavePoint");
                         CurrentTriggerSavePoint = savePointComponent;
                         CurrentTriggerSavePoint.GetModel.ShowRecordStateHint();
                     }
@@ -101,7 +102,8 @@ public class CharacterModel : IColliderHandler
         {
             IsStayOnFloor = true;
             IsJumping = false;
-            if (characterEventHandler.CurrentCharacterState != CharacterState.Die)
+            if (characterEventHandler.CurrentCharacterState != CharacterState.Die &&
+                characterEventHandler.CurrentCharacterState != CharacterState.IntoHouse)
                 characterEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
         }
     }
@@ -111,7 +113,8 @@ public class CharacterModel : IColliderHandler
         if (col.Layer == (int)GameConst.GameObjectLayerType.Platform)
         {
             IsStayOnFloor = false;
-            if (characterEventHandler.CurrentCharacterState != CharacterState.Die)
+            if (characterEventHandler.CurrentCharacterState != CharacterState.Die &&
+                characterEventHandler.CurrentCharacterState != CharacterState.IntoHouse)
                 characterEventHandler.ChangeCurrentCharacterState(CharacterState.Jumping);
         }
     }
@@ -155,7 +158,9 @@ public class CharacterModel : IColliderHandler
 
         UpdateJumpTimer(timeModel.deltaTime);
 
-        if (characterEventHandler.CurrentCharacterState != CharacterState.IntoHouse)
+        if (characterEventHandler.CurrentCharacterState == CharacterState.IntoHouse)
+            UpdateCheckSavePointTeleport();
+        else
         {
             UpdateCheckJump(characterView.JumpForce);
             UpdateMove(timeModel.deltaTime, characterView.Speed);
@@ -270,6 +275,18 @@ public class CharacterModel : IColliderHandler
         jumpTimer = Math.Min(jumpTimer + deltaTime, characterView.JumpDelaySeconds);
     }
 
+    private void UpdateCheckSavePointTeleport()
+    {
+        if (characterEventHandler.CurrentCharacterState != CharacterState.IntoHouse ||
+            HaveInteractSavePoint == false)
+            return;
+
+        if (keyController.IsRightKeyDown && CurrentTriggerSavePoint.GetModel.HaveNextSavePoint())
+            Teleport(CurrentTriggerSavePoint.GetModel.GetNextSavePointPos());
+        else if (keyController.IsLeftKeyDown && CurrentTriggerSavePoint.GetModel.HavePreviousSavePoint())
+            Teleport(CurrentTriggerSavePoint.GetModel.GetPreviousSavePointPos());
+    }
+
     private void UpdateCheckInteract()
     {
         if (!keyController.IsInteractKeyDown)
@@ -278,10 +295,19 @@ public class CharacterModel : IColliderHandler
         if (selfRigidbody == null)
             return;
 
-        if (HaveInteractGate)
-            TriggerTeleportGate();
-        else if (HaveInteractSavePoint)
-            TriggerSavePoint();
+        if (characterEventHandler.CurrentCharacterState == CharacterState.IntoHouse)
+        {
+            characterEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
+            characterView.SetActive(true);
+            CurrentTriggerSavePoint.GetModel.HideInteractHint();
+        }
+        else
+        {
+            if (HaveInteractGate)
+                TriggerTeleportGate();
+            else if (HaveInteractSavePoint)
+                TriggerSavePoint();
+        }
     }
 
     private void Teleport(Vector3 targetPos)
@@ -296,6 +322,7 @@ public class CharacterModel : IColliderHandler
         CurrentTriggerSavePoint.GetModel.Save();
         characterEventHandler.ChangeCurrentCharacterState(CharacterState.IntoHouse);
         characterView.SetActive(false);
+        CurrentTriggerSavePoint.GetModel.ShowInteractHint();
     }
 
     private void TriggerTeleportGate()

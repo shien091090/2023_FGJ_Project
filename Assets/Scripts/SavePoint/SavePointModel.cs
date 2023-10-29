@@ -14,6 +14,8 @@ public class SavePointModel : ISavePointModel
         this.savePointView = savePointView;
         this.audioManager = audioManager;
         savePointPos = savePointView.SavePointPos;
+
+        HideInteractHint();
     }
 
     public void HideAllUI()
@@ -21,6 +23,38 @@ public class SavePointModel : ISavePointModel
         savePointView.SetRecordStateHintActive(false);
         savePointView.SetLeftArrowActive(false);
         savePointView.SetRightArrowActive(false);
+    }
+
+    public void ShowInteractHint()
+    {
+        savePointView.SetLeftArrowActive(HavePreviousSavePoint());
+        savePointView.SetRightArrowActive(HaveNextSavePoint());
+    }
+
+    public void HideInteractHint()
+    {
+        savePointView.SetLeftArrowActive(false);
+        savePointView.SetRightArrowActive(false);
+    }
+
+    public bool HaveNextSavePoint()
+    {
+        return savePointManager.HaveNextSavePoint(savePointPos);
+    }
+
+    public Vector3 GetNextSavePointPos()
+    {
+        return savePointManager.GetNextSavePoint(savePointPos);
+    }
+
+    public bool HavePreviousSavePoint()
+    {
+        return savePointManager.HavePreviousSavePoint(savePointPos);
+    }
+
+    public Vector3 GetPreviousSavePointPos()
+    {
+        return savePointManager.GetPreviousSavePoint(savePointPos);
     }
 
     public void ShowRecordStateHint()

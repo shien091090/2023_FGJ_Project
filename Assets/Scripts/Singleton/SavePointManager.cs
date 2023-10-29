@@ -22,9 +22,29 @@ public class SavePointManager : MonoBehaviour, ISavePointManager
         Debug.Log($"SavePointManager: {string.Join(", \n", savePointPosStrs)}");
     }
 
+    public bool HavePreviousSavePoint(Vector3 savePointPos)
+    {
+        return recordSavePoints.IndexOf(savePointPos) > 0;
+    }
+
+    public bool HaveNextSavePoint(Vector3 savePointPos)
+    {
+        return recordSavePoints.IndexOf(savePointPos) < recordSavePoints.Count - 1;
+    }
+
     public bool IsRecorded(Vector3 pos)
     {
         return recordSavePoints.Contains(pos);
+    }
+
+    public Vector3 GetPreviousSavePoint(Vector3 savePointPos)
+    {
+        return recordSavePoints[recordSavePoints.IndexOf(savePointPos) - 1];
+    }
+
+    public Vector3 GetNextSavePoint(Vector3 savePointPos)
+    {
+        return recordSavePoints[recordSavePoints.IndexOf(savePointPos) + 1];
     }
 
     private void Start()
