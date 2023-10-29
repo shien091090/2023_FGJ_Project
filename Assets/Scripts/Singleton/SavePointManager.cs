@@ -6,50 +6,54 @@ using UnityEngine;
 public class SavePointManager : MonoBehaviour, ISavePointManager
 {
     private static SavePointManager _instance;
-    private List<Vector3> recordSavePoints;
+    private List<ISavePointView> recordSavePointViews;
+    private List<Vector3> recordSavePointPosList;
 
     public static SavePointManager Instance => _instance;
 
-    public void AddSavePoint(Vector3 savePointPos)
+    public void AddSavePoint(ISavePointView savePointView)
     {
-        if (IsRecorded(savePointPos))
+        if (IsRecorded(savePointView.SavePointPos))
             return;
 
-        recordSavePoints.Add(savePointPos);
-        recordSavePoints = recordSavePoints.OrderBy(pos => pos.x).ToList();
+        recordSavePointViews.Add(savePointView);
+        recordSavePointPosList = recordSavePointViews.Select(x => x.SavePointPos).OrderBy(pos => pos.x).ToList();
 
-        List<string> savePointPosStrs = recordSavePoints.Select(pos => pos.ToString()).ToList();
-        Debug.Log($"SavePointManager: {string.Join(", \n", savePointPosStrs)}");
+        List<string> savePointPosLogs = recordSavePointPosList.Select(pos => pos.ToString()).ToList();
+        Debug.Log($"SavePointManager: {string.Join(", \n", savePointPosLogs)}");
     }
 
     public bool HavePreviousSavePoint(Vector3 savePointPos)
     {
-        return recordSavePoints.IndexOf(savePointPos) > 0;
+        return recordSavePointPosList.IndexOf(savePointPos) > 0;
     }
 
     public bool HaveNextSavePoint(Vector3 savePointPos)
     {
-        return recordSavePoints.IndexOf(savePointPos) < recordSavePoints.Count - 1;
+        return recordSavePointPosList.IndexOf(savePointPos) < recordSavePointPosList.Count - 1;
     }
 
     public bool IsRecorded(Vector3 pos)
     {
-        return recordSavePoints.Contains(pos);
+        return recordSavePointPosList.Contains(pos);
     }
 
-    public Vector3 GetPreviousSavePoint(Vector3 savePointPos)
+    public ISavePointView GetPreviousSavePointView(Vector3 savePointPos)
     {
-        return recordSavePoints[recordSavePoints.IndexOf(savePointPos) - 1];
+        Vector3 previousPointPos = recordSavePointPosList[recordSavePointPosList.IndexOf(savePointPos) - 1];
+        return recordSavePointViews.FirstOrDefault(x => x.SavePointPos == previousPointPos);
     }
 
-    public Vector3 GetNextSavePoint(Vector3 savePointPos)
+    public ISavePointView GetNextSavePointView(Vector3 savePointPos)
     {
-        return recordSavePoints[recordSavePoints.IndexOf(savePointPos) + 1];
+        Vector3 nextPointPos = recordSavePointPosList[recordSavePointPosList.IndexOf(savePointPos) + 1];
+        return recordSavePointViews.FirstOrDefault(x => x.SavePointPos == nextPointPos);
     }
 
     private void Start()
     {
-        recordSavePoints = new List<Vector3>();
+        recordSavePointViews = new List<ISavePointView>();
+        recordSavePointPosList = new List<Vector3>();
     }
 
     private void Awake()

@@ -49,10 +49,12 @@ public class CharacterModel : IColliderHandler
 
             case (int)GameConst.GameObjectLayerType.SavePoint:
                 {
+                    if (characterEventHandler.CurrentCharacterState == CharacterState.IntoHouse)
+                        return;
+
                     ISavePointView savePointComponent = col.GetComponent<ISavePointView>();
                     if (savePointComponent != null)
                     {
-                        Debug.Log("SavePoint");
                         CurrentTriggerSavePoint = savePointComponent;
                         CurrentTriggerSavePoint.GetModel.ShowRecordStateHint();
                     }
@@ -75,7 +77,9 @@ public class CharacterModel : IColliderHandler
 
             case (int)GameConst.GameObjectLayerType.SavePoint:
                 {
-                    if (col.GetComponent<ISavePointView>() != null && CurrentTriggerSavePoint != null)
+                    if (col.GetComponent<ISavePointView>() != null &&
+                        CurrentTriggerSavePoint != null &&
+                        characterEventHandler.CurrentCharacterState != CharacterState.IntoHouse)
                     {
                         CurrentTriggerSavePoint.GetModel.HideAllUI();
                         CurrentTriggerSavePoint = null;
@@ -281,10 +285,20 @@ public class CharacterModel : IColliderHandler
             HaveInteractSavePoint == false)
             return;
 
+        ISavePointView targetPointView = null;
         if (keyController.IsRightKeyDown && CurrentTriggerSavePoint.GetModel.HaveNextSavePoint())
-            Teleport(CurrentTriggerSavePoint.GetModel.GetNextSavePointPos());
+            targetPointView = CurrentTriggerSavePoint.GetModel.GetNextSavePointView();
         else if (keyController.IsLeftKeyDown && CurrentTriggerSavePoint.GetModel.HavePreviousSavePoint())
-            Teleport(CurrentTriggerSavePoint.GetModel.GetPreviousSavePointPos());
+            targetPointView = CurrentTriggerSavePoint.GetModel.GetPreviousSavePointView();
+
+        if (targetPointView == null)
+            return;
+
+        Teleport(targetPointView.SavePointPos);
+        CurrentTriggerSavePoint.GetModel.HideAllUI();
+        CurrentTriggerSavePoint = targetPointView;
+        CurrentTriggerSavePoint.GetModel.ShowRecordStateHint();
+        CurrentTriggerSavePoint.GetModel.ShowInteractHint();
     }
 
     private void UpdateCheckInteract()

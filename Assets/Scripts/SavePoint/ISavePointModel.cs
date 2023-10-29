@@ -2,13 +2,13 @@ using UnityEngine;
 
 public interface ISavePointModel
 {
+    ISavePointView GetNextSavePointView();
+    ISavePointView GetPreviousSavePointView();
     void Save();
     void ShowRecordStateHint();
     void HideAllUI();
     void ShowInteractHint();
     void HideInteractHint();
     bool HaveNextSavePoint();
-    Vector3 GetNextSavePointPos();
     bool HavePreviousSavePoint();
-    Vector3 GetPreviousSavePointPos();
 }

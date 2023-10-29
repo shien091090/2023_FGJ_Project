@@ -42,9 +42,9 @@ public class SavePointModel : ISavePointModel
         return savePointManager.HaveNextSavePoint(savePointPos);
     }
 
-    public Vector3 GetNextSavePointPos()
+    public ISavePointView GetNextSavePointView()
     {
-        return savePointManager.GetNextSavePoint(savePointPos);
+        return savePointManager.GetNextSavePointView(savePointPos);
     }
 
     public bool HavePreviousSavePoint()
@@ -52,9 +52,9 @@ public class SavePointModel : ISavePointModel
         return savePointManager.HavePreviousSavePoint(savePointPos);
     }
 
-    public Vector3 GetPreviousSavePointPos()
+    public ISavePointView GetPreviousSavePointView()
     {
-        return savePointManager.GetPreviousSavePoint(savePointPos);
+        return savePointManager.GetPreviousSavePointView(savePointPos);
     }
 
     public void ShowRecordStateHint()
@@ -69,7 +69,7 @@ public class SavePointModel : ISavePointModel
             return;
 
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_SAVE_POINT);
-        savePointManager.AddSavePoint(savePointPos);
+        savePointManager.AddSavePoint(savePointView);
         RefreshRecordStateHint();
     }
 
