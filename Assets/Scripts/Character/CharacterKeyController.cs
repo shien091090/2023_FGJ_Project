@@ -4,8 +4,8 @@ public class CharacterKeyController : IKeyController
 {
     public bool IsJumpKeyDown => Input.GetKeyDown(KeyCode.UpArrow);
     public bool IsInteractKeyDown => Input.GetKeyDown(KeyCode.Space);
-    public bool IsLeftKeyDown => Input.GetKey(KeyCode.LeftArrow);
-    public bool IsRightKeyDown => Input.GetKey(KeyCode.RightArrow);
+    public bool IsLeftKeyDown => Input.GetKeyDown(KeyCode.LeftArrow);
+    public bool IsRightKeyDown => Input.GetKeyDown(KeyCode.RightArrow);
 
     public bool IsUseItemKeyDown(int itemSlotIndex)
     {
