@@ -9,8 +9,9 @@ public class SavePointView : MonoBehaviour, ISavePointView
     [SerializeField] private GameObject go_rightArrow;
     [SerializeField] private Sprite recordTypeSprite;
     [SerializeField] private Sprite notRecordTypeSprite;
+    [SerializeField] private Transform savePointRefObj;
 
-    public Vector3 SavePointPos => transform.position;
+    public Vector3 SavePointPos => savePointRefObj.position;
     public ISavePointModel GetModel => savePointModel;
 
     private SavePointModel savePointModel;
