@@ -16,11 +16,11 @@ MonoBehaviour:
   - audioKey: BGM
     audioEventReferences:
     - Guid:
-        Data1: -1703161142
-        Data2: 1085574048
-        Data3: 1310905764
-        Data4: -164677760
-      Path: event:/BGM_FGJ
+        Data1: 698635923
+        Data2: 1217223815
+        Data3: -245050456
+        Data4: -544998711
+      Path: event:/2023_FGJ_Project/BGM_Main
   - audioKey: Jump
     audioEventReferences:
     - Guid:
@@ -28,7 +28,7 @@ MonoBehaviour:
         Data2: 1191267716
         Data3: 835166094
         Data4: -1334577185
-      Path: event:/SE_Jump
+      Path: event:/2023_FGJ_Project/Jump
   - audioKey: Damage
     audioEventReferences:
     - Guid:
@@ -36,7 +36,7 @@ MonoBehaviour:
         Data2: 1126827978
         Data3: 1953631105
         Data4: -781061218
-      Path: event:/SE_Damage
+      Path: event:/2023_FGJ_Project/Damage
   - audioKey: Teleport
     audioEventReferences:
     - Guid:
@@ -44,4 +44,12 @@ MonoBehaviour:
         Data2: 1136492191
         Data3: -1507110010
         Data4: -1975058669
-      Path: event:/SE_Teleport
+      Path: event:/2023_FGJ_Project/Teleport
+  - audioKey: SavePoint
+    audioEventReferences:
+    - Guid:
+        Data1: -1341679543
+        Data2: 1260064070
+        Data3: -74295662
+        Data4: 1128828352
+      Path: event:/2023_FGJ_Project/SavePoint

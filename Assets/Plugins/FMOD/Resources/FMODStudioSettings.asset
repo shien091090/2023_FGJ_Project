@@ -484,8 +484,8 @@ MonoBehaviour:
   switchSettingsMigration: 1
   HasSourceProject: 0
   HasPlatforms: 0
-  sourceProjectPath: FMOD/SNShien.fspro
-  sourceBankPath: Assets/StreamingAssets
+  sourceProjectPath: "C:/Users/NKShien/OneDrive/\u6587\u4EF6/FMOD Studio/SNShien/SNShien.fspro"
+  sourceBankPath: Assets/FmodAudios/Default
   sourceBankPathUnformatted: 
   BankRefreshCooldown: 5
   ShowBankRefreshWindow: 1
@@ -507,7 +507,7 @@ MonoBehaviour:
   RealChannelSettings: []
   Plugins: []
   MasterBanks:
-  - Master
+  - 2023_FGJ_Project
   Banks: []
   BanksToLoad: []
   LiveUpdatePort: 9264
