@@ -15,6 +15,7 @@ public class CharacterModel : IColliderHandler
     private float jumpTimer;
     private bool isCollideRightWall;
     private bool isCollideLeftWall;
+    private bool isFreeze;
     public bool IsJumping { get; private set; }
     public bool HaveInteractGate => CurrentTriggerTeleportGate != null;
     public bool HaveInteractSavePoint => CurrentTriggerSavePoint != null;
@@ -154,6 +155,9 @@ public class CharacterModel : IColliderHandler
         if (characterEventHandler.CurrentCharacterState == CharacterState.Die)
             return;
 
+        if (isFreeze)
+            return;
+
         if (selfRigidbody.position.y <= characterView.FallDownLimitPosY)
         {
             BackToOrigin();
@@ -161,15 +165,9 @@ public class CharacterModel : IColliderHandler
         }
 
         UpdateJumpTimer(timeModel.deltaTime);
-
-        if (characterEventHandler.CurrentCharacterState == CharacterState.IntoHouse)
-            UpdateCheckSavePointTeleport();
-        else
-        {
-            UpdateCheckJump(characterView.JumpForce);
-            UpdateMove(timeModel.deltaTime, characterView.Speed);
-        }
-
+        UpdateCheckSavePointTeleport();
+        UpdateCheckJump(characterView.JumpForce);
+        UpdateMove(timeModel.deltaTime, characterView.Speed);
         UpdateCheckInteract();
     }
 
@@ -253,6 +251,9 @@ public class CharacterModel : IColliderHandler
 
     private void UpdateMove(float deltaTime, float speed)
     {
+        if (characterEventHandler.CurrentCharacterState == CharacterState.IntoHouse)
+            return;
+
         float horizontalAxis = moveController.GetHorizontalAxis();
         if ((horizontalAxis > 0 && isCollideRightWall) || (horizontalAxis < 0 && isCollideLeftWall))
             horizontalAxis = 0;
@@ -264,6 +265,9 @@ public class CharacterModel : IColliderHandler
 
     private void UpdateCheckJump(float jumpForce)
     {
+        if (characterEventHandler.CurrentCharacterState == CharacterState.IntoHouse)
+            return;
+
         if (jumpTimer < characterView.JumpDelaySeconds)
             return;
 
@@ -311,12 +315,14 @@ public class CharacterModel : IColliderHandler
 
         if (characterEventHandler.CurrentCharacterState == CharacterState.IntoHouse)
         {
+            isFreeze = true;
             characterView.SetActive(true);
             characterView.PlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_EXIT_HOUSE);
             characterView.Waiting(0.45f, () =>
             {
                 characterEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
                 CurrentTriggerSavePoint.GetModel.HideInteractHint();
+                isFreeze = false;
             });
         }
         else
@@ -337,6 +343,7 @@ public class CharacterModel : IColliderHandler
 
     private void TriggerSavePoint()
     {
+        isFreeze = true;
         CurrentTriggerSavePoint.GetModel.Save();
         characterView.PlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_ENTER_HOUSE);
         characterView.Waiting(1, () =>
@@ -344,6 +351,7 @@ public class CharacterModel : IColliderHandler
             characterEventHandler.ChangeCurrentCharacterState(CharacterState.IntoHouse);
             characterView.SetActive(false);
             CurrentTriggerSavePoint.GetModel.ShowInteractHint();
+            isFreeze = false;
         });
     }
 
