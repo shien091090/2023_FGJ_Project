@@ -80,7 +80,8 @@ public class CharacterModel : IColliderHandler
                 {
                     if (col.GetComponent<ISavePointView>() != null &&
                         CurrentTriggerSavePoint != null &&
-                        characterEventHandler.CurrentCharacterState != CharacterState.IntoHouse)
+                        characterEventHandler.CurrentCharacterState != CharacterState.IntoHouse &&
+                        isFreeze == false)
                     {
                         CurrentTriggerSavePoint.GetModel.HideAllUI();
                         CurrentTriggerSavePoint = null;
