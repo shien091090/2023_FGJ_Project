@@ -311,9 +311,13 @@ public class CharacterModel : IColliderHandler
 
         if (characterEventHandler.CurrentCharacterState == CharacterState.IntoHouse)
         {
-            characterEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
             characterView.SetActive(true);
-            CurrentTriggerSavePoint.GetModel.HideInteractHint();
+            characterView.PlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_EXIT_HOUSE);
+            characterView.Waiting(0.45f, () =>
+            {
+                characterEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
+                CurrentTriggerSavePoint.GetModel.HideInteractHint();
+            });
         }
         else
         {
@@ -334,9 +338,13 @@ public class CharacterModel : IColliderHandler
     private void TriggerSavePoint()
     {
         CurrentTriggerSavePoint.GetModel.Save();
-        characterEventHandler.ChangeCurrentCharacterState(CharacterState.IntoHouse);
-        characterView.SetActive(false);
-        CurrentTriggerSavePoint.GetModel.ShowInteractHint();
+        characterView.PlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_ENTER_HOUSE);
+        characterView.Waiting(1, () =>
+        {
+            characterEventHandler.ChangeCurrentCharacterState(CharacterState.IntoHouse);
+            characterView.SetActive(false);
+            CurrentTriggerSavePoint.GetModel.ShowInteractHint();
+        });
     }
 
     private void TriggerTeleportGate()
