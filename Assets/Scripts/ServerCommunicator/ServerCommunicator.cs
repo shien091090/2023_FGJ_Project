@@ -4,7 +4,8 @@ using UnityEngine.Networking;
 
 public class ServerCommunicator : MonoBehaviour
 {
-    private const string URL = "https://script.google.com/macros/s/AKfycbxhQd9l5YvrmyHRPlRQlnat9-YjDhcA-f2AN-QfOd-au7aIgHnGzD_CLfq0cOWS8QSFXw/exec";
+    private const string URL = "https://script.google.com/macros/s/AKfycbzcYRAl3JA5Iqhu2_wBTUhzrI77W7S7w7zoLiHWMrS7aNmSwE07yFiPNBrXeN6Oe3ZSMQ/exec";
+
     private RequestSender requestSender;
 
     public ServerCommunicator CreatePostRequest(string action)
@@ -16,8 +17,19 @@ public class ServerCommunicator : MonoBehaviour
     [ContextMenu("Test Send Post Request")]
     public void TestSendPostRequest()
     {
-        CreatePostRequest("api_get_record")
+        CreatePostRequest("api_add_record")
+            .AddParameter("playerName", "NKShien2")
+            .AddParameter("costTimeSeonds", 1002)
             .SendRequest();
+    }
+
+    private ServerCommunicator AddParameter(string filedName, object fieldValue)
+    {
+        if (requestSender == null)
+            return this;
+
+        requestSender.AddParameter(filedName, fieldValue.ToString());
+        return this;
     }
 
     private void SendRequest()
@@ -34,7 +46,7 @@ public class ServerCommunicator : MonoBehaviour
     private IEnumerator Cor_SendRequest(string action, RequestType requestType, params (string, string)[] parameters)
     {
         Debug.Log($"[ServerCommunicator] SendRequest, action: {action}, requestType: {requestType}");
-        
+
         WWWForm form = new WWWForm();
         form.AddField("action", action);
         if (parameters != null)
