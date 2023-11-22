@@ -15,7 +15,7 @@ public class CharacterTest
     private IAudioManager audioManager;
     private ITimeModel timeModel;
     private ICharacterView characterView;
-    private ICharacterEventHandler gameEventHandler;
+    private IGameEventHandler gameEventHandler;
 
     private Action characterViewWaitingCallback;
 
@@ -27,7 +27,7 @@ public class CharacterTest
         characterRigidbody = Substitute.For<IRigidbody>();
         audioManager = Substitute.For<IAudioManager>();
         timeModel = Substitute.For<ITimeModel>();
-        gameEventHandler = Substitute.For<ICharacterEventHandler>();
+        gameEventHandler = Substitute.For<IGameEventHandler>();
 
         characterView = Substitute.For<ICharacterView>();
         characterView.Waiting(Arg.Any<float>(), Arg.Do<Action>(callback =>

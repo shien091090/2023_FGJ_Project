@@ -10,7 +10,7 @@ public class CharacterModel : IColliderHandler
     private readonly IRigidbody selfRigidbody;
     private readonly IAudioManager audioManager;
     private readonly ITimeModel timeModel;
-    private readonly ICharacterEventHandler characterEventHandler;
+    private readonly IGameEventHandler gameEventHandler;
     private ICharacterView characterView;
     private float jumpTimer;
     private bool isCollideRightWall;
@@ -26,13 +26,13 @@ public class CharacterModel : IColliderHandler
     private bool IsStayOnFloor { get; set; }
 
     public CharacterModel(IMoveController moveController, IKeyController keyController, IRigidbody characterRigidbody, IAudioManager audioManager,
-        ITimeModel timeModel, ICharacterEventHandler characterEventHandler)
+        ITimeModel timeModel, IGameEventHandler gameEventHandler)
     {
         this.moveController = moveController;
         this.keyController = keyController;
         this.audioManager = audioManager;
         this.timeModel = timeModel;
-        this.characterEventHandler = characterEventHandler;
+        this.gameEventHandler = gameEventHandler;
         selfRigidbody = characterRigidbody;
     }
 
@@ -50,7 +50,7 @@ public class CharacterModel : IColliderHandler
 
             case (int)GameConst.GameObjectLayerType.SavePoint:
                 {
-                    if (characterEventHandler.CurrentCharacterState == CharacterState.IntoHouse)
+                    if (gameEventHandler.CurrentCharacterState == CharacterState.IntoHouse)
                         return;
 
                     ISavePointView savePointComponent = col.GetComponent<ISavePointView>();
@@ -80,7 +80,7 @@ public class CharacterModel : IColliderHandler
                 {
                     if (col.GetComponent<ISavePointView>() != null &&
                         CurrentTriggerSavePoint != null &&
-                        characterEventHandler.CurrentCharacterState != CharacterState.IntoHouse &&
+                        gameEventHandler.CurrentCharacterState != CharacterState.IntoHouse &&
                         isFreeze == false)
                     {
                         CurrentTriggerSavePoint.GetModel.HideAllUI();
@@ -108,9 +108,9 @@ public class CharacterModel : IColliderHandler
         {
             IsStayOnFloor = true;
             IsJumping = false;
-            if (characterEventHandler.CurrentCharacterState != CharacterState.Die &&
-                characterEventHandler.CurrentCharacterState != CharacterState.IntoHouse)
-                characterEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
+            if (gameEventHandler.CurrentCharacterState != CharacterState.Die &&
+                gameEventHandler.CurrentCharacterState != CharacterState.IntoHouse)
+                gameEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
         }
     }
 
@@ -119,9 +119,9 @@ public class CharacterModel : IColliderHandler
         if (col.Layer == (int)GameConst.GameObjectLayerType.Platform)
         {
             IsStayOnFloor = false;
-            if (characterEventHandler.CurrentCharacterState != CharacterState.Die &&
-                characterEventHandler.CurrentCharacterState != CharacterState.IntoHouse)
-                characterEventHandler.ChangeCurrentCharacterState(CharacterState.Jumping);
+            if (gameEventHandler.CurrentCharacterState != CharacterState.Die &&
+                gameEventHandler.CurrentCharacterState != CharacterState.IntoHouse)
+                gameEventHandler.ChangeCurrentCharacterState(CharacterState.Jumping);
         }
     }
 
@@ -148,12 +148,12 @@ public class CharacterModel : IColliderHandler
         RecordOriginPos = selfRigidbody.position;
         characterView.SetProtectionActive(false);
         characterView.SetActive(true);
-        characterEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
+        gameEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
     }
 
     public void CallUpdate()
     {
-        if (characterEventHandler.CurrentCharacterState == CharacterState.Die)
+        if (gameEventHandler.CurrentCharacterState == CharacterState.Die)
             return;
 
         if (isFreeze)
@@ -198,17 +198,17 @@ public class CharacterModel : IColliderHandler
 
         jumpTimer = 0;
         IsJumping = true;
-        characterEventHandler.ChangeCurrentCharacterState(CharacterState.Jumping);
+        gameEventHandler.ChangeCurrentCharacterState(CharacterState.Jumping);
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_JUMP);
         selfRigidbody.AddForce(new Vector2(0, jumpForce));
     }
 
     public void Die()
     {
-        if (characterEventHandler.CurrentCharacterState == CharacterState.Die)
+        if (gameEventHandler.CurrentCharacterState == CharacterState.Die)
             return;
 
-        characterEventHandler.ChangeCurrentCharacterState(CharacterState.Die);
+        gameEventHandler.ChangeCurrentCharacterState(CharacterState.Die);
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_DAMAGE);
         characterView.PlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_DIE);
         characterView.Waiting(1.5f, () =>
@@ -218,7 +218,7 @@ public class CharacterModel : IColliderHandler
             characterView.Waiting(0.5f, () =>
             {
                 isProtected = false;
-                characterEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
+                gameEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
                 characterView.SetActive(true);
             });
         });
@@ -226,11 +226,11 @@ public class CharacterModel : IColliderHandler
 
     public void BackToOrigin()
     {
-        characterEventHandler.ChangeCurrentCharacterState(CharacterState.Die);
+        gameEventHandler.ChangeCurrentCharacterState(CharacterState.Die);
         Teleport(RecordOriginPos);
         characterView.Waiting(0.5f, () =>
         {
-            characterEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
+            gameEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
         });
     }
 
@@ -252,7 +252,7 @@ public class CharacterModel : IColliderHandler
 
     private void UpdateMove(float deltaTime, float speed)
     {
-        if (characterEventHandler.CurrentCharacterState == CharacterState.IntoHouse)
+        if (gameEventHandler.CurrentCharacterState == CharacterState.IntoHouse)
             return;
 
         float horizontalAxis = moveController.GetHorizontalAxis();
@@ -266,7 +266,7 @@ public class CharacterModel : IColliderHandler
 
     private void UpdateCheckJump(float jumpForce)
     {
-        if (characterEventHandler.CurrentCharacterState == CharacterState.IntoHouse)
+        if (gameEventHandler.CurrentCharacterState == CharacterState.IntoHouse)
             return;
 
         if (jumpTimer < characterView.JumpDelaySeconds)
@@ -286,7 +286,7 @@ public class CharacterModel : IColliderHandler
 
     private void UpdateCheckSavePointTeleport()
     {
-        if (characterEventHandler.CurrentCharacterState != CharacterState.IntoHouse ||
+        if (gameEventHandler.CurrentCharacterState != CharacterState.IntoHouse ||
             HaveInteractSavePoint == false)
             return;
 
@@ -314,14 +314,14 @@ public class CharacterModel : IColliderHandler
         if (selfRigidbody == null)
             return;
 
-        if (characterEventHandler.CurrentCharacterState == CharacterState.IntoHouse)
+        if (gameEventHandler.CurrentCharacterState == CharacterState.IntoHouse)
         {
             isFreeze = true;
             characterView.SetActive(true);
             characterView.PlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_EXIT_HOUSE);
             characterView.Waiting(0.45f, () =>
             {
-                characterEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
+                gameEventHandler.ChangeCurrentCharacterState(CharacterState.Walking);
                 CurrentTriggerSavePoint.GetModel.HideInteractHint();
                 isFreeze = false;
             });
@@ -349,7 +349,7 @@ public class CharacterModel : IColliderHandler
         characterView.PlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_ENTER_HOUSE);
         characterView.Waiting(1, () =>
         {
-            characterEventHandler.ChangeCurrentCharacterState(CharacterState.IntoHouse);
+            gameEventHandler.ChangeCurrentCharacterState(CharacterState.IntoHouse);
             characterView.SetActive(false);
             CurrentTriggerSavePoint.GetModel.ShowInteractHint();
             isFreeze = false;

@@ -1,10 +1,9 @@
 using System;
 using UnityEngine;
 
-public class GameEventHandler : MonoBehaviour, ICharacterEventHandler
+public class GameEventHandler : MonoBehaviour, IGameEventHandler
 {
     private static GameEventHandler _instance;
-
     public CharacterState CurrentCharacterState { get; private set; }
     public event Action OnCharacterDie;
     public static GameEventHandler Instance => _instance;

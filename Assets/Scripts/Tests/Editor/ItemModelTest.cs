@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 public class ItemModelTest
 {
-    private ICharacterEventHandler gameEventHandler;
+    private IGameEventHandler gameEventHandler;
 
     private Action itemUseCompleteEvent;
     private Action<int> refreshCurrentUseTimesEvent;
@@ -16,7 +16,7 @@ public class ItemModelTest
     [SetUp]
     public void Setup()
     {
-        gameEventHandler = Substitute.For<ICharacterEventHandler>();
+        gameEventHandler = Substitute.For<IGameEventHandler>();
     }
 
     [Test]

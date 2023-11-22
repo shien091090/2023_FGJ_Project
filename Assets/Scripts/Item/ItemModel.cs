@@ -3,7 +3,7 @@ using System;
 public class ItemModel
 {
     private readonly ItemType itemType;
-    private ICharacterEventHandler gameEventHandler;
+    private IGameEventHandler gameEventHandler;
 
     private float useLimit;
     private ItemUseType itemUseType;
@@ -19,7 +19,7 @@ public class ItemModel
     public event Action<ItemType> OnStartItemEffect;
     public event Action<ItemType> OnEndItemEffect;
 
-    public ItemModel(ItemType itemType, ICharacterEventHandler gameEventHandler)
+    public ItemModel(ItemType itemType, IGameEventHandler gameEventHandler)
     {
         this.itemType = itemType;
         this.gameEventHandler = gameEventHandler;
