@@ -7,8 +7,21 @@ using UnityEngine.Networking;
 public class ServerCommunicator : MonoBehaviour
 {
     private const string URL = "https://script.google.com/macros/s/AKfycbzvsgJfeXsqIyXbsKm9HX8ShA6SJysfbAx7Coinbj2YR7efbCD9zTY6UiPC1UZYaWlDMA/exec";
+    private static ServerCommunicator _instance;
 
     private RequestSender requestSender;
+    public static ServerCommunicator Instance => _instance;
+
+    public void SendRequest<T>(Action<T> callback = null) where T : ServerResponse
+    {
+        if (requestSender == null)
+        {
+            Debug.Log("[ServerCommunicator] requestSender is null");
+            return;
+        }
+
+        StartCoroutine(Cor_SendRequest(requestSender.Action, requestSender.RequestType, callback, requestSender.Parameters));
+    }
 
     public ServerCommunicator CreatePostRequest(string action)
     {
@@ -26,7 +39,7 @@ public class ServerCommunicator : MonoBehaviour
             {
             });
     }
-    
+
     [ContextMenu("Test Get Record")]
     public void TestSendRequest_GetRecord()
     {
@@ -45,15 +58,10 @@ public class ServerCommunicator : MonoBehaviour
         return this;
     }
 
-    private void SendRequest<T>(Action<T> callback = null) where T : ServerResponse
+    private void Awake()
     {
-        if (requestSender == null)
-        {
-            Debug.Log("[ServerCommunicator] requestSender is null");
-            return;
-        }
-
-        StartCoroutine(Cor_SendRequest(requestSender.Action, requestSender.RequestType, callback, requestSender.Parameters));
+        if (_instance == null)
+            _instance = this;
     }
 
     private WWWForm CreateWWWForm(string action, (string, string)[] parameters)
