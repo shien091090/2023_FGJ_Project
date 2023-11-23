@@ -26,6 +26,7 @@ public class CharacterView : MonoBehaviour, ICharacterView
     public float JumpDelaySeconds => jumpDelaySeconds;
     public float InteractDistance => interactDistance;
     public float FallDownLimitPosY => fallDownLimitHeight;
+    public IRigidbody GetRigidbody => rigidBodyComponent;
 
     private SpriteRenderer spriteRenderer;
     private CharacterModel characterModel;
@@ -77,13 +78,12 @@ public class CharacterView : MonoBehaviour, ICharacterView
 
     private void Start()
     {
-        characterModel = new CharacterModel(new CharacterMoveController(), new CharacterKeyController(), rigidBodyComponent, FmodAudioManager.Instance,
-            new TimeModel(), GameEventHandler.Instance);
+        characterModel = CharacterModel.Instance; 
 
         rightWallColliderHandler = new WallColliderHandler(true, characterModel);
         leftWallColliderHandler = new WallColliderHandler(false, characterModel);
 
-        characterModel.InitView(this);
+        characterModel.BindView(this);
         footColliderComponent.InitHandler(characterModel);
         rightColliderComponent.InitHandler(rightWallColliderHandler);
         leftColliderComponent.InitHandler(leftWallColliderHandler);

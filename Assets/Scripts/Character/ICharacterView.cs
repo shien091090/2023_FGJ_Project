@@ -8,6 +8,7 @@ public interface ICharacterView
     float JumpDelaySeconds { get; }
     float InteractDistance { get; }
     float FallDownLimitPosY { get; }
+    IRigidbody GetRigidbody { get; }
     void SetProtectionActive(bool isActive);
     void SetFaceDirectionScale(int scale);
     void SetActive(bool isActive);

@@ -1,28 +1,30 @@
-using System;
+using SNShien.Common.AudioTools;
 using UnityEngine;
 
-public class GameEventHandler : MonoBehaviour, IGameEventHandler
+public class GameEventHandler : MonoBehaviour
 {
     private static GameEventHandler _instance;
-    public CharacterState CurrentCharacterState { get; private set; }
-    public event Action OnCharacterDie;
+
+    private CharacterModel characterModel;
+    private CharacterMoveController characterMoveController;
+    private CharacterKeyController characterKeyController;
+    private TimeModel timeModel;
+
     public static GameEventHandler Instance => _instance;
 
-    public void ChangeCurrentCharacterState(CharacterState state)
+    private void Init()
     {
-        if (CurrentCharacterState == state)
-            return;
-
-        Debug.Log($"ChangeCurrentCharacterState: {state}");
-        CurrentCharacterState = state;
-
-        if (state == CharacterState.Die)
-            OnCharacterDie?.Invoke();
+        characterMoveController = new CharacterMoveController();
+        characterKeyController = new CharacterKeyController();
+        timeModel = new TimeModel();
+        characterModel = new CharacterModel(characterMoveController, characterKeyController, FmodAudioManager.Instance, timeModel);
     }
 
     private void Awake()
     {
         if (_instance == null)
             _instance = this;
+
+        Init();
     }
 }

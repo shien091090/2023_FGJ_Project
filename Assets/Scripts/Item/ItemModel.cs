@@ -3,7 +3,7 @@ using System;
 public class ItemModel
 {
     private readonly ItemType itemType;
-    private IGameEventHandler gameEventHandler;
+    private readonly ICharacterModel characterModel;
 
     private float useLimit;
     private ItemUseType itemUseType;
@@ -19,10 +19,10 @@ public class ItemModel
     public event Action<ItemType> OnStartItemEffect;
     public event Action<ItemType> OnEndItemEffect;
 
-    public ItemModel(ItemType itemType, IGameEventHandler gameEventHandler)
+    public ItemModel(ItemType itemType, ICharacterModel gameEventHandler)
     {
         this.itemType = itemType;
-        this.gameEventHandler = gameEventHandler;
+        this.characterModel = gameEventHandler;
     }
 
     public void SetUseTimesType(int useTimes)
@@ -62,7 +62,7 @@ public class ItemModel
 
     public void UseItem()
     {
-        if (isUsed || gameEventHandler.CurrentCharacterState == CharacterState.Die)
+        if (isUsed || characterModel.CurrentCharacterState == CharacterState.Die)
             return;
 
         if (itemUseType == ItemUseType.PassTime)
@@ -82,9 +82,9 @@ public class ItemModel
 
     private void UseOneTimeTypeItem()
     {
-        if (itemType == ItemType.Shoes && gameEventHandler.CurrentCharacterState == CharacterState.Jumping)
+        if (itemType == ItemType.Shoes && characterModel.CurrentCharacterState == CharacterState.Jumping)
             return;
-        
+
         currentUseTimes--;
 
         OnUseItemOneTime?.Invoke(itemType);
@@ -92,7 +92,7 @@ public class ItemModel
 
         if (currentUseTimes > 0)
             return;
-        
+
         isUsed = true;
         OnItemUseComplete?.Invoke();
     }

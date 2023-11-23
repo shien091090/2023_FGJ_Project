@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 public class ItemModelTest
 {
-    private IGameEventHandler gameEventHandler;
+    private ICharacterModel characterModel;
 
     private Action itemUseCompleteEvent;
     private Action<int> refreshCurrentUseTimesEvent;
@@ -16,7 +16,7 @@ public class ItemModelTest
     [SetUp]
     public void Setup()
     {
-        gameEventHandler = Substitute.For<IGameEventHandler>();
+        characterModel = Substitute.For<ICharacterModel>();
     }
 
     [Test]
@@ -262,7 +262,7 @@ public class ItemModelTest
 
     private ItemModel CreateModel(ItemType itemType, ItemUseType itemUseType, int useLimit)
     {
-        ItemModel itemModel = new ItemModel(itemType, gameEventHandler);
+        ItemModel itemModel = new ItemModel(itemType, characterModel);
         if (itemUseType == ItemUseType.UseTimes)
             itemModel.SetUseTimesType(useLimit);
         else
