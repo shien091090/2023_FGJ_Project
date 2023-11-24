@@ -9,6 +9,7 @@ public class GameEventHandler : MonoBehaviour
     private CharacterMoveController characterMoveController;
     private CharacterKeyController characterKeyController;
     private TimeModel timeModel;
+    private IItemTriggerHandler itemTriggerHandler;
 
     public static GameEventHandler Instance => _instance;
 
@@ -17,7 +18,8 @@ public class GameEventHandler : MonoBehaviour
         characterMoveController = new CharacterMoveController();
         characterKeyController = new CharacterKeyController();
         timeModel = new TimeModel();
-        characterModel = new CharacterModel(characterMoveController, characterKeyController, FmodAudioManager.Instance, timeModel);
+        itemTriggerHandler = new ItemTriggerHandler();
+        characterModel = new CharacterModel(characterMoveController, characterKeyController, FmodAudioManager.Instance, timeModel, itemTriggerHandler);
     }
 
     private void Awake()

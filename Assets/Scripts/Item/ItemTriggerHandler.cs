@@ -1,13 +1,18 @@
 using System;
-using UnityEngine;
 
-public class ItemStateManager : MonoBehaviour
+public class ItemTriggerHandler : IItemTriggerHandler
 {
-    private static ItemStateManager _instance;
+    private static ItemTriggerHandler _instance;
+    public static ItemTriggerHandler Instance => _instance;
+
+    public ItemTriggerHandler()
+    {
+        _instance = this;
+    }
+
     public event Action<ItemType> OnEndItemEffect;
     public event Action<ItemType> OnStartItemEffect;
     public event Action<ItemType> OnUseItemOneTime;
-    public static ItemStateManager Instance => _instance;
 
     public void StartItemEffect(ItemType itemType)
     {
@@ -17,12 +22,6 @@ public class ItemStateManager : MonoBehaviour
     public void EndItemEffect(ItemType itemType)
     {
         OnEndItemEffect?.Invoke(itemType);
-    }
-
-    private void Awake()
-    {
-        if (_instance == null)
-            _instance = this;
     }
 
     public void TriggerItemOneTime(ItemType itemType)

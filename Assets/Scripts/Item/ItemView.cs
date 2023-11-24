@@ -49,7 +49,7 @@ public class ItemView : MonoBehaviour, IItem
     {
         HideAllPanel();
 
-        itemModel = new ItemModel(itemType, CharacterModel.Instance);
+        itemModel = new ItemModel(itemType, CharacterModel.Instance, ItemTriggerHandler.Instance);
         switch (ItemType)
         {
             case ItemType.Protection:
@@ -87,15 +87,6 @@ public class ItemView : MonoBehaviour, IItem
 
         itemModel.OnRefreshCurrentTimer -= RefreshCurrentTimer;
         itemModel.OnRefreshCurrentTimer += RefreshCurrentTimer;
-
-        itemModel.OnUseItemOneTime -= OnUseItemOneTime;
-        itemModel.OnUseItemOneTime += OnUseItemOneTime;
-
-        itemModel.OnStartItemEffect -= OnStartItemEffect;
-        itemModel.OnStartItemEffect += OnStartItemEffect;
-
-        itemModel.OnEndItemEffect -= OnEndItemEffect;
-        itemModel.OnEndItemEffect += OnEndItemEffect;
     }
 
     private void SetPanelType(ItemType itemType)
@@ -118,21 +109,6 @@ public class ItemView : MonoBehaviour, IItem
     {
         go_useTimesPanel.SetActive(false);
         go_passTimePanel.SetActive(false);
-    }
-
-    private void OnEndItemEffect(ItemType itemType)
-    {
-        ItemStateManager.Instance.EndItemEffect(itemType);
-    }
-
-    private void OnStartItemEffect(ItemType itemType)
-    {
-        ItemStateManager.Instance.StartItemEffect(itemType);
-    }
-
-    private void OnUseItemOneTime(ItemType itemType)
-    {
-        ItemStateManager.Instance.TriggerItemOneTime(itemType);
     }
 
     private void OnItemUseComplete()

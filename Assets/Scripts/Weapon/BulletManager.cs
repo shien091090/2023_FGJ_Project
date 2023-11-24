@@ -14,8 +14,8 @@ public class BulletManager : MonoBehaviour
     {
         bulletObjectPool = new List<GameObject>();
 
-        ItemStateManager.Instance.OnUseItemOneTime -= OnUseItemOneTime;
-        ItemStateManager.Instance.OnUseItemOneTime += OnUseItemOneTime;
+        // ItemTriggerManager.Instance.OnUseItemOneTime -= OnUseItemOneTime;
+        // ItemTriggerManager.Instance.OnUseItemOneTime += OnUseItemOneTime;
     }
 
     private GameObject GetBulletObject()

@@ -17,6 +17,7 @@ public class CharacterTest
     private ICharacterView characterView;
 
     private Action characterViewWaitingCallback;
+    private IItemTriggerHandler itemTriggerHandler;
 
     [SetUp]
     public void Setup()
@@ -32,6 +33,8 @@ public class CharacterTest
         {
             characterViewWaitingCallback = callback;
         }));
+        
+        itemTriggerHandler = Substitute.For<IItemTriggerHandler>();
 
         GivenDeltaTime(1);
         GivenSpeed(1);
@@ -39,7 +42,7 @@ public class CharacterTest
         GivenJumpDelay(1);
         GivenFallDownLimitPos(-10);
 
-        characterModel = new CharacterModel(moveController, keyController, audioManager, timeModel);
+        characterModel = new CharacterModel(moveController, keyController, audioManager, timeModel, itemTriggerHandler);
 
         characterModel.BindView(characterView);
     }

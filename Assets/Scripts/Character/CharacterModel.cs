@@ -17,6 +17,7 @@ public class CharacterModel : IColliderHandler, ICharacterModel
     private readonly IKeyController keyController;
     private readonly IAudioManager audioManager;
     private readonly ITimeModel timeModel;
+    private readonly IItemTriggerHandler itemTriggerHandler;
     private IRigidbody selfRigidbody;
     private ICharacterView characterView;
     private float jumpTimer;
@@ -36,15 +37,18 @@ public class CharacterModel : IColliderHandler, ICharacterModel
     private ISavePointView CurrentTriggerSavePoint { get; set; }
     private bool IsStayOnFloor { get; set; }
 
-    public CharacterModel(IMoveController moveController, IKeyController keyController, IAudioManager audioManager,
-        ITimeModel timeModel)
+    public CharacterModel(IMoveController moveController, IKeyController keyController, IAudioManager audioManager, ITimeModel timeModel,
+        IItemTriggerHandler itemTriggerHandler)
     {
         this.moveController = moveController;
         this.keyController = keyController;
         this.audioManager = audioManager;
         this.timeModel = timeModel;
+        this.itemTriggerHandler = itemTriggerHandler;
 
         _instance = this;
+
+        RegisterEvent();
     }
 
     public void ColliderTriggerEnter(ICollider col)
@@ -359,6 +363,18 @@ public class CharacterModel : IColliderHandler, ICharacterModel
         }
     }
 
+    private void RegisterEvent()
+    {
+        itemTriggerHandler.OnEndItemEffect -= OnEndItemEffect;
+        itemTriggerHandler.OnEndItemEffect += OnEndItemEffect;
+        
+        itemTriggerHandler.OnStartItemEffect -= OnStartItemEffect;
+        itemTriggerHandler.OnStartItemEffect += OnStartItemEffect;
+        
+        itemTriggerHandler.OnUseItemOneTime -= OnUseItemOneTime;
+        itemTriggerHandler.OnUseItemOneTime += OnUseItemOneTime;
+    }
+
     private void Teleport(Vector3 targetPos)
     {
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_TELEPORT);
@@ -391,5 +407,29 @@ public class CharacterModel : IColliderHandler, ICharacterModel
 
         if (HaveInteractGate)
             Teleport(CurrentTriggerTeleportGate.GetTargetPos);
+    }
+
+    private void OnEndItemEffect(ItemType itemType)
+    {
+        if (itemType == ItemType.Protection)
+        {
+            isProtected = false;
+            characterView.SetProtectionActive(false);
+        }
+    }
+
+    private void OnStartItemEffect(ItemType itemType)
+    {
+        if (itemType == ItemType.Protection)
+        {
+            isProtected = true;
+            characterView.SetProtectionActive(true);
+        }
+    }
+
+    private void OnUseItemOneTime(ItemType itemType)
+    {
+        if (itemType == ItemType.Shoes)
+            Jump(characterView.SuperJumpForce);
     }
 }

@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using SNShien.Common.AudioTools;
 using UnityEngine;
 
 public class CharacterView : MonoBehaviour, ICharacterView
@@ -23,6 +22,7 @@ public class CharacterView : MonoBehaviour, ICharacterView
 
     public float JumpForce => jumpForce;
     public float Speed => speed;
+    public float SuperJumpForce => superJumpForce;
     public float JumpDelaySeconds => jumpDelaySeconds;
     public float InteractDistance => interactDistance;
     public float FallDownLimitPosY => fallDownLimitHeight;
@@ -78,7 +78,7 @@ public class CharacterView : MonoBehaviour, ICharacterView
 
     private void Start()
     {
-        characterModel = CharacterModel.Instance; 
+        characterModel = CharacterModel.Instance;
 
         rightWallColliderHandler = new WallColliderHandler(true, characterModel);
         leftWallColliderHandler = new WallColliderHandler(false, characterModel);
@@ -87,7 +87,6 @@ public class CharacterView : MonoBehaviour, ICharacterView
         footColliderComponent.InitHandler(characterModel);
         rightColliderComponent.InitHandler(rightWallColliderHandler);
         leftColliderComponent.InitHandler(leftWallColliderHandler);
-        SetEventRegister();
     }
 
     private void Update()
@@ -98,18 +97,6 @@ public class CharacterView : MonoBehaviour, ICharacterView
     public void SetSpriteFlipX(bool flipX)
     {
         GetSpriteRenderer.flipX = flipX;
-    }
-
-    private void SetEventRegister()
-    {
-        ItemStateManager.Instance.OnUseItemOneTime -= OnUseItemOneTime;
-        ItemStateManager.Instance.OnUseItemOneTime += OnUseItemOneTime;
-
-        ItemStateManager.Instance.OnStartItemEffect -= OnStartItemEffect;
-        ItemStateManager.Instance.OnStartItemEffect += OnStartItemEffect;
-
-        ItemStateManager.Instance.OnEndItemEffect -= OnEndItemEffect;
-        ItemStateManager.Instance.OnEndItemEffect += OnEndItemEffect;
     }
 
     private IEnumerator Cor_WaitingCoroutine(float seconds, Action callback)

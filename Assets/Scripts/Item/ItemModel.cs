@@ -1,9 +1,11 @@
 using System;
+using UnityEngine;
 
 public class ItemModel
 {
     private readonly ItemType itemType;
     private readonly ICharacterModel characterModel;
+    private readonly IItemTriggerHandler itemTriggerHandler;
 
     private float useLimit;
     private ItemUseType itemUseType;
@@ -19,10 +21,11 @@ public class ItemModel
     public event Action<ItemType> OnStartItemEffect;
     public event Action<ItemType> OnEndItemEffect;
 
-    public ItemModel(ItemType itemType, ICharacterModel gameEventHandler)
+    public ItemModel(ItemType itemType, ICharacterModel characterModel, IItemTriggerHandler itemTriggerHandler)
     {
         this.itemType = itemType;
-        this.characterModel = gameEventHandler;
+        this.characterModel = characterModel;
+        this.itemTriggerHandler = itemTriggerHandler;
     }
 
     public void SetUseTimesType(int useTimes)
@@ -55,7 +58,7 @@ public class ItemModel
         if (currentTimer <= 0)
         {
             isUsed = true;
-            OnEndItemEffect?.Invoke(itemType);
+            itemTriggerHandler.EndItemEffect(itemType);
             OnItemUseComplete?.Invoke();
         }
     }
@@ -77,7 +80,7 @@ public class ItemModel
             return;
 
         startUsePassTimeItem = true;
-        OnStartItemEffect?.Invoke(itemType);
+        itemTriggerHandler.StartItemEffect(itemType);
     }
 
     private void UseOneTimeTypeItem()
@@ -87,7 +90,7 @@ public class ItemModel
 
         currentUseTimes--;
 
-        OnUseItemOneTime?.Invoke(itemType);
+        itemTriggerHandler.TriggerItemOneTime(itemType);
         OnRefreshCurrentUseTimes?.Invoke(currentUseTimes);
 
         if (currentUseTimes > 0)

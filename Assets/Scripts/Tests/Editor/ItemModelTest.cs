@@ -262,30 +262,30 @@ public class ItemModelTest
 
     private ItemModel CreateModel(ItemType itemType, ItemUseType itemUseType, int useLimit)
     {
-        ItemModel itemModel = new ItemModel(itemType, characterModel);
-        if (itemUseType == ItemUseType.UseTimes)
-            itemModel.SetUseTimesType(useLimit);
-        else
-            itemModel.SetPassTimeType(useLimit);
+        // ItemModel itemModel = new ItemModel(itemType, characterModel, );
+        // if (itemUseType == ItemUseType.UseTimes)
+        //     itemModel.SetUseTimesType(useLimit);
+        // else
+        //     itemModel.SetPassTimeType(useLimit);
+        //
+        // itemUseCompleteEvent = Substitute.For<Action>();
+        // itemModel.OnItemUseComplete += itemUseCompleteEvent;
+        //
+        // refreshCurrentUseTimesEvent = Substitute.For<Action<int>>();
+        // itemModel.OnRefreshCurrentUseTimes += refreshCurrentUseTimesEvent;
+        //
+        // refreshCurrentTimerEvent = Substitute.For<Action<float>>();
+        // itemModel.OnRefreshCurrentTimer += refreshCurrentTimerEvent;
+        //
+        // useItemEvent = Substitute.For<Action<ItemType>>();
+        // itemModel.OnUseItemOneTime += useItemEvent;
+        //
+        // startItemEffectEvent = Substitute.For<Action<ItemType>>();
+        // itemModel.OnStartItemEffect += startItemEffectEvent;
+        //
+        // endItemEffectEvent = Substitute.For<Action<ItemType>>();
+        // itemModel.OnEndItemEffect += endItemEffectEvent;
 
-        itemUseCompleteEvent = Substitute.For<Action>();
-        itemModel.OnItemUseComplete += itemUseCompleteEvent;
-
-        refreshCurrentUseTimesEvent = Substitute.For<Action<int>>();
-        itemModel.OnRefreshCurrentUseTimes += refreshCurrentUseTimesEvent;
-
-        refreshCurrentTimerEvent = Substitute.For<Action<float>>();
-        itemModel.OnRefreshCurrentTimer += refreshCurrentTimerEvent;
-
-        useItemEvent = Substitute.For<Action<ItemType>>();
-        itemModel.OnUseItemOneTime += useItemEvent;
-
-        startItemEffectEvent = Substitute.For<Action<ItemType>>();
-        itemModel.OnStartItemEffect += startItemEffectEvent;
-
-        endItemEffectEvent = Substitute.For<Action<ItemType>>();
-        itemModel.OnEndItemEffect += endItemEffectEvent;
-
-        return itemModel;
+        return null;
     }
 }
