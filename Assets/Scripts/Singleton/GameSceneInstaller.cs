@@ -1,18 +1,14 @@
 using SNShien.Common.AudioTools;
 using UnityEngine;
 
-public class GameEventHandler : MonoBehaviour
+public class GameSceneInstaller : MonoBehaviour
 {
-    private static GameEventHandler _instance;
-
     private CharacterModel characterModel;
     private CharacterMoveController characterMoveController;
     private CharacterKeyController characterKeyController;
     private TimeModel timeModel;
     private IItemTriggerHandler itemTriggerHandler;
     private BulletHandlerModel bulletHandlerModel;
-
-    public static GameEventHandler Instance => _instance;
 
     private void Init()
     {
@@ -26,9 +22,6 @@ public class GameEventHandler : MonoBehaviour
 
     private void Awake()
     {
-        if (_instance == null)
-            _instance = this;
-
         Init();
     }
 }
