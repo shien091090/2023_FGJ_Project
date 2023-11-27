@@ -10,6 +10,7 @@ public class GameEventHandler : MonoBehaviour
     private CharacterKeyController characterKeyController;
     private TimeModel timeModel;
     private IItemTriggerHandler itemTriggerHandler;
+    private BulletHandlerModel bulletHandlerModel;
 
     public static GameEventHandler Instance => _instance;
 
@@ -20,6 +21,7 @@ public class GameEventHandler : MonoBehaviour
         timeModel = new TimeModel();
         itemTriggerHandler = new ItemTriggerHandler();
         characterModel = new CharacterModel(characterMoveController, characterKeyController, FmodAudioManager.Instance, timeModel, itemTriggerHandler);
+        bulletHandlerModel = new BulletHandlerModel(itemTriggerHandler, characterModel);
     }
 
     private void Awake()

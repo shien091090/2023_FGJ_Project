@@ -5,13 +5,17 @@ using UnityEngine;
 public interface ICharacterModel
 {
     CharacterState CurrentCharacterState { get; }
+    bool IsFaceRight { get; }
+    Vector3 CurrentPos { get; }
 }
 
 public class CharacterModel : IColliderHandler, ICharacterModel
 {
     private static CharacterModel _instance;
     public CharacterState CurrentCharacterState { get; private set; }
-
+    public bool IsFaceRight { get; private set; }
+    public Vector3 CurrentPos => selfRigidbody.position;
+    
     public bool isProtected;
     private readonly IMoveController moveController;
     private readonly IKeyController keyController;
@@ -26,13 +30,11 @@ public class CharacterModel : IColliderHandler, ICharacterModel
     private bool isFreeze;
 
     public event Action OnCharacterDie;
-
     public static CharacterModel Instance => _instance;
     public bool IsJumping { get; private set; }
     public bool HaveInteractGate => CurrentTriggerTeleportGate != null;
     public bool HaveInteractSavePoint => CurrentTriggerSavePoint != null;
     public Vector3 RecordOriginPos { get; private set; }
-    public bool IsFaceRight { get; private set; }
     private ITeleportGate CurrentTriggerTeleportGate { get; set; }
     private ISavePointView CurrentTriggerSavePoint { get; set; }
     private bool IsStayOnFloor { get; set; }
@@ -367,10 +369,10 @@ public class CharacterModel : IColliderHandler, ICharacterModel
     {
         itemTriggerHandler.OnEndItemEffect -= OnEndItemEffect;
         itemTriggerHandler.OnEndItemEffect += OnEndItemEffect;
-        
+
         itemTriggerHandler.OnStartItemEffect -= OnStartItemEffect;
         itemTriggerHandler.OnStartItemEffect += OnStartItemEffect;
-        
+
         itemTriggerHandler.OnUseItemOneTime -= OnUseItemOneTime;
         itemTriggerHandler.OnUseItemOneTime += OnUseItemOneTime;
     }
