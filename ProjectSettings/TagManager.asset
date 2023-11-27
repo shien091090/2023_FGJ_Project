@@ -65,3 +65,6 @@ TagManager:
   - name: UI
     uniqueID: 2840948199
     locked: 0
+  - name: LoadingIndicator
+    uniqueID: 4208160583
+    locked: 0
