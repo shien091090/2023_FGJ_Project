@@ -7,10 +7,10 @@ using UnityEngine.Networking;
 public class ServerCommunicator : MonoBehaviour
 {
     private const string URL = "https://script.google.com/macros/s/AKfycbzvsgJfeXsqIyXbsKm9HX8ShA6SJysfbAx7Coinbj2YR7efbCD9zTY6UiPC1UZYaWlDMA/exec";
-    private static ServerCommunicator _instance;
 
     private RequestSender requestSender;
-    public static ServerCommunicator Instance => _instance;
+    public event Action OnRequestCompleted;
+    public bool IsWaitingResponse { get; private set; }
 
     public void SendRequest<T>(Action<T> callback = null) where T : ServerResponse
     {
@@ -58,12 +58,6 @@ public class ServerCommunicator : MonoBehaviour
         return this;
     }
 
-    private void Awake()
-    {
-        if (_instance == null)
-            _instance = this;
-    }
-
     private WWWForm CreateWWWForm(string action, (string, string)[] parameters)
     {
         WWWForm form = new WWWForm();
@@ -95,11 +89,15 @@ public class ServerCommunicator : MonoBehaviour
 
         WWWForm form = CreateWWWForm(action, parameters);
 
+        IsWaitingResponse = true;
         if (requestType == RequestType.Post)
         {
             using (UnityWebRequest www = UnityWebRequest.Post(URL, form))
             {
                 yield return www.SendWebRequest();
+
+                IsWaitingResponse = false;
+                OnRequestCompleted?.Invoke();
 
                 if (www.result != UnityWebRequest.Result.Success || string.IsNullOrEmpty(www.downloadHandler.text))
                     callback?.Invoke(CreateErrorResponse<T>(www));

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerRecordView : MonoBehaviour
+public class PlayerRecordView : MonoBehaviour, IPlayerRecordView
 {
     [SerializeField] private GameObject go_root;
     [SerializeField] private List<PlayerRecordItem> playerRecordList;
@@ -10,28 +10,13 @@ public class PlayerRecordView : MonoBehaviour
 
     public int GetRecordLength => playerRecordList.Count;
 
-    public void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F1))
-        {
-            Open(true);
-        }
-    }
-
     public void Start()
     {
-        model = new PlayerRecordModel(ServerCommunicator.Instance);
+        model = PlayerRecordModel.Instance;
+        model.BindView(this);
     }
 
-    public void Open(bool isRequestRecord)
-    {
-        if (isRequestRecord)
-            model.RequestPlayerRecord(UpdateView);
-        else
-            UpdateView();
-    }
-
-    private void UpdateView()
+    public void UpdateView()
     {
         go_root.SetActive(true);
         for (int i = 0; i < GetRecordLength; i++)
