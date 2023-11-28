@@ -209,6 +209,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5890403850350602904}
+  - component: {fileID: 8895607448360862005}
   m_Layer: 0
   m_Name: LoadingIndicator
   m_TagString: Untagged
@@ -232,6 +233,19 @@ Transform:
   - {fileID: 2125867359647238491}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8895607448360862005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4282752980661778828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7d10116dbd2d154dbf5bf790bf30026, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  go_root: {fileID: 1998395949654747941}
 --- !u!1 &6213363450218960689
 GameObject:
   m_ObjectHideFlags: 0
