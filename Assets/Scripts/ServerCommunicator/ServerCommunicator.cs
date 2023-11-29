@@ -97,7 +97,6 @@ public class ServerCommunicator : MonoBehaviour
                 yield return www.SendWebRequest();
 
                 IsWaitingResponse = false;
-                OnRequestCompleted?.Invoke();
 
                 if (www.result != UnityWebRequest.Result.Success || string.IsNullOrEmpty(www.downloadHandler.text))
                     callback?.Invoke(CreateErrorResponse<T>(www));
@@ -109,6 +108,8 @@ public class ServerCommunicator : MonoBehaviour
                         response :
                         CreateErrorResponse<T>(www));
                 }
+                
+                OnRequestCompleted?.Invoke();
             }
         }
     }
