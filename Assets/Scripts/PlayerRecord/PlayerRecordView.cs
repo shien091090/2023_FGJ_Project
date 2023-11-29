@@ -8,21 +8,24 @@ public class PlayerRecordView : MonoBehaviour, IPlayerRecordView
 
     private PlayerRecordModel model;
 
-    public int GetRecordLength => playerRecordList.Count;
+    public void UpdateView()
+    {
+        go_root.SetActive(true);
+        for (int i = 0; i < playerRecordList.Count; i++)
+        {
+            playerRecordList[i].SetPlayerName(model.GetRecordPlayerName(i));
+            playerRecordList[i].SetCostTime(model.GetRecordCostTime(i));
+        }
+    }
+
+    public void Close()
+    {
+        go_root.SetActive(false);
+    }
 
     public void Start()
     {
         model = PlayerRecordModel.Instance;
         model.BindView(this);
-    }
-
-    public void UpdateView()
-    {
-        go_root.SetActive(true);
-        for (int i = 0; i < GetRecordLength; i++)
-        {
-            playerRecordList[i].SetPlayerName(model.GetRecordPlayerName(i));
-            playerRecordList[i].SetCostTime(model.GetRecordCostTime(i));
-        }
     }
 }
