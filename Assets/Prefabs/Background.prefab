@@ -130,7 +130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   background: {fileID: 6306398684967565457}
-  sceneUpRightPos: {x: 300, y: 15}
-  sceneDownLeftPos: {x: -16, y: -85}
+  sceneUpRightPos: {x: 367, y: 23}
+  sceneDownLeftPos: {x: -48, y: -85}
   backgroundUpRightPos: {x: 17.25, y: 1.4}
   backgroundDownLeftPos: {x: -17.25, y: -1.4}
