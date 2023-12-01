@@ -9,6 +9,7 @@ public class GameCompleteManager : MonoBehaviour
     private string ANIM_KEY_GAME_COMPLETED = "game_complete";
 
     private Animator anim;
+    private MissingTextureManager missingTextureManager;
 
     public Animator GetAnim
     {
@@ -23,17 +24,20 @@ public class GameCompleteManager : MonoBehaviour
 
     private void Start()
     {
+        missingTextureManager = MissingTextureManager.Instance;
+        
         FmodAudioManager.Instance.Play("BGM", 1);
         GetAnim.Play(ANIM_KEY_IDLE);
-        MissingTextureManagerView.Instance.OnMissingTextureAllClear -= OnMissingTextureAllClear;
-        MissingTextureManagerView.Instance.OnMissingTextureAllClear += OnMissingTextureAllClear;
+        
+        missingTextureManager.OnMissingTextureAllClear -= OnMissingTextureAllClear;
+        missingTextureManager.OnMissingTextureAllClear += OnMissingTextureAllClear;
     }
 
     private IEnumerator Cor_GameComplete()
     {
         yield return new WaitForSeconds(4f);
 
-        MissingTextureManagerView.Instance.ResetGame();
+        missingTextureManager.ResetGame();
         SceneManager.LoadScene("MainScene");
     }
 

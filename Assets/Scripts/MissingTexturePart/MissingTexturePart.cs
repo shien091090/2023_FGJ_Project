@@ -5,8 +5,12 @@ public class MissingTexturePart : MonoBehaviour
 {
     [SerializeField] private GameObject go_missingTexture;
 
+    private MissingTextureManager missingTextureManager;
+
     public void Start()
     {
+        missingTextureManager = MissingTextureManager.Instance;
+
         SetMissingTextureActive(true);
     }
 
@@ -16,7 +20,7 @@ public class MissingTexturePart : MonoBehaviour
             return;
 
         SetMissingTextureActive(false);
-        MissingTextureManagerView.Instance.SubtractMissingTextureCount();
+        missingTextureManager.SubtractMissingTextureCount();
     }
 
     private void SetMissingTextureActive(bool isActive)

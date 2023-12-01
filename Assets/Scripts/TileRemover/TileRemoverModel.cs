@@ -1,38 +1,37 @@
-using System;
 using UnityEngine;
 
 public class TileRemoverModel
 {
-    private readonly int upRange;
-    private readonly int downRange;
-    private readonly ITileMap tileMap;
-    
-    public int TilesCount { get; private set; }
+    private static TileRemoverModel _instance;
 
-    public TileRemoverModel(int upRange, int downRange, ITileMap tileMap)
+    private readonly IGameSetting gameSetting;
+    private ITileMap tileMap;
+
+    public static TileRemoverModel Instance => _instance;
+
+    public TileRemoverModel(IGameSetting gameSetting)
     {
-        this.upRange = upRange;
-        this.downRange = downRange;
-        this.tileMap = tileMap;
-        TilesCount = tileMap.GetTotalTilesCount();
+        this.gameSetting = gameSetting;
+
+        _instance = this;
     }
 
     public void UpdateRemoveTile(Vector3 centerPos)
     {
-        if (upRange == 0 && downRange == 0)
+        if (gameSetting.UpRange == 0 && gameSetting.DownRange == 0)
             return;
 
-        Vector3[] removePosArray = new Vector3 [upRange + downRange + 1];
+        Vector3[] removePosArray = new Vector3 [gameSetting.UpRange + gameSetting.DownRange + 1];
         removePosArray[0] = centerPos;
 
         int currentIndex = 1;
-        for (int i = upRange; i > 0; i--)
+        for (int i = gameSetting.UpRange; i > 0; i--)
         {
             removePosArray[currentIndex] = new Vector3(centerPos.x, centerPos.y + i, centerPos.z);
             currentIndex += 1;
         }
 
-        for (int i = 0; i < downRange; i++)
+        for (int i = 0; i < gameSetting.DownRange; i++)
         {
             removePosArray[currentIndex] = new Vector3(centerPos.x, centerPos.y - 1 - i, centerPos.z);
             currentIndex += 1;
@@ -41,10 +40,12 @@ public class TileRemoverModel
         foreach (Vector3 pos in removePosArray)
         {
             if (tileMap.HaveTile(pos))
-            {
                 tileMap.SetTile(pos, null);
-                TilesCount--;
-            }
         }
+    }
+
+    public void BindView(ITileMap view)
+    {
+        tileMap = view;
     }
 }

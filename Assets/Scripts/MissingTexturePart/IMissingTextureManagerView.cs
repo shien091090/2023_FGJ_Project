@@ -2,5 +2,5 @@ public interface IMissingTextureManagerView
 {
     void RefreshRemainPercentText(string remainPercentText);
     void RefreshProgress(float progress);
-    void SendMissingTextureAllClearEvent();
+    void PlayClearAnimation();
 }

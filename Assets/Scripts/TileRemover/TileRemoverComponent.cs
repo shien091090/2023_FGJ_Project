@@ -3,22 +3,16 @@ using UnityEngine.Tilemaps;
 
 public class TileRemoverComponent : MonoBehaviour, ITileMap
 {
-    [SerializeField] private int upRange;
-    [SerializeField] private int downRange;
     [SerializeField] private Tilemap targetTilemap;
     [SerializeField] private Transform character;
 
+    private MissingTextureManager missingTextureManager;
     private TileRemoverModel tileRemoverModel;
-
-    public int GetTotalTilesCount()
-    {
-        return MissingTextureManagerView.Instance.GetTotalMissingTextureCount;
-    }
 
     public void SetTile(Vector3 pos, Tile tile)
     {
         targetTilemap.SetTile(targetTilemap.WorldToCell(pos), null);
-        MissingTextureManagerView.Instance.SubtractMissingTextureCount();
+        missingTextureManager.SubtractMissingTextureCount();
     }
 
     public bool HaveTile(Vector3 pos)
@@ -28,7 +22,9 @@ public class TileRemoverComponent : MonoBehaviour, ITileMap
 
     private void Start()
     {
-        tileRemoverModel = new TileRemoverModel(upRange, downRange, this);
+        missingTextureManager = MissingTextureManager.Instance;
+        tileRemoverModel = TileRemoverModel.Instance;
+        tileRemoverModel.BindView(this);
     }
 
     private void Update()

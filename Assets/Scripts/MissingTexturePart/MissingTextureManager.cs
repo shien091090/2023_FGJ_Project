@@ -1,17 +1,24 @@
+using System;
 using UnityEngine;
 
 public class MissingTextureManager
 {
-    private readonly int totalMissingTextureCount;
-    private readonly IMissingTextureManagerView view;
+    private static MissingTextureManager _instance;
+    
+    private readonly IGameSetting gameSetting;
+
+    private IMissingTextureManagerView view;
     private bool isGameCompleted;
     private int currentMissingTextureCount;
 
-    public MissingTextureManager(int totalMissingTextureCount, IMissingTextureManagerView view)
+    public event Action OnMissingTextureAllClear;
+
+    public static MissingTextureManager Instance => _instance;
+
+    public MissingTextureManager(IGameSetting gameSetting)
     {
-        this.totalMissingTextureCount = totalMissingTextureCount;
-        this.view = view;
-        ResetGame();
+        this.gameSetting = gameSetting;
+        _instance = this;
     }
 
     public void SubtractMissingTextureCount(int count = 1)
@@ -22,39 +29,46 @@ public class MissingTextureManager
         currentMissingTextureCount -= count;
         view.RefreshRemainPercentText(ConvertCurrentPercentText());
         view.RefreshProgress(GetProgressPercent());
+        view.PlayClearAnimation();
 
         if (currentMissingTextureCount <= 0)
         {
-            view.SendMissingTextureAllClearEvent();
+            OnMissingTextureAllClear?.Invoke();
             isGameCompleted = true;
         }
     }
 
     public void ResetGame()
     {
-        currentMissingTextureCount = totalMissingTextureCount;
+        currentMissingTextureCount = gameSetting.TotalMissingTextureCount;
         isGameCompleted = false;
         view.RefreshRemainPercentText(ConvertCurrentPercentText());
         view.RefreshProgress(GetProgressPercent());
     }
 
+    public void BindView(MissingTextureManagerView view)
+    {
+        this.view = view;
+        ResetGame();
+    }
+
     private float GetProgressPercent()
     {
-        if (totalMissingTextureCount <= 0)
+        if (gameSetting.TotalMissingTextureCount <= 0)
             return 0;
 
-        float percent = currentMissingTextureCount / (float)totalMissingTextureCount;
+        float percent = currentMissingTextureCount / (float)gameSetting.TotalMissingTextureCount;
         return percent;
     }
 
     private string ConvertCurrentPercentText()
     {
-        if (totalMissingTextureCount == 0)
+        if (gameSetting.TotalMissingTextureCount == 0)
             return "0";
 
         float percent = GetProgressPercent();
         float round = Mathf.Round(percent * 100);
-        if (round == 100 && currentMissingTextureCount < totalMissingTextureCount)
+        if (round == 100 && currentMissingTextureCount < gameSetting.TotalMissingTextureCount)
             return (round - 1).ToString();
         else if (round == 0 && currentMissingTextureCount > 0)
             return (round + 1).ToString();

@@ -3,12 +3,16 @@ using UnityEngine;
 
 public class GameSceneInstaller : MonoBehaviour
 {
+    [SerializeField] private GameSettingScriptableObject gameSetting;
+    
     private CharacterModel characterModel;
     private CharacterMoveController characterMoveController;
     private CharacterKeyController characterKeyController;
     private TimeModel timeModel;
     private IItemTriggerHandler itemTriggerHandler;
     private BulletHandlerModel bulletHandlerModel;
+    private MissingTextureManager missingTextureManager;
+    private TileRemoverModel tileRemoverModel;
 
     private void Init()
     {
@@ -18,6 +22,8 @@ public class GameSceneInstaller : MonoBehaviour
         itemTriggerHandler = new ItemTriggerHandler();
         characterModel = new CharacterModel(characterMoveController, characterKeyController, FmodAudioManager.Instance, timeModel, itemTriggerHandler);
         bulletHandlerModel = new BulletHandlerModel(itemTriggerHandler, characterModel);
+        missingTextureManager = new MissingTextureManager(gameSetting);
+        tileRemoverModel = new TileRemoverModel(gameSetting);
     }
 
     private void Awake()
