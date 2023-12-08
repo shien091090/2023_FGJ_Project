@@ -11,6 +11,6 @@ public class RankingButton : MonoBehaviour
 
     public void OnClick()
     {
-        playerRecordModel.Open(false);
+        playerRecordModel.RequestOpen(false);
     }
 }

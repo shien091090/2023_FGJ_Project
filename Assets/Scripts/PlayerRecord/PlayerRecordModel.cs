@@ -16,6 +16,7 @@ public class PlayerRecordModel
     private IPlayerRecordView view;
 
     public static PlayerRecordModel Instance => _instance;
+    public bool IsViewOpening { get; private set; }
 
     public PlayerRecordModel(ServerCommunicator serverCommunicator, LoadingIndicatorModel loadingIndicatorModel)
     {
@@ -58,10 +59,10 @@ public class PlayerRecordModel
             });
     }
 
-    public void Open(bool isRequestRecord = false)
+    public void RequestOpen(bool isRequestRecord = false)
     {
         if (isRequestRecord)
-            RequestPlayerRecord(view.UpdateView);
+            RequestPlayerRecord(OpenView);
         else
         {
             if (serverCommunicator.IsWaitingResponse)
@@ -71,7 +72,7 @@ public class PlayerRecordModel
                 serverCommunicator.OnRequestCompleted += OnRequestCompleted;
             }
             else
-                view.UpdateView();
+                OpenView();
         }
     }
 
@@ -88,11 +89,17 @@ public class PlayerRecordModel
         playerRecordData = playerRecords.OrderBy(x => x.costTimeSeconds).ToList();
     }
 
+    private void OpenView()
+    {
+        view.UpdateView();
+        IsViewOpening = true;
+    }
+
     private void OnRequestCompleted()
     {
         serverCommunicator.OnRequestCompleted -= OnRequestCompleted;
 
         loadingIndicatorModel.Close();
-        view.UpdateView();
+        OpenView();
     }
 }

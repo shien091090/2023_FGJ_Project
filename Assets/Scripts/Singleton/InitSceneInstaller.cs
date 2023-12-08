@@ -18,7 +18,6 @@ public class InitSceneInstaller : MonoBehaviour
     private void Awake()
     {
         Init();
-        playerRecordModel.RequestPlayerRecord();
     }
 
     private void Start()
