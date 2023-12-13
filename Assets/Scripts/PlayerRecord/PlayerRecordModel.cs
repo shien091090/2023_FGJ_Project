@@ -81,6 +81,12 @@ public class PlayerRecordModel
         this.view = view;
     }
 
+    public void CloseView()
+    {
+        view.SetActive(false);
+        IsViewOpening = false;
+    }
+
     private void UpdatePlayerRecord(List<PlayerRecord> playerRecords)
     {
         if (playerRecords == null || playerRecords.Count == 0)
@@ -91,6 +97,7 @@ public class PlayerRecordModel
 
     private void OpenView()
     {
+        view.SetActive(true);
         view.UpdateView();
         IsViewOpening = true;
     }

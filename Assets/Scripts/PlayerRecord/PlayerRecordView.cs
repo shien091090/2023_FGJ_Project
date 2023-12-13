@@ -10,7 +10,6 @@ public class PlayerRecordView : MonoBehaviour, IPlayerRecordView
 
     public void UpdateView()
     {
-        go_root.SetActive(true);
         for (int i = 0; i < playerRecordList.Count; i++)
         {
             playerRecordList[i].SetPlayerName(model.GetRecordPlayerName(i));
@@ -18,14 +17,19 @@ public class PlayerRecordView : MonoBehaviour, IPlayerRecordView
         }
     }
 
-    public void Close()
+    public void SetActive(bool isActive)
     {
-        go_root.SetActive(false);
+        go_root.SetActive(isActive);
     }
 
     public void Start()
     {
         model = PlayerRecordModel.Instance;
         model.BindView(this);
+    }
+
+    public void Close()
+    {
+        model.CloseView();
     }
 }

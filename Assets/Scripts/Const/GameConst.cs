@@ -19,6 +19,8 @@ public class GameConst
     public const string ANIMATION_KEY_CHARACTER_NORMAL = "character_normal";
     public const string ANIMATION_KEY_CHARACTER_ENTER_HOUSE = "character_enter_house";
     public const string ANIMATION_KEY_CHARACTER_EXIT_HOUSE = "character_exit_house";
+    public const string ANIMATION_KEY_START_SCENE_IDLE = "start_scene_idle";
+    public const string ANIMATION_KEY_START_SCENE_ENTER = "start_scene_enter";
     public const string ANIMATION_KEY_TUTORIAL_HIDE = "tutorial_hide";
     public const string ANIMATION_KEY_TUTORIAL_START = "tutorial_fade_in";
     public const string ANIMATION_KEY_TUTORIAL_ENTER_NEXT = "tutorial_enter_next";
