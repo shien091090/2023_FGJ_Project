@@ -1,3 +1,5 @@
+using FMODUnity;
+
 public class GameConst
 {
     public enum GameObjectLayerType
@@ -10,6 +12,8 @@ public class GameConst
         SavePoint = 11,
     }
 
+    public const string AUDIO_KEY_BGM_GAME = "BGM_Game";
+    public const string AUDIO_KEY_BGM_START = "BGM_Start";
     public const string AUDIO_KEY_DAMAGE = "Damage";
     public const string AUDIO_KEY_JUMP = "Jump";
     public const string AUDIO_KEY_TELEPORT = "Teleport";

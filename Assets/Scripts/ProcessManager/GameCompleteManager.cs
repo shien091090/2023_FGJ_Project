@@ -26,7 +26,7 @@ public class GameCompleteManager : MonoBehaviour
     {
         missingTextureManager = MissingTextureManager.Instance;
         
-        FmodAudioManager.Instance.Play("BGM", 1);
+        FmodAudioManager.Instance.Play(GameConst.AUDIO_KEY_BGM_GAME, 1);
         GetAnim.Play(ANIM_KEY_IDLE);
         
         missingTextureManager.OnMissingTextureAllClear -= OnMissingTextureAllClear;

@@ -53,3 +53,11 @@ MonoBehaviour:
         Data3: -74295662
         Data4: 1128828352
       Path: event:/2023_FGJ_Project/SavePoint
+  - audioKey: BGM_Start
+    audioEventReferences:
+    - Guid:
+        Data1: 2069839085
+        Data2: 1152076387
+        Data3: 438106257
+        Data4: 196283448
+      Path: event:/2023_FGJ_Project/BGM_Start
