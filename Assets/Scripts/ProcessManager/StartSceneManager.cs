@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class StartSceneManager : MonoBehaviour
@@ -10,6 +11,7 @@ public class StartSceneManager : MonoBehaviour
     [SerializeField] private Animator tutorialAnimator;
 
     private PlayerRecordModel playerRecordModel;
+    private bool isSwitchedTutorialNext;
 
     private void Start()
     {
@@ -19,6 +21,7 @@ public class StartSceneManager : MonoBehaviour
 
     private void Init()
     {
+        isSwitchedTutorialNext = false;
         playerRecordModel.RequestPlayerRecord();
 
         btn_start.enabled = true;
@@ -27,13 +30,23 @@ public class StartSceneManager : MonoBehaviour
         tutorialAnimator.Play(GameConst.ANIMATION_KEY_TUTORIAL_HIDE);
     }
 
-    private IEnumerator Cor_PlayEnterGameAnimation()
+    private IEnumerator Cor_PlayTutorialAnimation()
     {
         startSceneAnimator.Play(GameConst.ANIMATION_KEY_START_SCENE_ENTER);
 
         yield return new WaitForSeconds(0.6f);
 
         tutorialAnimator.Play(GameConst.ANIMATION_KEY_TUTORIAL_START);
+    }
+
+    private IEnumerator Cor_PlayTutorialEndAnimation()
+    {
+        tutorialAnimator.Play(GameConst.ANIMATION_KEY_TUTORIAL_ENTER_GAME);
+
+        yield return new WaitForSeconds(3);
+
+        SceneManager.UnloadSceneAsync("StartScene");
+        SceneManager.LoadScene("MainScene", LoadSceneMode.Additive);
     }
 
     public void OnClickStart()
@@ -44,7 +57,26 @@ public class StartSceneManager : MonoBehaviour
         btn_start.enabled = false;
         btn_ranking.enabled = false;
 
-        StartCoroutine(Cor_PlayEnterGameAnimation());
+        StartCoroutine(Cor_PlayTutorialAnimation());
+    }
+
+    public void OnClickTutorialNext()
+    {
+        tutorialAnimator.Play(isSwitchedTutorialNext ?
+            GameConst.ANIMATION_KEY_TUTORIAL_SWITCH_FORWARD :
+            GameConst.ANIMATION_KEY_TUTORIAL_ENTER_NEXT);
+
+        isSwitchedTutorialNext = true;
+    }
+
+    public void OnClickTutorialPrev()
+    {
+        tutorialAnimator.Play(GameConst.ANIMATION_KEY_TUTORIAL_SWITCH_BACK);
+    }
+
+    public void OnClickTutorialEnd()
+    {
+        StartCoroutine(Cor_PlayTutorialEndAnimation());
     }
 
     public void OnClickPlayerRecord()
