@@ -39,7 +39,7 @@ public class StartSceneManager : MonoBehaviour
     {
         startSceneAnimator.Play(GameConst.ANIMATION_KEY_START_SCENE_ENTER);
 
-        yield return new WaitForSeconds(0.6f);
+        yield return new WaitForSeconds(2);
 
         tutorialAnimator.Play(GameConst.ANIMATION_KEY_TUTORIAL_START);
     }
@@ -56,6 +56,9 @@ public class StartSceneManager : MonoBehaviour
 
     public void OnClickStart()
     {
+        audioManager.PlayOneShot(GameConst.AUDIO_KEY_SWITCH_SCENE_TO_TUTORIAL);
+        audioManager.PlayOneShot(GameConst.AUDIO_KEY_BUTTON_CONFIRM);
+        
         if (playerRecordModel.IsViewOpening)
             playerRecordModel.CloseView();
 
@@ -67,6 +70,8 @@ public class StartSceneManager : MonoBehaviour
 
     public void OnClickTutorialNext()
     {
+        audioManager.PlayOneShot(GameConst.AUDIO_KEY_BUTTON_SWITCH);
+        
         tutorialAnimator.Play(isSwitchedTutorialNext ?
             GameConst.ANIMATION_KEY_TUTORIAL_SWITCH_FORWARD :
             GameConst.ANIMATION_KEY_TUTORIAL_ENTER_NEXT);
@@ -76,16 +81,23 @@ public class StartSceneManager : MonoBehaviour
 
     public void OnClickTutorialPrev()
     {
+        audioManager.PlayOneShot(GameConst.AUDIO_KEY_BUTTON_SWITCH);
+        
         tutorialAnimator.Play(GameConst.ANIMATION_KEY_TUTORIAL_SWITCH_BACK);
     }
 
     public void OnClickTutorialEnd()
     {
+        audioManager.PlayOneShot(GameConst.AUDIO_KEY_BUTTON_CLICK);
+        audioManager.Stop(1);
+        
         StartCoroutine(Cor_PlayTutorialEndAnimation());
     }
 
     public void OnClickPlayerRecord()
     {
+        audioManager.PlayOneShot(GameConst.AUDIO_KEY_BUTTON_CLICK);
+        
         playerRecordModel.RequestOpen(false);
     }
 }

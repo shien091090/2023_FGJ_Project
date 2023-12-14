@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SNShien.Common.AudioTools;
 
 public class PlayerRecordModel
 {
@@ -11,6 +12,7 @@ public class PlayerRecordModel
 
     private readonly ServerCommunicator serverCommunicator;
     private readonly LoadingIndicatorModel loadingIndicatorModel;
+    private readonly IAudioManager audioManager;
 
     private List<PlayerRecord> playerRecordData;
     private IPlayerRecordView view;
@@ -18,10 +20,12 @@ public class PlayerRecordModel
     public static PlayerRecordModel Instance => _instance;
     public bool IsViewOpening { get; private set; }
 
-    public PlayerRecordModel(ServerCommunicator serverCommunicator, LoadingIndicatorModel loadingIndicatorModel)
+    public PlayerRecordModel(ServerCommunicator serverCommunicator, LoadingIndicatorModel loadingIndicatorModel, IAudioManager audioManager)
     {
         this.serverCommunicator = serverCommunicator;
         this.loadingIndicatorModel = loadingIndicatorModel;
+        this.audioManager = audioManager;
+
         playerRecordData = new List<PlayerRecord>();
 
         _instance = this;
@@ -83,6 +87,7 @@ public class PlayerRecordModel
 
     public void CloseView()
     {
+        audioManager.PlayOneShot(GameConst.AUDIO_KEY_BUTTON_CLICK);
         view.SetActive(false);
         IsViewOpening = false;
     }

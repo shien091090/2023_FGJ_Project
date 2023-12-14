@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: AudioCollectionSetting
   m_EditorClassIdentifier: 
   audioEventRefList:
-  - audioKey: BGM
+  - audioKey: BGM_Game
     audioEventReferences:
     - Guid:
         Data1: 698635923
@@ -21,6 +21,14 @@ MonoBehaviour:
         Data3: -245050456
         Data4: -544998711
       Path: event:/2023_FGJ_Project/BGM_Main
+  - audioKey: BGM_Start
+    audioEventReferences:
+    - Guid:
+        Data1: 2069839085
+        Data2: 1152076387
+        Data3: 438106257
+        Data4: 196283448
+      Path: event:/2023_FGJ_Project/BGM_Start
   - audioKey: Jump
     audioEventReferences:
     - Guid:
@@ -53,11 +61,35 @@ MonoBehaviour:
         Data3: -74295662
         Data4: 1128828352
       Path: event:/2023_FGJ_Project/SavePoint
-  - audioKey: BGM_Start
+  - audioKey: Button1
     audioEventReferences:
     - Guid:
-        Data1: 2069839085
-        Data2: 1152076387
-        Data3: 438106257
-        Data4: 196283448
-      Path: event:/2023_FGJ_Project/BGM_Start
+        Data1: -1975303404
+        Data2: 1128166185
+        Data3: -1686373704
+        Data4: 1650075303
+      Path: event:/2023_FGJ_Project/UI_ClickButton1
+  - audioKey: Button2
+    audioEventReferences:
+    - Guid:
+        Data1: -759645853
+        Data2: 1219975304
+        Data3: 1382498446
+        Data4: 1432385148
+      Path: event:/2023_FGJ_Project/UI_ClickButton2
+  - audioKey: Button3
+    audioEventReferences:
+    - Guid:
+        Data1: -1554549147
+        Data2: 1253937868
+        Data3: -1137194836
+        Data4: 110335449
+      Path: event:/2023_FGJ_Project/UI_ClickButton3
+  - audioKey: SwitchSceneToTutorial
+    audioEventReferences:
+    - Guid:
+        Data1: -1932527329
+        Data2: 1092382982
+        Data3: -538379128
+        Data4: -1982411955
+      Path: event:/2023_FGJ_Project/SwitchSceneToTutorial

@@ -320,6 +320,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 88149f9780bb47b439fc752cd981ebd0, type: 3}
+--- !u!114 &101892846 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7119561303012456158, guid: 09b4bf05c7064b542ac023ea03fba98e, type: 3}
+  m_PrefabInstance: {fileID: 1308484834}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05f70a2688084ea98815c472e8d448dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &587772234
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -422,6 +433,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serverCommunicator: {fileID: 2092323959}
+  fmodAudioManager: {fileID: 101892846}
 --- !u!1001 &1308484834
 PrefabInstance:
   m_ObjectHideFlags: 0

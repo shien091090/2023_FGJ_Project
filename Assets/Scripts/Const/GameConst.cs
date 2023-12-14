@@ -18,6 +18,10 @@ public class GameConst
     public const string AUDIO_KEY_JUMP = "Jump";
     public const string AUDIO_KEY_TELEPORT = "Teleport";
     public const string AUDIO_KEY_SAVE_POINT = "SavePoint";
+    public const string AUDIO_KEY_BUTTON_CLICK = "Button1";
+    public const string AUDIO_KEY_BUTTON_CONFIRM = "Button2";
+    public const string AUDIO_KEY_BUTTON_SWITCH = "Button3";
+    public const string AUDIO_KEY_SWITCH_SCENE_TO_TUTORIAL = "SwitchSceneToTutorial";
 
     public const string ANIMATION_KEY_CHARACTER_DIE = "character_die";
     public const string ANIMATION_KEY_CHARACTER_NORMAL = "character_normal";
