@@ -38,14 +38,17 @@ public class StartSceneManager : MonoBehaviour
     private IEnumerator Cor_PlayTutorialAnimation()
     {
         startSceneAnimator.Play(GameConst.ANIMATION_KEY_START_SCENE_ENTER);
+        audioManager.Stop(1);
 
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(1.8f);
 
+        audioManager.Play(GameConst.AUDIO_KEY_BGM_TUTORIAL, 1);
         tutorialAnimator.Play(GameConst.ANIMATION_KEY_TUTORIAL_START);
     }
 
     private IEnumerator Cor_PlayTutorialEndAnimation()
     {
+        audioManager.Stop(1);
         tutorialAnimator.Play(GameConst.ANIMATION_KEY_TUTORIAL_ENTER_GAME);
 
         yield return new WaitForSeconds(3);
@@ -57,7 +60,6 @@ public class StartSceneManager : MonoBehaviour
     public void OnClickStart()
     {
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_SWITCH_SCENE_TO_TUTORIAL);
-        audioManager.PlayOneShot(GameConst.AUDIO_KEY_BUTTON_CONFIRM);
         
         if (playerRecordModel.IsViewOpening)
             playerRecordModel.CloseView();
@@ -89,7 +91,6 @@ public class StartSceneManager : MonoBehaviour
     public void OnClickTutorialEnd()
     {
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_BUTTON_CLICK);
-        audioManager.Stop(1);
         
         StartCoroutine(Cor_PlayTutorialEndAnimation());
     }

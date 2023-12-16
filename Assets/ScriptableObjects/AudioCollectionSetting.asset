@@ -24,11 +24,19 @@ MonoBehaviour:
   - audioKey: BGM_Start
     audioEventReferences:
     - Guid:
-        Data1: 2069839085
-        Data2: 1152076387
-        Data3: 438106257
-        Data4: 196283448
+        Data1: 290308435
+        Data2: 1266535738
+        Data3: -807590751
+        Data4: 2026446478
       Path: event:/2023_FGJ_Project/BGM_Start
+  - audioKey: BGM_Tutorial
+    audioEventReferences:
+    - Guid:
+        Data1: -94672708
+        Data2: 1286221623
+        Data3: 1222086317
+        Data4: -959165486
+      Path: event:/2023_FGJ_Project/BGM_Tutorial
   - audioKey: Jump
     audioEventReferences:
     - Guid:
@@ -88,8 +96,16 @@ MonoBehaviour:
   - audioKey: SwitchSceneToTutorial
     audioEventReferences:
     - Guid:
-        Data1: -1932527329
-        Data2: 1092382982
-        Data3: -538379128
-        Data4: -1982411955
+        Data1: -1418741061
+        Data2: 1185115271
+        Data3: 1770894264
+        Data4: 1916855166
       Path: event:/2023_FGJ_Project/SwitchSceneToTutorial
+  - audioKey: Error1
+    audioEventReferences:
+    - Guid:
+        Data1: -826842139
+        Data2: 1088469327
+        Data3: -804721232
+        Data4: -824311594
+      Path: event:/2023_FGJ_Project/UI_Error
