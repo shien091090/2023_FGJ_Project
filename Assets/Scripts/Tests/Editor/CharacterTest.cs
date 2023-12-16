@@ -15,6 +15,7 @@ public class CharacterTest
     private IAudioManager audioManager;
     private ITimeModel timeModel;
     private ICharacterView characterView;
+    private IGameObjectPool gameObjectPool;
 
     private Action characterViewWaitingCallback;
     private IItemTriggerHandler itemTriggerHandler;
@@ -35,6 +36,7 @@ public class CharacterTest
         }));
         
         itemTriggerHandler = Substitute.For<IItemTriggerHandler>();
+        gameObjectPool = Substitute.For<IGameObjectPool>();
 
         GivenDeltaTime(1);
         GivenSpeed(1);
@@ -42,7 +44,7 @@ public class CharacterTest
         GivenJumpDelay(1);
         GivenFallDownLimitPos(-10);
 
-        characterModel = new CharacterModel(moveController, keyController, audioManager, timeModel, itemTriggerHandler);
+        characterModel = new CharacterModel(moveController, keyController, audioManager, timeModel, itemTriggerHandler, gameObjectPool);
 
         characterModel.BindView(characterView);
     }

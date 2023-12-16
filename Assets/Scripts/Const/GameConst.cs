@@ -37,4 +37,6 @@ public class GameConst
     public const string ANIMATION_KEY_TUTORIAL_ENTER_GAME = "tutorial_enter_game_scene";
     public const string ANIMATION_KEY_TUTORIAL_SWITCH_BACK = "tutorial_switch_back";
     public const string ANIMATION_KEY_TUTORIAL_SWITCH_FORWARD = "tutorial_switch_forward";
+
+    public const string PREFAB_NAME_JUMP_EFFECT = "JumpEffect";
 }

@@ -4,7 +4,8 @@ using UnityEngine;
 public class GameSceneInstaller : MonoBehaviour
 {
     [SerializeField] private GameSettingScriptableObject gameSetting;
-    
+    [SerializeField] private ObjectPoolManager gameObjectPool;
+
     private CharacterModel characterModel;
     private CharacterMoveController characterMoveController;
     private CharacterKeyController characterKeyController;
@@ -20,7 +21,7 @@ public class GameSceneInstaller : MonoBehaviour
         characterKeyController = new CharacterKeyController();
         timeModel = new TimeModel();
         itemTriggerHandler = new ItemTriggerHandler();
-        characterModel = new CharacterModel(characterMoveController, characterKeyController, FmodAudioManager.Instance, timeModel, itemTriggerHandler);
+        characterModel = new CharacterModel(characterMoveController, characterKeyController, FmodAudioManager.Instance, timeModel, itemTriggerHandler, gameObjectPool);
         bulletHandlerModel = new BulletHandlerModel(itemTriggerHandler, characterModel);
         missingTextureManager = new MissingTextureManager(gameSetting);
         tileRemoverModel = new TileRemoverModel(gameSetting);

@@ -15,13 +15,14 @@ public class CharacterModel : IColliderHandler, ICharacterModel
     public CharacterState CurrentCharacterState { get; private set; }
     public bool IsFaceRight { get; private set; }
     public Vector3 CurrentPos => selfRigidbody.position;
-    
+
     public bool isProtected;
     private readonly IMoveController moveController;
     private readonly IKeyController keyController;
     private readonly IAudioManager audioManager;
     private readonly ITimeModel timeModel;
     private readonly IItemTriggerHandler itemTriggerHandler;
+    private readonly IGameObjectPool gameObjectPool;
     private IRigidbody selfRigidbody;
     private ICharacterView characterView;
     private float jumpTimer;
@@ -40,13 +41,14 @@ public class CharacterModel : IColliderHandler, ICharacterModel
     private bool IsStayOnFloor { get; set; }
 
     public CharacterModel(IMoveController moveController, IKeyController keyController, IAudioManager audioManager, ITimeModel timeModel,
-        IItemTriggerHandler itemTriggerHandler)
+        IItemTriggerHandler itemTriggerHandler, IGameObjectPool gameObjectPool)
     {
         this.moveController = moveController;
         this.keyController = keyController;
         this.audioManager = audioManager;
         this.timeModel = timeModel;
         this.itemTriggerHandler = itemTriggerHandler;
+        this.gameObjectPool = gameObjectPool;
 
         _instance = this;
 
@@ -219,6 +221,7 @@ public class CharacterModel : IColliderHandler, ICharacterModel
         ChangeCurrentCharacterState(CharacterState.Jumping);
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_JUMP);
         selfRigidbody.AddForce(new Vector2(0, jumpForce));
+        gameObjectPool.SpawnGameObject(GameConst.PREFAB_NAME_JUMP_EFFECT, selfRigidbody.position);
     }
 
     public void ChangeCurrentCharacterState(CharacterState state)
