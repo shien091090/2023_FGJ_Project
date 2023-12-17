@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using SNShien.Common.AudioTools;
 using UnityEngine;
@@ -6,6 +7,7 @@ using UnityEngine.UI;
 
 public class StartSceneManager : MonoBehaviour
 {
+    [SerializeField] private bool testMode;
     [SerializeField] private Button btn_start;
     [SerializeField] private Button btn_ranking;
     [SerializeField] private Animator startSceneAnimator;
@@ -23,6 +25,15 @@ public class StartSceneManager : MonoBehaviour
         Init();
     }
 
+    private void Update()
+    {
+        if (testMode == false)
+            return;
+
+        if (Input.GetKeyDown(KeyCode.F1))
+            SwitchToGameScene();
+    }
+
     private void Init()
     {
         isSwitchedTutorialNext = false;
@@ -33,6 +44,12 @@ public class StartSceneManager : MonoBehaviour
         startSceneAnimator.Play(GameConst.ANIMATION_KEY_START_SCENE_IDLE);
         tutorialAnimator.Play(GameConst.ANIMATION_KEY_TUTORIAL_HIDE);
         audioManager.Play(GameConst.AUDIO_KEY_BGM_START, 1);
+    }
+
+    private void SwitchToGameScene()
+    {
+        SceneManager.UnloadSceneAsync("StartScene");
+        SceneManager.LoadScene("MainScene", LoadSceneMode.Additive);
     }
 
     private IEnumerator Cor_PlayTutorialAnimation()
@@ -53,14 +70,13 @@ public class StartSceneManager : MonoBehaviour
 
         yield return new WaitForSeconds(3);
 
-        SceneManager.UnloadSceneAsync("StartScene");
-        SceneManager.LoadScene("MainScene", LoadSceneMode.Additive);
+        SwitchToGameScene();
     }
 
     public void OnClickStart()
     {
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_SWITCH_SCENE_TO_TUTORIAL);
-        
+
         if (playerRecordModel.IsViewOpening)
             playerRecordModel.CloseView();
 
@@ -73,7 +89,7 @@ public class StartSceneManager : MonoBehaviour
     public void OnClickTutorialNext()
     {
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_BUTTON_SWITCH);
-        
+
         tutorialAnimator.Play(isSwitchedTutorialNext ?
             GameConst.ANIMATION_KEY_TUTORIAL_SWITCH_FORWARD :
             GameConst.ANIMATION_KEY_TUTORIAL_ENTER_NEXT);
@@ -84,21 +100,21 @@ public class StartSceneManager : MonoBehaviour
     public void OnClickTutorialPrev()
     {
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_BUTTON_SWITCH);
-        
+
         tutorialAnimator.Play(GameConst.ANIMATION_KEY_TUTORIAL_SWITCH_BACK);
     }
 
     public void OnClickTutorialEnd()
     {
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_BUTTON_CLICK);
-        
+
         StartCoroutine(Cor_PlayTutorialEndAnimation());
     }
 
     public void OnClickPlayerRecord()
     {
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_BUTTON_CLICK);
-        
+
         playerRecordModel.RequestOpen(false);
     }
 }

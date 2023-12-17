@@ -6523,6 +6523,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0957f1c9681df094e84709d0dd902913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  testMode: 1
   btn_start: {fileID: 1543330130}
   btn_ranking: {fileID: 536783618}
   startSceneAnimator: {fileID: 1974979456}
