@@ -125,6 +125,9 @@ public class CharacterModel : IColliderHandler, ICharacterModel
     {
         if (col.Layer == (int)GameConst.GameObjectLayerType.Platform)
         {
+            if (IsStayOnFloor == false)
+                gameObjectPool.SpawnGameObject(GameConst.PREFAB_NAME_LANDING_EFFECT, selfRigidbody.position);
+            
             IsStayOnFloor = true;
             IsJumping = false;
             if (CurrentCharacterState != CharacterState.Die &&

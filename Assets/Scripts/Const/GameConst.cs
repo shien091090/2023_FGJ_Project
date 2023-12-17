@@ -39,4 +39,5 @@ public class GameConst
     public const string ANIMATION_KEY_TUTORIAL_SWITCH_FORWARD = "tutorial_switch_forward";
 
     public const string PREFAB_NAME_JUMP_EFFECT = "JumpEffect";
+    public const string PREFAB_NAME_LANDING_EFFECT = "LandingEffect";
 }
