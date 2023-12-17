@@ -109,3 +109,11 @@ MonoBehaviour:
         Data3: -804721232
         Data4: -824311594
       Path: event:/2023_FGJ_Project/UI_Error
+  - audioKey: GunShot
+    audioEventReferences:
+    - Guid:
+        Data1: -1169041644
+        Data2: 1330473549
+        Data3: -138691155
+        Data4: -925846994
+      Path: event:/2023_FGJ_Project/GunShot

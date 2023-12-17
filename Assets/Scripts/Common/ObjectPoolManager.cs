@@ -8,7 +8,7 @@ public class ObjectPoolManager : MonoBehaviour, IGameObjectPool
     public List<ObjectPoolUnit> objectPoolSetting; //物件池設定
     private Dictionary<string, ObjectPoolUnit> objectPoolTagDict { set; get; } //(字典)從物件名稱查找ObjectPoolUnit
 
-    public void SpawnGameObject(string prefabName, Vector3 position)
+    public void SpawnGameObject(string prefabName, Vector3 position, FaceDirection faceDirection = FaceDirection.None)
     {
         if (objectPoolTagDict.ContainsKey(prefabName) == false)
             return;
@@ -17,6 +17,10 @@ public class ObjectPoolManager : MonoBehaviour, IGameObjectPool
         GameObject go = PickUpObject(prefabName);
         go.transform.position = position;
         go.SetActive(true);
+        if (faceDirection != FaceDirection.None)
+            go.transform.localScale = new Vector3(faceDirection == FaceDirection.Right ?
+                1 :
+                -1, 1, 1);
     }
 
     private void Start()
@@ -80,7 +84,7 @@ public class ObjectPoolManager : MonoBehaviour, IGameObjectPool
 
         if (unit.parentHolder != null)
             return;
-        
+
         unit.parentHolder = new GameObject(prefabName + "Holder").transform;
         unit.parentHolder.parent = transform;
     }

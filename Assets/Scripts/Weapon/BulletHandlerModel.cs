@@ -1,3 +1,4 @@
+using SNShien.Common.AudioTools;
 using UnityEngine;
 
 public class BulletHandlerModel
@@ -6,14 +7,18 @@ public class BulletHandlerModel
 
     private readonly IItemTriggerHandler itemTriggerHandler;
     private readonly ICharacterModel characterModel;
+    private readonly IGameObjectPool gameObjectPool;
+    private readonly IAudioManager audioManager;
     private IBulletHandlerView view;
 
     public static BulletHandlerModel Instance => _instance;
 
-    public BulletHandlerModel(IItemTriggerHandler itemTriggerHandler, ICharacterModel characterModel)
+    public BulletHandlerModel(IItemTriggerHandler itemTriggerHandler, ICharacterModel characterModel, IGameObjectPool gameObjectPool, IAudioManager audioManager)
     {
         this.itemTriggerHandler = itemTriggerHandler;
         this.characterModel = characterModel;
+        this.gameObjectPool = gameObjectPool;
+        this.audioManager = audioManager;
 
         _instance = this;
 
@@ -36,6 +41,11 @@ public class BulletHandlerModel
         if (itemType != ItemType.Weapon)
             return;
 
+        gameObjectPool.SpawnGameObject(GameConst.PREFAB_NAME_BULLET_SHOOT_EFFECT, characterModel.CurrentPos, characterModel.IsFaceRight ?
+            FaceDirection.Right :
+            FaceDirection.Left);
+
+        audioManager.PlayOneShot(GameConst.AUDIO_KEY_GUN_SHOT);
         GameObject bulletObject = view.GetBulletObject();
         bulletObject.transform.position = characterModel.CurrentPos;
         bulletObject.SetActive(true);

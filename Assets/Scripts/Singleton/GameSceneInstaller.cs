@@ -22,7 +22,7 @@ public class GameSceneInstaller : MonoBehaviour
         timeModel = new TimeModel();
         itemTriggerHandler = new ItemTriggerHandler();
         characterModel = new CharacterModel(characterMoveController, characterKeyController, FmodAudioManager.Instance, timeModel, itemTriggerHandler, gameObjectPool);
-        bulletHandlerModel = new BulletHandlerModel(itemTriggerHandler, characterModel);
+        bulletHandlerModel = new BulletHandlerModel(itemTriggerHandler, characterModel, gameObjectPool, FmodAudioManager.Instance);
         missingTextureManager = new MissingTextureManager(gameSetting);
         tileRemoverModel = new TileRemoverModel(gameSetting);
     }

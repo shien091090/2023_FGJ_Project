@@ -24,6 +24,7 @@ public class GameConst
     public const string AUDIO_KEY_BUTTON_SWITCH = "Button3";
     public const string AUDIO_KEY_SWITCH_SCENE_TO_TUTORIAL = "SwitchSceneToTutorial";
     public const string AUDIO_KEY_ERROR = "Error1";
+    public const string AUDIO_KEY_GUN_SHOT = "GunShot";
 
     public const string ANIMATION_KEY_CHARACTER_DIE = "character_die";
     public const string ANIMATION_KEY_CHARACTER_NORMAL = "character_normal";
@@ -40,4 +41,5 @@ public class GameConst
 
     public const string PREFAB_NAME_JUMP_EFFECT = "JumpEffect";
     public const string PREFAB_NAME_LANDING_EFFECT = "LandingEffect";
+    public const string PREFAB_NAME_BULLET_SHOOT_EFFECT = "BulletShootEffect";
 }
