@@ -8,10 +8,8 @@ public class CharacterView : MonoBehaviour, ICharacterView
     [SerializeField] private float superJumpForce;
     [SerializeField] private float speed;
     [SerializeField] private float jumpDelaySeconds;
-    [SerializeField] private float footRadius;
     [SerializeField] private float interactDistance;
     [SerializeField] private float fallDownLimitHeight;
-    [SerializeField] private Transform footPoint;
     [SerializeField] private Animator anim;
     [SerializeField] private GameObject go_protectionEffect;
     [SerializeField] private ColliderComponent footColliderComponent;
@@ -32,8 +30,6 @@ public class CharacterView : MonoBehaviour, ICharacterView
     private CharacterModel characterModel;
     private WallColliderHandler rightWallColliderHandler;
     private WallColliderHandler leftWallColliderHandler;
-
-    public bool IsFaceRight { get; private set; }
 
     public SpriteRenderer GetSpriteRenderer
     {
@@ -94,39 +90,9 @@ public class CharacterView : MonoBehaviour, ICharacterView
         characterModel.CallUpdate();
     }
 
-    public void SetSpriteFlipX(bool flipX)
-    {
-        GetSpriteRenderer.flipX = flipX;
-    }
-
     private IEnumerator Cor_WaitingCoroutine(float seconds, Action callback)
     {
         yield return new WaitForSeconds(seconds);
         callback?.Invoke();
-    }
-
-
-    private void OnEndItemEffect(ItemType itemType)
-    {
-        if (itemType == ItemType.Protection)
-        {
-            characterModel.isProtected = false;
-            SetProtectionActive(false);
-        }
-    }
-
-    private void OnStartItemEffect(ItemType itemType)
-    {
-        if (itemType == ItemType.Protection)
-        {
-            characterModel.isProtected = true;
-            SetProtectionActive(true);
-        }
-    }
-
-    private void OnUseItemOneTime(ItemType itemType)
-    {
-        if (itemType == ItemType.Shoes)
-            characterModel.Jump(superJumpForce);
     }
 }
