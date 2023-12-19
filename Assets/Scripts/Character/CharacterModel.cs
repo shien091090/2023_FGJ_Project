@@ -132,6 +132,7 @@ public class CharacterModel : IColliderHandler, ICharacterModel
 
             IsStayOnFloor = true;
             IsJumping = false;
+            afterimageEffectModel.ForceStop();
             if (CurrentCharacterState != CharacterState.Die &&
                 CurrentCharacterState != CharacterState.IntoHouse)
                 ChangeCurrentCharacterState(CharacterState.Walking);
@@ -216,19 +217,12 @@ public class CharacterModel : IColliderHandler, ICharacterModel
 
     public void Jump(float jumpForce)
     {
-        if (IsJumping || IsStayOnFloor == false)
-            return;
-
-        if (jumpForce == 0)
-            return;
-
         jumpTimer = 0;
         IsJumping = true;
         ChangeCurrentCharacterState(CharacterState.Jumping);
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_JUMP);
         selfRigidbody.AddForce(new Vector2(0, jumpForce));
         gameObjectPool.SpawnGameObject(GameConst.PREFAB_NAME_JUMP_EFFECT, selfRigidbody.position);
-        afterimageEffectModel.StartPlayEffect();
     }
 
     public void ChangeCurrentCharacterState(CharacterState state)
@@ -274,6 +268,17 @@ public class CharacterModel : IColliderHandler, ICharacterModel
         });
     }
 
+    private bool CheckCanJump(float jumpForce)
+    {
+        if (IsJumping || IsStayOnFloor == false)
+            return false;
+
+        if (jumpForce == 0)
+            return false;
+
+        return true;
+    }
+
     private void CheckChangeFaceDirection(float moveValue)
     {
         if (IsFaceRight && moveValue < 0)
@@ -317,7 +322,7 @@ public class CharacterModel : IColliderHandler, ICharacterModel
         if (jumpTimer < characterView.JumpDelaySeconds)
             return;
 
-        if (keyController.IsJumpKeyDown)
+        if (keyController.IsJumpKeyDown && CheckCanJump(jumpForce))
             Jump(jumpForce);
     }
 
@@ -446,7 +451,10 @@ public class CharacterModel : IColliderHandler, ICharacterModel
 
     private void OnUseItemOneTime(ItemType itemType)
     {
-        if (itemType == ItemType.Shoes)
+        if (itemType == ItemType.Shoes && CheckCanJump(characterView.SuperJumpForce))
+        {
             Jump(characterView.SuperJumpForce);
+            afterimageEffectModel.StartPlayEffect();
+        }
     }
 }

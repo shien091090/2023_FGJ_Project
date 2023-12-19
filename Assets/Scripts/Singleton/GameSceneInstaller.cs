@@ -21,11 +21,11 @@ public class GameSceneInstaller : MonoBehaviour
         characterKeyController = new CharacterKeyController();
         timeModel = new TimeModel();
         itemTriggerHandler = new ItemTriggerHandler();
+        characterModel = new CharacterModel(characterMoveController, characterKeyController, FmodAudioManager.Instance, timeModel, itemTriggerHandler, gameObjectPool,
+            gameSetting);
         bulletHandlerModel = new BulletHandlerModel(itemTriggerHandler, characterModel, gameObjectPool, FmodAudioManager.Instance);
         missingTextureManager = new MissingTextureManager(gameSetting);
         tileRemoverModel = new TileRemoverModel(gameSetting);
-        characterModel = new CharacterModel(characterMoveController, characterKeyController, FmodAudioManager.Instance, timeModel, itemTriggerHandler, gameObjectPool,
-            gameSetting);
     }
 
     private void Awake()

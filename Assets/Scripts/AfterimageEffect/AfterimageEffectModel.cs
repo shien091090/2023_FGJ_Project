@@ -46,4 +46,11 @@ public class AfterimageEffectModel : IAfterimageEffectModel
         frequencyEffectTimer = 0;
         isShowEffect = true;
     }
+
+    public void ForceStop()
+    {
+        totalEffectTimer = 0;
+        frequencyEffectTimer = 0;
+        isShowEffect = false;
+    }
 }
