@@ -23,6 +23,7 @@ public class CharacterModel : IColliderHandler, ICharacterModel
     private readonly ITimeModel timeModel;
     private readonly IItemTriggerHandler itemTriggerHandler;
     private readonly IGameObjectPool gameObjectPool;
+    private readonly IAfterimageEffectModel afterimageEffectModel;
     private IRigidbody selfRigidbody;
     private ICharacterView characterView;
     private float jumpTimer;
@@ -41,7 +42,7 @@ public class CharacterModel : IColliderHandler, ICharacterModel
     private bool IsStayOnFloor { get; set; }
 
     public CharacterModel(IMoveController moveController, IKeyController keyController, IAudioManager audioManager, ITimeModel timeModel,
-        IItemTriggerHandler itemTriggerHandler, IGameObjectPool gameObjectPool)
+        IItemTriggerHandler itemTriggerHandler, IGameObjectPool gameObjectPool, IAfterimageEffectModel afterimageEffectModel)
     {
         this.moveController = moveController;
         this.keyController = keyController;
@@ -49,6 +50,7 @@ public class CharacterModel : IColliderHandler, ICharacterModel
         this.timeModel = timeModel;
         this.itemTriggerHandler = itemTriggerHandler;
         this.gameObjectPool = gameObjectPool;
+        this.afterimageEffectModel = afterimageEffectModel;
 
         _instance = this;
 
@@ -127,7 +129,7 @@ public class CharacterModel : IColliderHandler, ICharacterModel
         {
             if (IsStayOnFloor == false)
                 gameObjectPool.SpawnGameObject(GameConst.PREFAB_NAME_LANDING_EFFECT, selfRigidbody.position);
-            
+
             IsStayOnFloor = true;
             IsJumping = false;
             if (CurrentCharacterState != CharacterState.Die &&
@@ -225,6 +227,7 @@ public class CharacterModel : IColliderHandler, ICharacterModel
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_JUMP);
         selfRigidbody.AddForce(new Vector2(0, jumpForce));
         gameObjectPool.SpawnGameObject(GameConst.PREFAB_NAME_JUMP_EFFECT, selfRigidbody.position);
+        afterimageEffectModel.StartPlayEffect();
     }
 
     public void ChangeCurrentCharacterState(CharacterState state)
