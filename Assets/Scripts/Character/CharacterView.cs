@@ -32,7 +32,6 @@ public class CharacterView : MonoBehaviour, ICharacterView
     private CharacterModel characterModel;
     private WallColliderHandler rightWallColliderHandler;
     private WallColliderHandler leftWallColliderHandler;
-    private IAfterimageEffectModel afterimageEffectModel;
 
     public bool IsFaceRight { get; private set; }
 
@@ -80,7 +79,6 @@ public class CharacterView : MonoBehaviour, ICharacterView
     private void Start()
     {
         characterModel = CharacterModel.Instance;
-        afterimageEffectModel = AfterimageEffectModel.Instance;
 
         rightWallColliderHandler = new WallColliderHandler(true, characterModel);
         leftWallColliderHandler = new WallColliderHandler(false, characterModel);
@@ -94,7 +92,6 @@ public class CharacterView : MonoBehaviour, ICharacterView
     private void Update()
     {
         characterModel.CallUpdate();
-        afterimageEffectModel.UpdateEffect();
     }
 
     public void SetSpriteFlipX(bool flipX)

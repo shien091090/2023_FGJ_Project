@@ -1,24 +1,20 @@
 public class AfterimageEffectModel : IAfterimageEffectModel
 {
-    private static IAfterimageEffectModel _instance;
-    private readonly ObjectPoolManager gameObjectPool;
+    private readonly IGameObjectPool gameObjectPool;
     private readonly IGameSetting gameSetting;
     private readonly ITimeModel timeModel;
+    private readonly ICharacterModel characterModel;
 
-    private ICharacterModel characterModel;
     private float totalEffectTimer;
     private float frequencyEffectTimer;
     private bool isShowEffect;
 
-    public static IAfterimageEffectModel Instance => _instance;
-
-    public AfterimageEffectModel(ObjectPoolManager gameObjectPool, IGameSetting gameSetting, ITimeModel timeModel)
+    public AfterimageEffectModel(IGameObjectPool gameObjectPool, IGameSetting gameSetting, ITimeModel timeModel, CharacterModel characterModel)
     {
         this.gameObjectPool = gameObjectPool;
         this.gameSetting = gameSetting;
         this.timeModel = timeModel;
-
-        _instance = this;
+        this.characterModel = characterModel;
     }
 
     public void UpdateEffect()
@@ -49,10 +45,5 @@ public class AfterimageEffectModel : IAfterimageEffectModel
         totalEffectTimer = 0;
         frequencyEffectTimer = 0;
         isShowEffect = true;
-    }
-
-    public void SetCharacter(ICharacterModel characterModel)
-    {
-        this.characterModel = characterModel;
     }
 }

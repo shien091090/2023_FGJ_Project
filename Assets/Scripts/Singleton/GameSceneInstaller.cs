@@ -14,7 +14,6 @@ public class GameSceneInstaller : MonoBehaviour
     private BulletHandlerModel bulletHandlerModel;
     private MissingTextureManager missingTextureManager;
     private TileRemoverModel tileRemoverModel;
-    private AfterimageEffectModel afterimageEffectModel;
 
     private void Init()
     {
@@ -25,10 +24,8 @@ public class GameSceneInstaller : MonoBehaviour
         bulletHandlerModel = new BulletHandlerModel(itemTriggerHandler, characterModel, gameObjectPool, FmodAudioManager.Instance);
         missingTextureManager = new MissingTextureManager(gameSetting);
         tileRemoverModel = new TileRemoverModel(gameSetting);
-        afterimageEffectModel = new AfterimageEffectModel(gameObjectPool, gameSetting, timeModel);
         characterModel = new CharacterModel(characterMoveController, characterKeyController, FmodAudioManager.Instance, timeModel, itemTriggerHandler, gameObjectPool,
-            afterimageEffectModel);
-        afterimageEffectModel.SetCharacter(characterModel);
+            gameSetting);
     }
 
     private void Awake()

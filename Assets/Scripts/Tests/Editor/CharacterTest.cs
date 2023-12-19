@@ -19,7 +19,7 @@ public class CharacterTest
 
     private Action characterViewWaitingCallback;
     private IItemTriggerHandler itemTriggerHandler;
-    private IAfterimageEffectModel afterimageEffectModel;
+    private IGameSetting gameSetting;
 
     [SetUp]
     public void Setup()
@@ -35,10 +35,10 @@ public class CharacterTest
         {
             characterViewWaitingCallback = callback;
         }));
-        
+
         itemTriggerHandler = Substitute.For<IItemTriggerHandler>();
         gameObjectPool = Substitute.For<IGameObjectPool>();
-        afterimageEffectModel = Substitute.For<IAfterimageEffectModel>();
+        gameSetting = Substitute.For<IGameSetting>();
 
         GivenDeltaTime(1);
         GivenSpeed(1);
@@ -46,7 +46,7 @@ public class CharacterTest
         GivenJumpDelay(1);
         GivenFallDownLimitPos(-10);
 
-        characterModel = new CharacterModel(moveController, keyController, audioManager, timeModel, itemTriggerHandler, gameObjectPool, afterimageEffectModel);
+        characterModel = new CharacterModel(moveController, keyController, audioManager, timeModel, itemTriggerHandler, gameObjectPool, gameSetting);
 
         characterModel.BindView(characterView);
     }

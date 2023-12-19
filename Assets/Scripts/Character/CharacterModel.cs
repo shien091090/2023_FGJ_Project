@@ -42,7 +42,7 @@ public class CharacterModel : IColliderHandler, ICharacterModel
     private bool IsStayOnFloor { get; set; }
 
     public CharacterModel(IMoveController moveController, IKeyController keyController, IAudioManager audioManager, ITimeModel timeModel,
-        IItemTriggerHandler itemTriggerHandler, IGameObjectPool gameObjectPool, IAfterimageEffectModel afterimageEffectModel)
+        IItemTriggerHandler itemTriggerHandler, IGameObjectPool gameObjectPool, IGameSetting gameSetting)
     {
         this.moveController = moveController;
         this.keyController = keyController;
@@ -50,7 +50,7 @@ public class CharacterModel : IColliderHandler, ICharacterModel
         this.timeModel = timeModel;
         this.itemTriggerHandler = itemTriggerHandler;
         this.gameObjectPool = gameObjectPool;
-        this.afterimageEffectModel = afterimageEffectModel;
+        afterimageEffectModel = new AfterimageEffectModel(gameObjectPool, gameSetting, timeModel, this);
 
         _instance = this;
 
@@ -187,6 +187,7 @@ public class CharacterModel : IColliderHandler, ICharacterModel
         UpdateCheckJump(characterView.JumpForce);
         UpdateMove(timeModel.deltaTime, characterView.Speed);
         UpdateCheckInteract();
+        UpdateAfterimageEffect();
     }
 
     public void BindView(ICharacterView view)
@@ -287,6 +288,11 @@ public class CharacterModel : IColliderHandler, ICharacterModel
             // characterView.SetSpriteFlipX(false);
             characterView.SetFaceDirectionScale(1);
         }
+    }
+
+    private void UpdateAfterimageEffect()
+    {
+        afterimageEffectModel.UpdateEffect();
     }
 
     private void UpdateMove(float deltaTime, float speed)
