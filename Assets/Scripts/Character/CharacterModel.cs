@@ -222,7 +222,6 @@ public class CharacterModel : IColliderHandler, ICharacterModel
         ChangeCurrentCharacterState(CharacterState.Jumping);
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_JUMP);
         selfRigidbody.AddForce(new Vector2(0, jumpForce));
-        gameObjectPool.SpawnGameObject(GameConst.PREFAB_NAME_JUMP_EFFECT, selfRigidbody.position);
     }
 
     public void ChangeCurrentCharacterState(CharacterState state)
@@ -323,7 +322,10 @@ public class CharacterModel : IColliderHandler, ICharacterModel
             return;
 
         if (keyController.IsJumpKeyDown && CheckCanJump(jumpForce))
+        {
             Jump(jumpForce);
+            gameObjectPool.SpawnGameObject(GameConst.PREFAB_NAME_JUMP_EFFECT, selfRigidbody.position);
+        }
     }
 
     private void UpdateJumpTimer(float deltaTime)
@@ -454,6 +456,7 @@ public class CharacterModel : IColliderHandler, ICharacterModel
         if (itemType == ItemType.Shoes && CheckCanJump(characterView.SuperJumpForce))
         {
             Jump(characterView.SuperJumpForce);
+            gameObjectPool.SpawnGameObject(GameConst.PREFAB_NAME_SUPER_JUMP_EFFECT, selfRigidbody.position);
             afterimageEffectModel.StartPlayEffect();
         }
     }
