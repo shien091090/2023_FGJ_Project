@@ -30,6 +30,8 @@ public class CharacterModel : IColliderHandler, ICharacterModel
     private bool isCollideRightWall;
     private bool isCollideLeftWall;
     private bool isFreeze;
+    private bool isPlayWalkingAnimation;
+    private bool isMoving;
 
     public event Action OnCharacterDie;
     public static CharacterModel Instance => _instance;
@@ -224,39 +226,6 @@ public class CharacterModel : IColliderHandler, ICharacterModel
         selfRigidbody.AddForce(new Vector2(0, jumpForce));
     }
 
-    public void ChangeCurrentCharacterState(CharacterState state)
-    {
-        if (CurrentCharacterState == state)
-            return;
-
-        Debug.Log($"ChangeCurrentCharacterState: {state}");
-        CurrentCharacterState = state;
-
-        if (state == CharacterState.Die)
-            OnCharacterDie?.Invoke();
-    }
-
-    public void Die()
-    {
-        if (CurrentCharacterState == CharacterState.Die)
-            return;
-
-        ChangeCurrentCharacterState(CharacterState.Die);
-        audioManager.PlayOneShot(GameConst.AUDIO_KEY_DAMAGE);
-        characterView.PlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_DIE);
-        characterView.Waiting(1.5f, () =>
-        {
-            characterView.PlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_NORMAL);
-            BackToOrigin();
-            characterView.Waiting(0.5f, () =>
-            {
-                isProtected = false;
-                ChangeCurrentCharacterState(CharacterState.Walking);
-                characterView.SetActive(true);
-            });
-        });
-    }
-
     public void BackToOrigin()
     {
         ChangeCurrentCharacterState(CharacterState.Die);
@@ -265,6 +234,28 @@ public class CharacterModel : IColliderHandler, ICharacterModel
         {
             ChangeCurrentCharacterState(CharacterState.Walking);
         });
+    }
+
+    private void ParseWalkingAnimation()
+    {
+        if (isMoving && CurrentCharacterState == CharacterState.Walking)
+        {
+            if (!isPlayWalkingAnimation)
+            {
+                isPlayWalkingAnimation = true;
+                characterView.SetWalkAnimation(true);
+                Debug.Log($"ParseWalkingAnimation: {isPlayWalkingAnimation}");
+            }
+        }
+        else
+        {
+            if (isPlayWalkingAnimation)
+            {
+                isPlayWalkingAnimation = false;
+                characterView.SetWalkAnimation(false);
+                Debug.Log($"ParseWalkingAnimation: {isPlayWalkingAnimation}");
+            }
+        }
     }
 
     private bool CheckCanJump(float jumpForce)
@@ -311,6 +302,9 @@ public class CharacterModel : IColliderHandler, ICharacterModel
         float moveValue = horizontalAxis * deltaTime * speed;
         CheckChangeFaceDirection(moveValue);
         characterView.Translate(new Vector2(moveValue, 0));
+        isMoving = moveValue != 0;
+
+        ParseWalkingAnimation();
     }
 
     private void UpdateCheckJump(float jumpForce)
@@ -385,6 +379,40 @@ public class CharacterModel : IColliderHandler, ICharacterModel
             else if (HaveInteractSavePoint)
                 TriggerSavePoint();
         }
+    }
+
+    private void ChangeCurrentCharacterState(CharacterState state)
+    {
+        if (CurrentCharacterState == state)
+            return;
+
+        Debug.Log($"ChangeCurrentCharacterState: {state}");
+        CurrentCharacterState = state;
+        ParseWalkingAnimation();
+
+        if (state == CharacterState.Die)
+            OnCharacterDie?.Invoke();
+    }
+
+    private void Die()
+    {
+        if (CurrentCharacterState == CharacterState.Die)
+            return;
+
+        ChangeCurrentCharacterState(CharacterState.Die);
+        audioManager.PlayOneShot(GameConst.AUDIO_KEY_DAMAGE);
+        characterView.PlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_DIE);
+        characterView.Waiting(1.5f, () =>
+        {
+            characterView.PlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_NORMAL);
+            BackToOrigin();
+            characterView.Waiting(0.5f, () =>
+            {
+                isProtected = false;
+                ChangeCurrentCharacterState(CharacterState.Walking);
+                characterView.SetActive(true);
+            });
+        });
     }
 
     private void RegisterEvent()

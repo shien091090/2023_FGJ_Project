@@ -13,6 +13,7 @@ public interface ICharacterView
     void SetProtectionActive(bool isActive);
     void SetFaceDirectionScale(int scale);
     void SetActive(bool isActive);
+    void SetWalkAnimation(bool isWaling);
     void PlayAnimation(string animationKey);
     void Waiting(float seconds, Action callback);
     void Translate(Vector3 moveVector);

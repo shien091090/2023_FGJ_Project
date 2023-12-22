@@ -52,6 +52,11 @@ public class CharacterView : MonoBehaviour, ICharacterView
         tf_faceDirection.gameObject.SetActive(isActive);
     }
 
+    public void SetWalkAnimation(bool isWaling)
+    {
+        anim.SetBool("isWalking", isWaling);
+    }
+
     public void PlayAnimation(string animationKey)
     {
         anim.Play(animationKey, 0, 0);
