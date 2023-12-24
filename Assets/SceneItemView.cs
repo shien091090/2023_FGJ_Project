@@ -8,6 +8,7 @@ public class SceneItemView : MonoBehaviour
 
     private Animator anim;
     private MissingTexturePart missingTexturePart;
+    private IItemInventoryModel itemInventoryModel;
 
     private Animator GetAnim
     {
@@ -33,6 +34,7 @@ public class SceneItemView : MonoBehaviour
 
     private void Start()
     {
+        itemInventoryModel = ItemInventoryModel.Instance;
         InitSceneItem();
 
         CharacterModel.Instance.OnCharacterDie -= InitSceneItem;
@@ -58,10 +60,10 @@ public class SceneItemView : MonoBehaviour
     {
         if (col.gameObject.layer == (int)GameConst.GameObjectLayerType.Player && gameObject.activeSelf)
         {
-            if (ItemInventoryView.Instance.AlreadyHaveSpecificTypeItem(itemType))
+            if (itemInventoryModel.AlreadyHaveSpecificTypeItem(itemType))
                 return;
 
-            ItemInventoryView.Instance.AddItem(itemType);
+            itemInventoryModel.CheckAddItem(itemType);
             GetMissingTexturePart.ClearMissingTexture();
             StartCoroutine(Cor_GetItemEffect());
         }

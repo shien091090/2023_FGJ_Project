@@ -2,12 +2,16 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class ItemInventoryModel
+public class ItemInventoryModel : IItemInventoryModel
 {
+    private static IItemInventoryModel _instance;
     private readonly IKeyController keyController;
+
+    private ItemInventoryView view;
     private List<IItem> GetItems;
     private Vector3[] itemSlotPosArray;
 
+    public static IItemInventoryModel Instance => _instance;
     public int ItemCountLimit { get; set; }
 
     public int GetCurrentItemCount => GetItems.Count(x => x != null);
@@ -16,18 +20,13 @@ public class ItemInventoryModel
     {
         this.keyController = keyController;
         GetItems = new List<IItem>();
+
+        _instance = this;
     }
 
-    public void UpdateCheckUseItem()
+    public bool AlreadyHaveSpecificTypeItem(ItemType itemType)
     {
-        for (int i = 0; i < ItemCountLimit; i++)
-        {
-            if (keyController.IsUseItemKeyDown(i) && HaveItem(i))
-            {
-                IItem item = GetItem(i);
-                item.UseItem();
-            }
-        }
+        return GetItems.FirstOrDefault(x => x != null && x.ItemType == itemType) != null;
     }
 
     public IItem GetItem(int index)
@@ -42,10 +41,12 @@ public class ItemInventoryModel
         itemSlotPosArray = slotPosArray;
     }
 
-    public void AddItem(IItem item)
+    public bool CheckAddItem(ItemType itemType)
     {
+        IItem item = view.GetItemObject(itemType);
+        
         if (AlreadyHaveSpecificTypeItem(item.ItemType))
-            return;
+            return false;
 
         for (int index = 0; index < GetItems.Count; index++)
         {
@@ -59,7 +60,21 @@ public class ItemInventoryModel
             item.OnItemUseCompleted -= OnItemUseCompleted;
             item.OnItemUseCompleted += OnItemUseCompleted;
 
-            return;
+            return true;
+        }
+
+        return false;
+    }
+
+    public void UpdateCheckUseItem()
+    {
+        for (int i = 0; i < ItemCountLimit; i++)
+        {
+            if (keyController.IsUseItemKeyDown(i) && HaveItem(i))
+            {
+                IItem item = GetItem(i);
+                item.UseItem();
+            }
         }
     }
 
@@ -68,9 +83,9 @@ public class ItemInventoryModel
         return GetItems[index] != null;
     }
 
-    public bool AlreadyHaveSpecificTypeItem(ItemType itemType)
+    public void BindView(ItemInventoryView view)
     {
-        return GetItems.FirstOrDefault(x => x != null && x.ItemType == itemType) != null;
+        this.view = view;
     }
 
     private void RemoveItemAndShift(IItem item)

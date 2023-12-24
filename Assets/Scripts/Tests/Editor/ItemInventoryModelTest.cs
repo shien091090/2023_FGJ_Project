@@ -34,7 +34,7 @@ public class ItemInventoryModelTest
 
         IItem item = CreateItem(ItemType.Shoes);
 
-        itemInventoryModel.AddItem(item);
+        itemInventoryModel.CheckAddItem(ItemType.Shoes);
         ShouldCallSetPos(item, new Vector3(5, 5, 0));
 
         CurrentItemCountShouldBe(1);
@@ -58,9 +58,9 @@ public class ItemInventoryModelTest
         IItem item2 = CreateItem(ItemType.Protection);
         IItem item3 = CreateItem(ItemType.Weapon);
 
-        itemInventoryModel.AddItem(item1);
-        itemInventoryModel.AddItem(item2);
-        itemInventoryModel.AddItem(item3);
+        itemInventoryModel.CheckAddItem(ItemType.Shoes);
+        itemInventoryModel.CheckAddItem(ItemType.Protection);
+        itemInventoryModel.CheckAddItem(ItemType.Weapon);
 
         ShouldCallSetPos(item1, new Vector3(5, 5, 0));
         ShouldCallSetPos(item2, new Vector3(4, 5, 0));
@@ -86,9 +86,9 @@ public class ItemInventoryModelTest
         IItem item2 = CreateItem(ItemType.Protection);
         IItem item3 = CreateItem(ItemType.Weapon);
 
-        itemInventoryModel.AddItem(item1);
-        itemInventoryModel.AddItem(item2);
-        itemInventoryModel.AddItem(item3);
+        itemInventoryModel.CheckAddItem(ItemType.Shoes);
+        itemInventoryModel.CheckAddItem(ItemType.Protection);
+        itemInventoryModel.CheckAddItem(ItemType.Weapon);
 
         CallItemUseCompletedEvent(item3);
 
@@ -112,9 +112,9 @@ public class ItemInventoryModelTest
         IItem item2 = CreateItem(ItemType.Weapon);
         IItem item3 = CreateItem(ItemType.Shoes);
 
-        itemInventoryModel.AddItem(item1);
-        itemInventoryModel.AddItem(item2);
-        itemInventoryModel.AddItem(item3);
+        itemInventoryModel.CheckAddItem(ItemType.Protection);
+        itemInventoryModel.CheckAddItem(ItemType.Weapon);
+        itemInventoryModel.CheckAddItem(ItemType.Shoes);
 
         ShouldCallSetPos(item3, new Vector3(3, 5, 0));
 
@@ -141,9 +141,9 @@ public class ItemInventoryModelTest
         IItem item2 = CreateItem(ItemType.Weapon);
         IItem item3 = CreateItem(ItemType.Shoes);
 
-        itemInventoryModel.AddItem(item1);
-        itemInventoryModel.AddItem(item2);
-        itemInventoryModel.AddItem(item3);
+        itemInventoryModel.CheckAddItem(ItemType.Protection);
+        itemInventoryModel.CheckAddItem(ItemType.Weapon);
+        itemInventoryModel.CheckAddItem(ItemType.Shoes);
 
         ShouldCallSetPos(item3, new Vector3(3, 5, 0));
 
@@ -173,9 +173,9 @@ public class ItemInventoryModelTest
         IItem item2 = CreateItem(ItemType.Weapon);
         IItem item3 = CreateItem(ItemType.Shoes);
 
-        itemInventoryModel.AddItem(item1);
-        itemInventoryModel.AddItem(item2);
-        itemInventoryModel.AddItem(item3);
+        itemInventoryModel.CheckAddItem(ItemType.Protection);
+        itemInventoryModel.CheckAddItem(ItemType.Weapon);
+        itemInventoryModel.CheckAddItem(ItemType.Shoes);
 
         CallItemUseCompletedEvent(item1);
 
@@ -206,8 +206,8 @@ public class ItemInventoryModelTest
         IItem item2 = CreateItem(ItemType.Weapon);
         IItem item3 = CreateItem(ItemType.Shoes);
 
-        itemInventoryModel.AddItem(item1);
-        itemInventoryModel.AddItem(item2);
+        itemInventoryModel.CheckAddItem(ItemType.Protection);
+        itemInventoryModel.CheckAddItem(ItemType.Weapon);
 
         CallItemUseCompletedEvent(item3);
 
@@ -229,7 +229,7 @@ public class ItemInventoryModelTest
 
         IItem item1 = CreateItem(ItemType.Protection);
 
-        itemInventoryModel.AddItem(item1);
+        itemInventoryModel.CheckAddItem(ItemType.Protection);
 
         CallItemUseCompletedEvent(item1);
 
@@ -250,14 +250,14 @@ public class ItemInventoryModelTest
             new Vector3(3, 5, 0),
             new Vector3(2, 5, 0));
 
-        itemInventoryModel.AddItem(CreateItem(ItemType.Protection));
+        itemInventoryModel.CheckAddItem(ItemType.Protection);
 
         CurrentItemCountShouldBe(1);
         ItemTypeShouldBe(ItemType.Protection, 0);
         ShouldHaveItem(false, 1);
         ShouldAlreadyHaveSpecificTypeItem(true, ItemType.Protection);
 
-        itemInventoryModel.AddItem(CreateItem(ItemType.Protection));
+        itemInventoryModel.CheckAddItem(ItemType.Protection);
 
         CurrentItemCountShouldBe(1);
         ItemTypeShouldBe(ItemType.Protection, 0);
@@ -272,14 +272,14 @@ public class ItemInventoryModelTest
             new Vector3(5, 5, 0),
             new Vector3(4, 5, 0));
 
-        itemInventoryModel.AddItem(CreateItem(ItemType.Protection));
-        itemInventoryModel.AddItem(CreateItem(ItemType.Weapon));
+        itemInventoryModel.CheckAddItem(ItemType.Protection);
+        itemInventoryModel.CheckAddItem(ItemType.Weapon);
 
         CurrentItemCountShouldBe(2);
         ItemTypeShouldBe(ItemType.Protection, 0);
         ItemTypeShouldBe(ItemType.Weapon, 1);
 
-        itemInventoryModel.AddItem(CreateItem(ItemType.Shoes));
+        itemInventoryModel.CheckAddItem(ItemType.Shoes);
 
         CurrentItemCountShouldBe(2);
         ItemTypeShouldBe(ItemType.Protection, 0);
@@ -298,9 +298,9 @@ public class ItemInventoryModelTest
 
         IItem item = CreateItem(ItemType.Weapon);
 
-        itemInventoryModel.AddItem(CreateItem(ItemType.Protection));
-        itemInventoryModel.AddItem(item);
-        itemInventoryModel.AddItem(CreateItem(ItemType.Shoes));
+        itemInventoryModel.CheckAddItem(ItemType.Protection);
+        itemInventoryModel.CheckAddItem(ItemType.Weapon);
+        itemInventoryModel.CheckAddItem(ItemType.Shoes);
 
         GivenUseItemKeyDown(1, true);
         itemInventoryModel.UpdateCheckUseItem();
@@ -322,9 +322,9 @@ public class ItemInventoryModelTest
         IItem item1 = CreateItem(ItemType.Weapon);
         IItem item2 = CreateItem(ItemType.Shoes);
 
-        itemInventoryModel.AddItem(item0);
-        itemInventoryModel.AddItem(item1);
-        itemInventoryModel.AddItem(item2);
+        itemInventoryModel.CheckAddItem(ItemType.Protection);
+        itemInventoryModel.CheckAddItem(ItemType.Weapon);
+        itemInventoryModel.CheckAddItem(ItemType.Shoes);
 
         GivenUseItemKeyDown(1, true);
 
@@ -351,8 +351,8 @@ public class ItemInventoryModelTest
             new Vector3(3, 5, 0),
             new Vector3(2, 5, 0));
 
-        itemInventoryModel.AddItem(CreateItem(ItemType.Protection));
-        itemInventoryModel.AddItem(CreateItem(ItemType.Shoes));
+        itemInventoryModel.CheckAddItem(ItemType.Protection);
+        itemInventoryModel.CheckAddItem(ItemType.Shoes);
 
         GivenUseItemKeyDown(2, true);
         itemInventoryModel.UpdateCheckUseItem();
@@ -372,7 +372,7 @@ public class ItemInventoryModelTest
 
         IItem item = CreateItem(ItemType.Protection);
 
-        itemInventoryModel.AddItem(item);
+        itemInventoryModel.CheckAddItem(ItemType.Protection);
         CallItemUseCompletedEvent(item);
 
         ShouldCallRemoveItem(item, 1);

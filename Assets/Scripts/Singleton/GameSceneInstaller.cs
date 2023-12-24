@@ -14,11 +14,13 @@ public class GameSceneInstaller : MonoBehaviour
     private BulletHandlerModel bulletHandlerModel;
     private MissingTextureManager missingTextureManager;
     private TileRemoverModel tileRemoverModel;
+    private ItemInventoryModel itemInventoryModel;
 
     private void Init()
     {
         characterMoveController = new CharacterMoveController();
         characterKeyController = new CharacterKeyController();
+        itemInventoryModel = new ItemInventoryModel(characterKeyController);
         timeModel = new TimeModel();
         itemTriggerHandler = new ItemTriggerHandler();
         characterModel = new CharacterModel(characterMoveController, characterKeyController, FmodAudioManager.Instance, timeModel, itemTriggerHandler, gameObjectPool,

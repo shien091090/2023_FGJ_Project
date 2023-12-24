@@ -3,22 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class ItemInventoryView : MonoBehaviour
+public class ItemInventoryView : MonoBehaviour, IItemInventoryView
 {
-    private static ItemInventoryView _instance;
-
     [SerializeField] private RectTransform[] slotPosArray;
     [SerializeField] private ItemSettingScriptableObject itemSetting;
     [SerializeField] private Transform itemHolder;
 
-    private ItemInventoryModel itemInventoryModel;
+    private IItemInventoryModel itemInventoryModel;
     private List<ItemView> itemViewList;
-    public static ItemInventoryView Instance => _instance;
 
     private void Start()
     {
-        itemInventoryModel = new ItemInventoryModel(new CharacterKeyController());
+        itemInventoryModel = ItemInventoryModel.Instance;
         itemInventoryModel.SetSlotLimit(slotPosArray.Select(x => x.localPosition).ToArray());
+        itemInventoryModel.BindView(this);
+        
         itemViewList = new List<ItemView>();
     }
 
@@ -27,21 +26,12 @@ public class ItemInventoryView : MonoBehaviour
         itemInventoryModel.UpdateCheckUseItem();
     }
 
-    public void AddItem(ItemType itemType)
-    {
-        if (itemInventoryModel.AlreadyHaveSpecificTypeItem(itemType))
-            return;
-
-        ItemView itemView = GetItemObject(itemType);
-        itemInventoryModel.AddItem(itemView);
-    }
-
     public bool AlreadyHaveSpecificTypeItem(ItemType itemType)
     {
         return itemInventoryModel.AlreadyHaveSpecificTypeItem(itemType);
     }
 
-    private ItemView GetItemObject(ItemType itemType)
+    public IItem GetItemObject(ItemType itemType)
     {
         ItemView resultObj = itemViewList.FirstOrDefault(x => x.ItemType == itemType);
         if (resultObj == null)
@@ -57,24 +47,18 @@ public class ItemInventoryView : MonoBehaviour
     [ContextMenu("Get Protection Item")]
     private void GetProtectionItem()
     {
-        AddItem(ItemType.Protection);
+        itemInventoryModel.CheckAddItem(ItemType.Protection);
     }
 
     [ContextMenu("Get Weapon Item")]
     private void GetWeaponItem()
     {
-        AddItem(ItemType.Weapon);
+        itemInventoryModel.CheckAddItem(ItemType.Weapon);
     }
 
     [ContextMenu("Get Shoes Item")]
     private void GetShoesItem()
     {
-        AddItem(ItemType.Shoes);
-    }
-
-    private void Awake()
-    {
-        if (_instance == null)
-            _instance = this;
+        itemInventoryModel.CheckAddItem(ItemType.Shoes);
     }
 }
