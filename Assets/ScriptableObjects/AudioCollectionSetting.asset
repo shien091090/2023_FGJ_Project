@@ -45,6 +45,14 @@ MonoBehaviour:
         Data3: 835166094
         Data4: -1334577185
       Path: event:/2023_FGJ_Project/Jump
+  - audioKey: Jump2
+    audioEventReferences:
+    - Guid:
+        Data1: 690524298
+        Data2: 1201648665
+        Data3: -1819542883
+        Data4: 1165394910
+      Path: event:/2023_FGJ_Project/jump2
   - audioKey: Damage
     audioEventReferences:
     - Guid:
