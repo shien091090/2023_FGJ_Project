@@ -17,6 +17,7 @@ public class GameConst
     public const string AUDIO_KEY_BGM_TUTORIAL = "BGM_Tutorial";
     public const string AUDIO_KEY_DAMAGE = "Damage";
     public const string AUDIO_KEY_JUMP = "Jump";
+    public const string AUDIO_KEY_SUPER_JUMP = "Jump2";
     public const string AUDIO_KEY_TELEPORT = "Teleport";
     public const string AUDIO_KEY_SAVE_POINT = "SavePoint";
     public const string AUDIO_KEY_BUTTON_CLICK = "Button1";

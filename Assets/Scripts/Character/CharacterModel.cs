@@ -222,7 +222,6 @@ public class CharacterModel : IColliderHandler, ICharacterModel
         jumpTimer = 0;
         IsJumping = true;
         ChangeCurrentCharacterState(CharacterState.Jumping);
-        audioManager.PlayOneShot(GameConst.AUDIO_KEY_JUMP);
         selfRigidbody.AddForce(new Vector2(0, jumpForce));
     }
 
@@ -319,6 +318,7 @@ public class CharacterModel : IColliderHandler, ICharacterModel
         {
             Jump(jumpForce);
             gameObjectPool.SpawnGameObject(GameConst.PREFAB_NAME_JUMP_EFFECT, selfRigidbody.position);
+            audioManager.PlayOneShot(GameConst.AUDIO_KEY_JUMP);
         }
     }
 
@@ -486,6 +486,7 @@ public class CharacterModel : IColliderHandler, ICharacterModel
             Jump(characterView.SuperJumpForce);
             gameObjectPool.SpawnGameObject(GameConst.PREFAB_NAME_SUPER_JUMP_EFFECT, selfRigidbody.position);
             afterimageEffectModel.StartPlayEffect();
+            audioManager.PlayOneShot(GameConst.AUDIO_KEY_SUPER_JUMP);
         }
     }
 }
