@@ -125,3 +125,11 @@ MonoBehaviour:
         Data3: -138691155
         Data4: -925846994
       Path: event:/2023_FGJ_Project/GunShot
+  - audioKey: CollectItem
+    audioEventReferences:
+    - Guid:
+        Data1: -1870795038
+        Data2: 1084384516
+        Data3: -2000601182
+        Data4: 1638122733
+      Path: event:/2023_FGJ_Project/CollectItem

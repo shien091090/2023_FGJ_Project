@@ -26,6 +26,7 @@ public class GameConst
     public const string AUDIO_KEY_SWITCH_SCENE_TO_TUTORIAL = "SwitchSceneToTutorial";
     public const string AUDIO_KEY_ERROR = "Error1";
     public const string AUDIO_KEY_GUN_SHOT = "GunShot";
+    public const string AUDIO_KEY_COLLECT_ITEM = "CollectItem";
 
     public const string ANIMATION_KEY_CHARACTER_DIE = "character_die";
     public const string ANIMATION_KEY_CHARACTER_NORMAL = "character_normal";

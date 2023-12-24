@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
+using SNShien.Common.AudioTools;
 using UnityEngine;
 
 public class SceneItemView : MonoBehaviour
 {
     [SerializeField] private ItemType itemType;
+    [SerializeField] private Animator anim_getItemEffect;
 
     private Animator anim;
     private MissingTexturePart missingTexturePart;
@@ -49,7 +51,9 @@ public class SceneItemView : MonoBehaviour
 
     private IEnumerator Cor_GetItemEffect()
     {
+        FmodAudioManager.Instance.PlayOneShot(GameConst.AUDIO_KEY_COLLECT_ITEM);
         GetAnim.Play("get_item_effect", 0);
+        anim_getItemEffect.Play("get_item_shining_effect", 0);
 
         yield return new WaitForSeconds(1);
 
