@@ -258,6 +258,7 @@ Transform:
   m_Children:
   - {fileID: 9076331580441385494}
   - {fileID: 1281035534786366185}
+  - {fileID: 6334791571609859564}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3585739750194675349
@@ -273,6 +274,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   go_stunStateEffect: {fileID: 1051098264372130416}
+  anim_hitEffect: {fileID: 7308941553823420047}
   monsterType: joker
   keepStunTime: 3
 --- !u!114 &2692605203035816898
@@ -406,3 +408,70 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.73, y: 1}
   m_EdgeRadius: 0
+--- !u!1001 &9022050047559121957
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 7631904846954503271}
+    m_Modifications:
+    - target: {fileID: 3088750163401837001, guid: 557039562878074499d6b03625c16914, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3088750163401837001, guid: 557039562878074499d6b03625c16914, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3088750163401837001, guid: 557039562878074499d6b03625c16914, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3088750163401837001, guid: 557039562878074499d6b03625c16914, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3088750163401837001, guid: 557039562878074499d6b03625c16914, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3088750163401837001, guid: 557039562878074499d6b03625c16914, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3088750163401837001, guid: 557039562878074499d6b03625c16914, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3088750163401837001, guid: 557039562878074499d6b03625c16914, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3088750163401837001, guid: 557039562878074499d6b03625c16914, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3088750163401837001, guid: 557039562878074499d6b03625c16914, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4653054814563347495, guid: 557039562878074499d6b03625c16914, type: 3}
+      propertyPath: m_Name
+      value: HitEffect
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 557039562878074499d6b03625c16914, type: 3}
+--- !u!4 &6334791571609859564 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3088750163401837001, guid: 557039562878074499d6b03625c16914, type: 3}
+  m_PrefabInstance: {fileID: 9022050047559121957}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &7308941553823420047 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 1754804244591030954, guid: 557039562878074499d6b03625c16914, type: 3}
+  m_PrefabInstance: {fileID: 9022050047559121957}
+  m_PrefabAsset: {fileID: 0}

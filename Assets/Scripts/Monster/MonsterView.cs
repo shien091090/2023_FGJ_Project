@@ -7,6 +7,7 @@ public class MonsterView : MonoBehaviour, IMonsterView
     private const string ANIM_KEY_NORMAL_FORMAT = "monster_{0}_movable";
 
     [SerializeField] private GameObject go_stunStateEffect;
+    [SerializeField] private Animator anim_hitEffect;
     [SerializeField] private string monsterType;
     [SerializeField] private float keepStunTime;
     public MonsterState CurrentState => monsterModel.CurrentState;
@@ -86,6 +87,11 @@ public class MonsterView : MonoBehaviour, IMonsterView
         if (col.gameObject.layer == (int)GameConst.GameObjectLayerType.Weapon)
         {
             monsterModel.BeAttack();
+            bool isHitFromLeft = col.transform.localRotation.z > 0;
+            anim_hitEffect.transform.localScale = new Vector3(isHitFromLeft ?
+                -1 :
+                1, 1, 1);
+            anim_hitEffect.Play("hit_effect", 0, 0);
             GetMissingTexturePart.ClearMissingTexture();
         }
     }
