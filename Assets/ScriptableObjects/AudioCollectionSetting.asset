@@ -133,3 +133,11 @@ MonoBehaviour:
         Data3: -2000601182
         Data4: 1638122733
       Path: event:/2023_FGJ_Project/CollectItem
+  - audioKey: HitMonster
+    audioEventReferences:
+    - Guid:
+        Data1: 230422116
+        Data2: 1308694898
+        Data3: 763024563
+        Data4: -848581254
+      Path: event:/2023_FGJ_Project/DamageMonster

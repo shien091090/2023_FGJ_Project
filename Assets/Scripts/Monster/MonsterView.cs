@@ -1,4 +1,5 @@
 using System;
+using SNShien.Common.AudioTools;
 using UnityEngine;
 
 public class MonsterView : MonoBehaviour, IMonsterView
@@ -16,6 +17,7 @@ public class MonsterView : MonoBehaviour, IMonsterView
     private Animator anim;
 
     private MissingTexturePart missingTexturePart;
+    private ICharacterModel characterModel;
 
     public string GetStunAnimKey => string.Format(ANIM_KEY_STUN_FORMAT, monsterType);
     public string GetMovableAnimKey => string.Format(ANIM_KEY_NORMAL_FORMAT, monsterType);
@@ -50,6 +52,7 @@ public class MonsterView : MonoBehaviour, IMonsterView
     private void Start()
     {
         monsterModel = new MonsterModel(keepStunTime);
+        characterModel = CharacterModel.Instance;
 
         monsterModel.OnChangeState -= OnChangeState;
         monsterModel.OnChangeState += OnChangeState;
@@ -87,11 +90,19 @@ public class MonsterView : MonoBehaviour, IMonsterView
         if (col.gameObject.layer == (int)GameConst.GameObjectLayerType.Weapon)
         {
             monsterModel.BeAttack();
-            bool isHitFromLeft = col.transform.localRotation.z > 0;
-            anim_hitEffect.transform.localScale = new Vector3(isHitFromLeft ?
-                -1 :
-                1, 1, 1);
-            anim_hitEffect.Play("hit_effect", 0, 0);
+
+            float distance = Vector2.Distance(transform.position, characterModel.CurrentPos);
+            Debug.Log("distance: " + distance + "");
+            if (distance <= 10)
+            {
+                FmodAudioManager.Instance.PlayOneShot(GameConst.AUDIO_KEY_HIT_MONSTER);
+                bool isHitFromLeft = col.transform.localRotation.z > 0;
+                anim_hitEffect.transform.localScale = new Vector3(isHitFromLeft ?
+                    -1 :
+                    1, 1, 1);
+                anim_hitEffect.Play("hit_effect", 0, 0);
+            }
+
             GetMissingTexturePart.ClearMissingTexture();
         }
     }
