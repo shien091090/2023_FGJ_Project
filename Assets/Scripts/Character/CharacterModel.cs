@@ -475,6 +475,7 @@ public class CharacterModel : IColliderHandler, ICharacterModel
         if (itemType == ItemType.Protection)
         {
             isProtected = true;
+            audioManager.PlayOneShot(GameConst.AUDIO_KEY_PROTECTION_BUFF);
             characterView.SetProtectionActive(true);
         }
     }

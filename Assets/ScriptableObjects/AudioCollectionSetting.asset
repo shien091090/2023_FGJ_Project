@@ -141,3 +141,11 @@ MonoBehaviour:
         Data3: 763024563
         Data4: -848581254
       Path: event:/2023_FGJ_Project/DamageMonster
+  - audioKey: ProtectionBuff
+    audioEventReferences:
+    - Guid:
+        Data1: 1024083946
+        Data2: 1159992204
+        Data3: 993622171
+        Data4: -1706458302
+      Path: event:/2023_FGJ_Project/ProtectionBuff
