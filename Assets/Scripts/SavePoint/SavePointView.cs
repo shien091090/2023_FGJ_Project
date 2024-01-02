@@ -10,6 +10,7 @@ public class SavePointView : MonoBehaviour, ISavePointView
     [SerializeField] private Sprite recordTypeSprite;
     [SerializeField] private Sprite notRecordTypeSprite;
     [SerializeField] private Transform savePointRefObj;
+    [SerializeField] private Animator anim;
 
     public Vector3 SavePointPos => savePointRefObj.position;
     public ISavePointModel GetModel => savePointModel;
@@ -36,6 +37,11 @@ public class SavePointView : MonoBehaviour, ISavePointView
         sp_recordStateHint.sprite = isRecorded ?
             recordTypeSprite :
             notRecordTypeSprite;
+    }
+
+    public void PlaySavePointPopupEffect()
+    {
+        anim.Play("save_point_popup_text", 0, 0);
     }
 
     private void Start()

@@ -8,4 +8,5 @@ public interface ISavePointView
     void SetLeftArrowActive(bool isActive);
     void SetRightArrowActive(bool isActive);
     void RefreshRecordState(bool isRecorded);
+    void PlaySavePointPopupEffect();
 }

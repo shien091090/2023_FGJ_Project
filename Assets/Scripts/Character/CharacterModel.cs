@@ -4,6 +4,9 @@ using UnityEngine;
 
 public interface ICharacterModel
 {
+    event Action OnTriggerInteractiveObject;
+    event Action OnUnTriggerInteractiveObject;
+    event Action<CharacterState> OnChangeCharacterState;
     CharacterState CurrentCharacterState { get; }
     bool IsFaceRight { get; }
     Vector3 CurrentPos { get; }
@@ -32,8 +35,8 @@ public class CharacterModel : IColliderHandler, ICharacterModel
     private bool isFreeze;
     private bool isPlayWalkingAnimation;
     private bool isMoving;
-
     public event Action OnCharacterDie;
+
     public static CharacterModel Instance => _instance;
     public bool IsJumping { get; private set; }
     public bool HaveInteractGate => CurrentTriggerTeleportGate != null;
@@ -59,6 +62,10 @@ public class CharacterModel : IColliderHandler, ICharacterModel
         RegisterEvent();
     }
 
+    public event Action<CharacterState> OnChangeCharacterState;
+    public event Action OnTriggerInteractiveObject;
+    public event Action OnUnTriggerInteractiveObject;
+
     public void ColliderTriggerEnter(ICollider col)
     {
         switch (col.Layer)
@@ -67,7 +74,11 @@ public class CharacterModel : IColliderHandler, ICharacterModel
                 {
                     ITeleportGate teleportGateComponent = col.GetComponent<ITeleportGate>();
                     if (teleportGateComponent != null)
+                    {
                         CurrentTriggerTeleportGate = teleportGateComponent;
+                        OnTriggerInteractiveObject?.Invoke();
+                    }
+
                     break;
                 }
 
@@ -81,6 +92,7 @@ public class CharacterModel : IColliderHandler, ICharacterModel
                     {
                         CurrentTriggerSavePoint = savePointComponent;
                         CurrentTriggerSavePoint.GetModel.ShowRecordStateHint();
+                        OnTriggerInteractiveObject?.Invoke();
                     }
 
                     break;
@@ -95,7 +107,11 @@ public class CharacterModel : IColliderHandler, ICharacterModel
             case (int)GameConst.GameObjectLayerType.TeleportGate:
                 {
                     if (col.GetComponent<ITeleportGate>() != null)
+                    {
                         CurrentTriggerTeleportGate = null;
+                        OnUnTriggerInteractiveObject?.Invoke();
+                    }
+
                     break;
                 }
 
@@ -108,6 +124,7 @@ public class CharacterModel : IColliderHandler, ICharacterModel
                     {
                         CurrentTriggerSavePoint.GetModel.HideAllUI();
                         CurrentTriggerSavePoint = null;
+                        OnUnTriggerInteractiveObject?.Invoke();
                     }
 
                     break;
@@ -370,6 +387,7 @@ public class CharacterModel : IColliderHandler, ICharacterModel
                 ChangeCurrentCharacterState(CharacterState.Walking);
                 CurrentTriggerSavePoint.GetModel.HideInteractHint();
                 isFreeze = false;
+                OnTriggerInteractiveObject?.Invoke();
             });
         }
         else
@@ -387,8 +405,10 @@ public class CharacterModel : IColliderHandler, ICharacterModel
             return;
 
         Debug.Log($"ChangeCurrentCharacterState: {state}");
+
         CurrentCharacterState = state;
         ParseWalkingAnimation();
+        OnChangeCharacterState?.Invoke(state);
 
         if (state == CharacterState.Die)
             OnCharacterDie?.Invoke();

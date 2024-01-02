@@ -70,6 +70,7 @@ public class SavePointModel : ISavePointModel
 
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_SAVE_POINT);
         savePointManager.AddSavePoint(savePointView);
+        savePointView.PlaySavePointPopupEffect();
         RefreshRecordStateHint();
     }
 
