@@ -1,37 +1,23 @@
-using SNShien.Common.AudioTools;
 using UnityEngine;
+using Zenject;
 
-public class GameSceneInstaller : MonoBehaviour
+public class GameSceneInstaller : MonoInstaller
 {
     [SerializeField] private GameSettingScriptableObject gameSetting;
     [SerializeField] private ObjectPoolManager gameObjectPool;
 
-    private CharacterModel characterModel;
-    private CharacterMoveController characterMoveController;
-    private CharacterKeyController characterKeyController;
-    private TimeModel timeModel;
-    private IItemTriggerHandler itemTriggerHandler;
-    private BulletHandlerModel bulletHandlerModel;
-    private MissingTextureManager missingTextureManager;
-    private TileRemoverModel tileRemoverModel;
-    private ItemInventoryModel itemInventoryModel;
-
-    private void Init()
+    public override void InstallBindings()
     {
-        characterMoveController = new CharacterMoveController();
-        characterKeyController = new CharacterKeyController();
-        itemInventoryModel = new ItemInventoryModel(characterKeyController);
-        timeModel = new TimeModel();
-        itemTriggerHandler = new ItemTriggerHandler();
-        characterModel = new CharacterModel(characterMoveController, characterKeyController, FmodAudioManager.Instance, timeModel, itemTriggerHandler, gameObjectPool,
-            gameSetting);
-        bulletHandlerModel = new BulletHandlerModel(itemTriggerHandler, characterModel, gameObjectPool, FmodAudioManager.Instance);
-        missingTextureManager = new MissingTextureManager(gameSetting);
-        tileRemoverModel = new TileRemoverModel(gameSetting);
-    }
-
-    private void Awake()
-    {
-        Init();
+        Container.Bind<IMoveController>().To<CharacterMoveController>().AsSingle();
+        Container.Bind<IKeyController>().To<CharacterKeyController>().AsSingle();
+        Container.Bind<IItemInventoryModel>().To<ItemInventoryModel>().AsSingle();
+        Container.Bind<ITimeModel>().To<TimeModel>().AsSingle();
+        Container.Bind<IItemTriggerHandler>().To<ItemTriggerHandler>().AsSingle();
+        Container.Bind<ICharacterModel>().To<CharacterModel>().AsSingle();
+        Container.Bind<ITileRemoverModel>().To<TileRemoverModel>().AsSingle();
+        Container.Bind<IBulletHandlerModel>().To<BulletHandlerModel>().AsSingle();
+        Container.Bind<IMissingTextureManager>().To<MissingTextureManager>().AsSingle();
+        Container.Bind<IGameObjectPool>().FromInstance(gameObjectPool);
+        Container.Bind<IGameSetting>().FromInstance(gameSetting);
     }
 }

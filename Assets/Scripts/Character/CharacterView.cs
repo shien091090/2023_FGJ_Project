@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using Zenject;
 
 public class CharacterView : MonoBehaviour, ICharacterView
 {
@@ -18,6 +19,8 @@ public class CharacterView : MonoBehaviour, ICharacterView
     [SerializeField] private RigidBody2DComponent rigidBodyComponent;
     [SerializeField] private Transform tf_faceDirection;
 
+    [Inject] private ICharacterModel characterModel;
+
     public float JumpForce => jumpForce;
     public float Speed => speed;
     public float SuperJumpForce => superJumpForce;
@@ -27,7 +30,6 @@ public class CharacterView : MonoBehaviour, ICharacterView
     public IRigidbody GetRigidbody => rigidBodyComponent;
 
     private SpriteRenderer spriteRenderer;
-    private CharacterModel characterModel;
     private WallColliderHandler rightWallColliderHandler;
     private WallColliderHandler leftWallColliderHandler;
 
@@ -79,8 +81,6 @@ public class CharacterView : MonoBehaviour, ICharacterView
 
     private void Start()
     {
-        characterModel = CharacterModel.Instance;
-
         rightWallColliderHandler = new WallColliderHandler(true, characterModel);
         leftWallColliderHandler = new WallColliderHandler(false, characterModel);
 

@@ -163,6 +163,7 @@ GameObject:
   - component: {fileID: 2697978903097962726}
   - component: {fileID: 1009648699527219422}
   - component: {fileID: 6767767087451920458}
+  - component: {fileID: 7483639663937499466}
   m_Layer: 0
   m_Name: Item_Shoes
   m_TagString: Untagged
@@ -247,6 +248,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7483639663937499466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6749917043843881341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 717a02054ef2699498e6bd4234fd7995, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _containerSource: 0
 --- !u!1 &8557984198297852192
 GameObject:
   m_ObjectHideFlags: 0

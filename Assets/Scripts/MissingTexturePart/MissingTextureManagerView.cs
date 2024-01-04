@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class MissingTextureManagerView : MonoBehaviour, IMissingTextureManagerView
 {
@@ -9,7 +10,7 @@ public class MissingTextureManagerView : MonoBehaviour, IMissingTextureManagerVi
     [SerializeField] private Image img_progressFill;
     [SerializeField] private Animator anim;
 
-    private MissingTextureManager missingTextureManager;
+    [Inject] private IMissingTextureManager missingTextureManager;
 
     public void RefreshRemainPercentText(string remainPercentText)
     {
@@ -21,14 +22,13 @@ public class MissingTextureManagerView : MonoBehaviour, IMissingTextureManagerVi
         img_progressFill.fillAmount = progress;
     }
 
-    private void Start()
-    {
-        missingTextureManager = MissingTextureManager.Instance;
-        missingTextureManager.BindView(this);
-    }
-
     public void PlayClearAnimation()
     {
         anim.Play(ANIM_KEY_CLEAR, 0);
+    }
+
+    private void Start()
+    {
+        missingTextureManager.BindView(this);
     }
 }

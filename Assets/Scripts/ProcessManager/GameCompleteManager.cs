@@ -2,14 +2,16 @@ using System.Collections;
 using SNShien.Common.AudioTools;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Zenject;
 
 public class GameCompleteManager : MonoBehaviour
 {
+    [Inject] private IMissingTextureManager missingTextureManager;
+
     private string ANIM_KEY_IDLE = "game_complete_idle";
     private string ANIM_KEY_GAME_COMPLETED = "game_complete";
 
     private Animator anim;
-    private MissingTextureManager missingTextureManager;
 
     public Animator GetAnim
     {
@@ -24,11 +26,9 @@ public class GameCompleteManager : MonoBehaviour
 
     private void Start()
     {
-        missingTextureManager = MissingTextureManager.Instance;
-        
         FmodAudioManager.Instance.Play(GameConst.AUDIO_KEY_BGM_GAME, 1);
         GetAnim.Play(ANIM_KEY_IDLE);
-        
+
         missingTextureManager.OnMissingTextureAllClear -= OnMissingTextureAllClear;
         missingTextureManager.OnMissingTextureAllClear += OnMissingTextureAllClear;
     }

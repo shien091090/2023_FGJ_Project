@@ -1,17 +1,13 @@
 using SNShien.Common.AudioTools;
 using UnityEngine;
 
-public class BulletHandlerModel
+public class BulletHandlerModel : IBulletHandlerModel
 {
-    private static BulletHandlerModel _instance;
-
     private readonly IItemTriggerHandler itemTriggerHandler;
     private readonly ICharacterModel characterModel;
     private readonly IGameObjectPool gameObjectPool;
     private readonly IAudioManager audioManager;
     private IBulletHandlerView view;
-
-    public static BulletHandlerModel Instance => _instance;
 
     public BulletHandlerModel(IItemTriggerHandler itemTriggerHandler, ICharacterModel characterModel, IGameObjectPool gameObjectPool, IAudioManager audioManager)
     {
@@ -19,8 +15,6 @@ public class BulletHandlerModel
         this.characterModel = characterModel;
         this.gameObjectPool = gameObjectPool;
         this.audioManager = audioManager;
-
-        _instance = this;
 
         RegisterEvent();
     }

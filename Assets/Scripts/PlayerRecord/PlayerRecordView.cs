@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class PlayerRecordView : MonoBehaviour, IPlayerRecordView
 {
     [SerializeField] private GameObject go_root;
     [SerializeField] private List<PlayerRecordItem> playerRecordList;
 
-    private PlayerRecordModel model;
+    [Inject] private IPlayerRecordModel model;
 
     public void UpdateView()
     {
@@ -24,7 +25,6 @@ public class PlayerRecordView : MonoBehaviour, IPlayerRecordView
 
     public void Start()
     {
-        model = PlayerRecordModel.Instance;
         model.BindView(this);
     }
 

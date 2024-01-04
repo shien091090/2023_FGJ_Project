@@ -1,25 +1,20 @@
 using System;
 using UnityEngine;
 
-public class MissingTextureManager
+public class MissingTextureManager : IMissingTextureManager
 {
-    private static MissingTextureManager _instance;
-    
     private readonly IGameSetting gameSetting;
 
     private IMissingTextureManagerView view;
     private bool isGameCompleted;
     private int currentMissingTextureCount;
 
-    public event Action OnMissingTextureAllClear;
-
-    public static MissingTextureManager Instance => _instance;
-
     public MissingTextureManager(IGameSetting gameSetting)
     {
         this.gameSetting = gameSetting;
-        _instance = this;
     }
+
+    public event Action OnMissingTextureAllClear;
 
     public void SubtractMissingTextureCount(int count = 1)
     {
@@ -38,18 +33,18 @@ public class MissingTextureManager
         }
     }
 
+    public void BindView(MissingTextureManagerView view)
+    {
+        this.view = view;
+        ResetGame();
+    }
+
     public void ResetGame()
     {
         currentMissingTextureCount = gameSetting.TotalMissingTextureCount;
         isGameCompleted = false;
         view.RefreshRemainPercentText(ConvertCurrentPercentText());
         view.RefreshProgress(GetProgressPercent());
-    }
-
-    public void BindView(MissingTextureManagerView view)
-    {
-        this.view = view;
-        ResetGame();
     }
 
     private float GetProgressPercent()

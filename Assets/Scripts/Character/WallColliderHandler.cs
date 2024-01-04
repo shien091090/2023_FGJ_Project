@@ -1,9 +1,9 @@
 public class WallColliderHandler : IColliderHandler
 {
     private readonly bool isRight;
-    private readonly CharacterModel model;
+    private readonly ICharacterModel model;
 
-    public WallColliderHandler(bool isRight, CharacterModel characterModel)
+    public WallColliderHandler(bool isRight, ICharacterModel characterModel)
     {
         this.isRight = isRight;
         model = characterModel;

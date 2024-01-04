@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class ItemView : MonoBehaviour, IItem
 {
@@ -10,6 +11,9 @@ public class ItemView : MonoBehaviour, IItem
     [SerializeField] private Text txt_timer;
     [SerializeField] private Text txt_remainUseTimes;
     [SerializeField] private ItemType itemType;
+
+    [Inject] private ICharacterModel characterModel;
+    [Inject] private IItemTriggerHandler itemTriggerHandler;
 
     public ItemType ItemType => itemType;
     private RectTransform rectTransform;
@@ -49,7 +53,7 @@ public class ItemView : MonoBehaviour, IItem
     {
         HideAllPanel();
 
-        itemModel = new ItemModel(itemType, CharacterModel.Instance, ItemTriggerHandler.Instance);
+        itemModel = new ItemModel(itemType, characterModel, itemTriggerHandler);
         switch (ItemType)
         {
             case ItemType.Protection:

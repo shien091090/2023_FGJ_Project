@@ -2,14 +2,6 @@ using System;
 
 public class ItemTriggerHandler : IItemTriggerHandler
 {
-    private static ItemTriggerHandler _instance;
-    public static ItemTriggerHandler Instance => _instance;
-
-    public ItemTriggerHandler()
-    {
-        _instance = this;
-    }
-
     public event Action<ItemType> OnEndItemEffect;
     public event Action<ItemType> OnStartItemEffect;
     public event Action<ItemType> OnUseItemOneTime;

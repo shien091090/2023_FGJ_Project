@@ -1,19 +1,13 @@
 using UnityEngine;
 
-public class TileRemoverModel
+public class TileRemoverModel : ITileRemoverModel
 {
-    private static TileRemoverModel _instance;
-
     private readonly IGameSetting gameSetting;
     private ITileMap tileMap;
-
-    public static TileRemoverModel Instance => _instance;
 
     public TileRemoverModel(IGameSetting gameSetting)
     {
         this.gameSetting = gameSetting;
-
-        _instance = this;
     }
 
     public void UpdateRemoveTile(Vector3 centerPos)

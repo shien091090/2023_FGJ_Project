@@ -3,32 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using SNShien.Common.AudioTools;
 
-public class PlayerRecordModel
+public class PlayerRecordModel : IPlayerRecordModel
 {
     private const string API_GET_RECORD = "api_get_record";
     private const string EMPTY_TEXT = "-";
 
-    private static PlayerRecordModel _instance;
-
     private readonly ServerCommunicator serverCommunicator;
-    private readonly LoadingIndicatorModel loadingIndicatorModel;
+    private readonly ILoadingIndicatorModel loadingIndicatorModel;
     private readonly IAudioManager audioManager;
 
     private List<PlayerRecord> playerRecordData;
     private IPlayerRecordView view;
 
-    public static PlayerRecordModel Instance => _instance;
     public bool IsViewOpening { get; private set; }
 
-    public PlayerRecordModel(ServerCommunicator serverCommunicator, LoadingIndicatorModel loadingIndicatorModel, IAudioManager audioManager)
+    public PlayerRecordModel(ServerCommunicator serverCommunicator, ILoadingIndicatorModel loadingIndicatorModel, IAudioManager audioManager)
     {
         this.serverCommunicator = serverCommunicator;
         this.loadingIndicatorModel = loadingIndicatorModel;
         this.audioManager = audioManager;
 
         playerRecordData = new List<PlayerRecord>();
-
-        _instance = this;
     }
 
     public string GetRecordPlayerName(int rankNumber)

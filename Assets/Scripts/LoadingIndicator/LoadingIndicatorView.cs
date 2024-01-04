@@ -1,10 +1,11 @@
 using UnityEngine;
+using Zenject;
 
 public class LoadingIndicatorView : MonoBehaviour, ILoadingIndicatorView
 {
     [SerializeField] private GameObject go_root;
 
-    private LoadingIndicatorModel loadingIndicatorModel;
+    [Inject] private ILoadingIndicatorModel loadingIndicatorModel;
 
     public void Open()
     {
@@ -18,7 +19,6 @@ public class LoadingIndicatorView : MonoBehaviour, ILoadingIndicatorView
 
     public void Start()
     {
-        loadingIndicatorModel = LoadingIndicatorModel.Instance;
         loadingIndicatorModel.BindView(this);
     }
 }

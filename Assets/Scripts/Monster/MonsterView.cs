@@ -1,6 +1,7 @@
 using System;
 using SNShien.Common.AudioTools;
 using UnityEngine;
+using Zenject;
 
 public class MonsterView : MonoBehaviour, IMonsterView
 {
@@ -11,13 +12,14 @@ public class MonsterView : MonoBehaviour, IMonsterView
     [SerializeField] private Animator anim_hitEffect;
     [SerializeField] private string monsterType;
     [SerializeField] private float keepStunTime;
+    
+    [Inject]private ICharacterModel characterModel;
+    
     public MonsterState CurrentState => monsterModel.CurrentState;
 
     private MonsterModel monsterModel;
     private Animator anim;
-
     private MissingTexturePart missingTexturePart;
-    private ICharacterModel characterModel;
 
     public string GetStunAnimKey => string.Format(ANIM_KEY_STUN_FORMAT, monsterType);
     public string GetMovableAnimKey => string.Format(ANIM_KEY_NORMAL_FORMAT, monsterType);
@@ -52,7 +54,6 @@ public class MonsterView : MonoBehaviour, IMonsterView
     private void Start()
     {
         monsterModel = new MonsterModel(keepStunTime);
-        characterModel = CharacterModel.Instance;
 
         monsterModel.OnChangeState -= OnChangeState;
         monsterModel.OnChangeState += OnChangeState;

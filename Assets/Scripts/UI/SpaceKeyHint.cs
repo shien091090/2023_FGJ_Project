@@ -1,15 +1,14 @@
 using UnityEngine;
+using Zenject;
 
 public class SpaceKeyHint : MonoBehaviour
 {
     [SerializeField] private GameObject go_effect;
 
-    private ICharacterModel characterModel;
+    [Inject] private ICharacterModel characterModel;
 
     void Start()
     {
-        characterModel = CharacterModel.Instance;
-
         RegisterEvent();
     }
 

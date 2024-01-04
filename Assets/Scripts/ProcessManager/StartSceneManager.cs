@@ -4,6 +4,7 @@ using SNShien.Common.AudioTools;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Zenject;
 
 public class StartSceneManager : MonoBehaviour
 {
@@ -13,15 +14,13 @@ public class StartSceneManager : MonoBehaviour
     [SerializeField] private Animator startSceneAnimator;
     [SerializeField] private Animator tutorialAnimator;
 
-    private PlayerRecordModel playerRecordModel;
-    private IAudioManager audioManager;
+    [Inject] private IPlayerRecordModel playerRecordModel;
+    [Inject] private IAudioManager audioManager;
+
     private bool isSwitchedTutorialNext;
 
     private void Start()
     {
-        playerRecordModel = PlayerRecordModel.Instance;
-        audioManager = FmodAudioManager.Instance;
-
         Init();
     }
 

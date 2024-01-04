@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Zenject;
 
 public class BulletHandlerView : MonoBehaviour, IBulletHandlerView
 {
     [SerializeField] private GameObject prefab;
     [SerializeField] private Transform objHolder;
+    
+    [Inject] private IBulletHandlerModel bulletHandlerModel;
 
     private List<GameObject> bulletObjectPool;
 
@@ -25,6 +28,6 @@ public class BulletHandlerView : MonoBehaviour, IBulletHandlerView
     private void Start()
     {
         bulletObjectPool = new List<GameObject>();
-        BulletHandlerModel.Instance.BindView(this);
+        bulletHandlerModel.BindView(this);
     }
 }

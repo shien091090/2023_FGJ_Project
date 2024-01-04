@@ -4,14 +4,12 @@ using UnityEngine;
 
 public class ItemInventoryModel : IItemInventoryModel
 {
-    private static IItemInventoryModel _instance;
     private readonly IKeyController keyController;
 
     private ItemInventoryView view;
     private List<IItem> GetItems;
     private Vector3[] itemSlotPosArray;
 
-    public static IItemInventoryModel Instance => _instance;
     public int ItemCountLimit { get; set; }
 
     public int GetCurrentItemCount => GetItems.Count(x => x != null);
@@ -20,18 +18,11 @@ public class ItemInventoryModel : IItemInventoryModel
     {
         this.keyController = keyController;
         GetItems = new List<IItem>();
-
-        _instance = this;
     }
 
     public bool AlreadyHaveSpecificTypeItem(ItemType itemType)
     {
         return GetItems.FirstOrDefault(x => x != null && x.ItemType == itemType) != null;
-    }
-
-    public IItem GetItem(int index)
-    {
-        return GetItems[index];
     }
 
     public void SetSlotLimit(params Vector3[] slotPosArray)
@@ -44,7 +35,7 @@ public class ItemInventoryModel : IItemInventoryModel
     public bool CheckAddItem(ItemType itemType)
     {
         IItem item = view.GetItemObject(itemType);
-        
+
         if (AlreadyHaveSpecificTypeItem(item.ItemType))
             return false;
 
@@ -78,14 +69,19 @@ public class ItemInventoryModel : IItemInventoryModel
         }
     }
 
-    public bool HaveItem(int index)
-    {
-        return GetItems[index] != null;
-    }
-
     public void BindView(ItemInventoryView view)
     {
         this.view = view;
+    }
+
+    public IItem GetItem(int index)
+    {
+        return GetItems[index];
+    }
+
+    public bool HaveItem(int index)
+    {
+        return GetItems[index] != null;
     }
 
     private void RemoveItemAndShift(IItem item)

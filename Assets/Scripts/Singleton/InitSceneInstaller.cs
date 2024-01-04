@@ -1,25 +1,19 @@
-using System;
 using SNShien.Common.AudioTools;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Zenject;
 
-public class InitSceneInstaller : MonoBehaviour
+public class InitSceneInstaller : MonoInstaller 
 {
     [SerializeField] private ServerCommunicator serverCommunicator;
     [SerializeField] private FmodAudioManager fmodAudioManager;
 
-    private PlayerRecordModel playerRecordModel;
-    private LoadingIndicatorModel loadingIndicatorModel;
-
-    private void Init()
+    public override void InstallBindings()
     {
-        loadingIndicatorModel = new LoadingIndicatorModel();
-        playerRecordModel = new PlayerRecordModel(serverCommunicator, loadingIndicatorModel, fmodAudioManager);
-    }
-
-    private void Awake()
-    {
-        Init();
+        Container.Bind<ServerCommunicator>().FromInstance(serverCommunicator);
+        Container.Bind<IAudioManager>().FromInstance(fmodAudioManager);
+        Container.Bind<ILoadingIndicatorModel>().To<LoadingIndicatorModel>().AsSingle();
+        Container.Bind<IPlayerRecordModel>().To<PlayerRecordModel>().AsSingle();
     }
 
     private void Start()

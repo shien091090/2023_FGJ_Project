@@ -4,7 +4,7 @@ using SCGLobby;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class ServerCommunicator : MonoBehaviour
+public class ServerCommunicator : MonoBehaviour, IServerCommunicator
 {
     private const string URL = "https://script.google.com/macros/s/AKfycbzvsgJfeXsqIyXbsKm9HX8ShA6SJysfbAx7Coinbj2YR7efbCD9zTY6UiPC1UZYaWlDMA/exec";
 

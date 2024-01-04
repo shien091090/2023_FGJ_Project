@@ -1,16 +1,15 @@
 using System;
 using UnityEngine;
+using Zenject;
 
 public class MissingTexturePart : MonoBehaviour
 {
     [SerializeField] private GameObject go_missingTexture;
 
-    private MissingTextureManager missingTextureManager;
+    [Inject] private IMissingTextureManager missingTextureManager;
 
     public void Start()
     {
-        missingTextureManager = MissingTextureManager.Instance;
-
         SetMissingTextureActive(true);
     }
 

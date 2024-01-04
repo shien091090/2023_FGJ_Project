@@ -2,15 +2,18 @@ using System;
 using System.Collections;
 using SNShien.Common.AudioTools;
 using UnityEngine;
+using Zenject;
 
 public class SceneItemView : MonoBehaviour
 {
     [SerializeField] private ItemType itemType;
     [SerializeField] private Animator anim_getItemEffect;
 
+    [Inject] private IItemInventoryModel itemInventoryModel;
+    [Inject] private ICharacterModel characterModel;
+
     private Animator anim;
     private MissingTexturePart missingTexturePart;
-    private IItemInventoryModel itemInventoryModel;
 
     private Animator GetAnim
     {
@@ -36,11 +39,10 @@ public class SceneItemView : MonoBehaviour
 
     private void Start()
     {
-        itemInventoryModel = ItemInventoryModel.Instance;
         InitSceneItem();
 
-        CharacterModel.Instance.OnCharacterDie -= InitSceneItem;
-        CharacterModel.Instance.OnCharacterDie += InitSceneItem;
+        characterModel.OnCharacterDie -= InitSceneItem;
+        characterModel.OnCharacterDie += InitSceneItem;
     }
 
     private void InitSceneItem()

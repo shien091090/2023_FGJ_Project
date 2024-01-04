@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Zenject;
 
 public class ItemInventoryView : MonoBehaviour, IItemInventoryView
 {
@@ -9,15 +10,15 @@ public class ItemInventoryView : MonoBehaviour, IItemInventoryView
     [SerializeField] private ItemSettingScriptableObject itemSetting;
     [SerializeField] private Transform itemHolder;
 
-    private IItemInventoryModel itemInventoryModel;
+    [Inject] private IItemInventoryModel itemInventoryModel;
+    
     private List<ItemView> itemViewList;
 
     private void Start()
     {
-        itemInventoryModel = ItemInventoryModel.Instance;
         itemInventoryModel.SetSlotLimit(slotPosArray.Select(x => x.localPosition).ToArray());
         itemInventoryModel.BindView(this);
-        
+
         itemViewList = new List<ItemView>();
     }
 

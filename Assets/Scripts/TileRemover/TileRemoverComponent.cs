@@ -1,13 +1,14 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Zenject;
 
 public class TileRemoverComponent : MonoBehaviour, ITileMap
 {
     [SerializeField] private Tilemap targetTilemap;
     [SerializeField] private Transform character;
 
-    private MissingTextureManager missingTextureManager;
-    private TileRemoverModel tileRemoverModel;
+    [Inject] private ITileRemoverModel tileRemoverModel;
+    [Inject] private IMissingTextureManager missingTextureManager;
 
     public void SetTile(Vector3 pos, Tile tile)
     {
@@ -22,8 +23,6 @@ public class TileRemoverComponent : MonoBehaviour, ITileMap
 
     private void Start()
     {
-        missingTextureManager = MissingTextureManager.Instance;
-        tileRemoverModel = TileRemoverModel.Instance;
         tileRemoverModel.BindView(this);
     }
 

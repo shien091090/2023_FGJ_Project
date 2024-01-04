@@ -2,19 +2,8 @@ using System;
 using SNShien.Common.AudioTools;
 using UnityEngine;
 
-public interface ICharacterModel
+public class CharacterModel : ICharacterModel
 {
-    event Action OnTriggerInteractiveObject;
-    event Action OnUnTriggerInteractiveObject;
-    event Action<CharacterState> OnChangeCharacterState;
-    CharacterState CurrentCharacterState { get; }
-    bool IsFaceRight { get; }
-    Vector3 CurrentPos { get; }
-}
-
-public class CharacterModel : IColliderHandler, ICharacterModel
-{
-    private static CharacterModel _instance;
     public CharacterState CurrentCharacterState { get; private set; }
     public bool IsFaceRight { get; private set; }
     public Vector3 CurrentPos => selfRigidbody.position;
@@ -35,9 +24,7 @@ public class CharacterModel : IColliderHandler, ICharacterModel
     private bool isFreeze;
     private bool isPlayWalkingAnimation;
     private bool isMoving;
-    public event Action OnCharacterDie;
 
-    public static CharacterModel Instance => _instance;
     public bool IsJumping { get; private set; }
     public bool HaveInteractGate => CurrentTriggerTeleportGate != null;
     public bool HaveInteractSavePoint => CurrentTriggerSavePoint != null;
@@ -57,14 +44,38 @@ public class CharacterModel : IColliderHandler, ICharacterModel
         this.gameObjectPool = gameObjectPool;
         afterimageEffectModel = new AfterimageEffectModel(gameObjectPool, gameSetting, timeModel, this);
 
-        _instance = this;
-
         RegisterEvent();
     }
+
+    public event Action OnCharacterDie;
 
     public event Action<CharacterState> OnChangeCharacterState;
     public event Action OnTriggerInteractiveObject;
     public event Action OnUnTriggerInteractiveObject;
+
+    public void BindView(ICharacterView view)
+    {
+        characterView = view;
+        selfRigidbody = view.GetRigidbody;
+        InitState();
+        InitFaceDirection();
+    }
+
+    public void ColliderTriggerExitWall(bool isRightWall)
+    {
+        if (isRightWall)
+            isCollideRightWall = false;
+        else
+            isCollideLeftWall = false;
+    }
+
+    public void ColliderTriggerEnterWall(bool isRightWall)
+    {
+        if (isRightWall)
+            isCollideRightWall = true;
+        else
+            isCollideLeftWall = true;
+    }
 
     public void ColliderTriggerEnter(ICollider col)
     {
@@ -208,30 +219,6 @@ public class CharacterModel : IColliderHandler, ICharacterModel
         UpdateMove(timeModel.deltaTime, characterView.Speed);
         UpdateCheckInteract();
         UpdateAfterimageEffect();
-    }
-
-    public void BindView(ICharacterView view)
-    {
-        characterView = view;
-        selfRigidbody = view.GetRigidbody;
-        InitState();
-        InitFaceDirection();
-    }
-
-    public void ColliderTriggerExitWall(bool isRightWall)
-    {
-        if (isRightWall)
-            isCollideRightWall = false;
-        else
-            isCollideLeftWall = false;
-    }
-
-    public void ColliderTriggerEnterWall(bool isRightWall)
-    {
-        if (isRightWall)
-            isCollideRightWall = true;
-        else
-            isCollideLeftWall = true;
     }
 
     public void Jump(float jumpForce)
