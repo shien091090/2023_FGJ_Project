@@ -15,6 +15,7 @@ public class GameConst
     public const string AUDIO_KEY_BGM_GAME = "BGM_Game";
     public const string AUDIO_KEY_BGM_START = "BGM_Start";
     public const string AUDIO_KEY_BGM_TUTORIAL = "BGM_Tutorial";
+    public const string AUDIO_KEY_BGM_ENDING = "BGM_Ending";
     public const string AUDIO_KEY_DAMAGE = "Damage";
     public const string AUDIO_KEY_JUMP = "Jump";
     public const string AUDIO_KEY_SUPER_JUMP = "Jump2";
@@ -29,6 +30,7 @@ public class GameConst
     public const string AUDIO_KEY_COLLECT_ITEM = "CollectItem";
     public const string AUDIO_KEY_HIT_MONSTER = "HitMonster";
     public const string AUDIO_KEY_PROTECTION_BUFF = "ProtectionBuff";
+    public const string AUDIO_KEY_VICTORY = "Victory";
 
     public const string ANIMATION_KEY_CHARACTER_DIE = "character_die";
     public const string ANIMATION_KEY_CHARACTER_NORMAL = "character_normal";

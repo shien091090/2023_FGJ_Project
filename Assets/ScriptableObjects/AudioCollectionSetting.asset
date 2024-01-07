@@ -133,6 +133,14 @@ MonoBehaviour:
         Data3: -2000601182
         Data4: 1638122733
       Path: event:/2023_FGJ_Project/CollectItem
+  - audioKey: BGM_Ending
+    audioEventReferences:
+    - Guid:
+        Data1: -770637128
+        Data2: 1100297448
+        Data3: -239853396
+        Data4: 628010463
+      Path: event:/2023_FGJ_Project/BGM_Ending
   - audioKey: HitMonster
     audioEventReferences:
     - Guid:
@@ -149,3 +157,11 @@ MonoBehaviour:
         Data3: 993622171
         Data4: -1706458302
       Path: event:/2023_FGJ_Project/ProtectionBuff
+  - audioKey: Victory
+    audioEventReferences:
+    - Guid:
+        Data1: -473128581
+        Data2: 1197668265
+        Data3: -2134368853
+        Data4: 1027220015
+      Path: event:/2023_FGJ_Project/Victory

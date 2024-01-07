@@ -6,7 +6,11 @@ using Zenject;
 
 public class GameCompleteManager : MonoBehaviour
 {
+    [SerializeField] private GameObject go_rankingButton;
+    [SerializeField] private GameObject go_resetButton;
+
     [Inject] private IMissingTextureManager missingTextureManager;
+    [Inject] private IPlayerRecordModel playerRecordModel;
 
     private string ANIM_KEY_IDLE = "game_complete_idle";
     private string ANIM_KEY_GAME_COMPLETED = "game_complete";
@@ -26,6 +30,8 @@ public class GameCompleteManager : MonoBehaviour
 
     private void Start()
     {
+        SetButtonActive(false);
+
         FmodAudioManager.Instance.Play(GameConst.AUDIO_KEY_BGM_GAME, 1);
         GetAnim.Play(ANIM_KEY_IDLE);
 
@@ -33,17 +39,44 @@ public class GameCompleteManager : MonoBehaviour
         missingTextureManager.OnMissingTextureAllClear += OnMissingTextureAllClear;
     }
 
+    private void SetButtonActive(bool isActive)
+    {
+        go_rankingButton.SetActive(isActive);
+        go_resetButton.SetActive(isActive);
+    }
+
     private IEnumerator Cor_GameComplete()
     {
+        playerRecordModel.RequestPlayerRecord();
+        FmodAudioManager.Instance.Stop(1);
+        FmodAudioManager.Instance.PlayOneShot(GameConst.AUDIO_KEY_VICTORY);
+        GetAnim.Play(ANIM_KEY_GAME_COMPLETED);
+
         yield return new WaitForSeconds(4f);
 
-        missingTextureManager.ResetGame();
-        SceneManager.LoadScene("MainScene");
+        FmodAudioManager.Instance.Play(GameConst.AUDIO_KEY_BGM_ENDING, 1);
+
+        yield return new WaitForSeconds(1f);
+
+        playerRecordModel.RequestOpen();
+        SetButtonActive(true);
     }
 
     private void OnMissingTextureAllClear()
     {
-        GetAnim.Play(ANIM_KEY_GAME_COMPLETED);
         StartCoroutine(Cor_GameComplete());
+    }
+
+    public void OnClickRanking()
+    {
+        FmodAudioManager.Instance.PlayOneShot(GameConst.AUDIO_KEY_BUTTON_CLICK);
+        playerRecordModel.RequestOpen();
+    }
+
+    public void OnClickReset()
+    {
+        missingTextureManager.ResetGame();
+        SceneManager.UnloadSceneAsync("MainScene");
+        SceneManager.LoadScene("StartScene", LoadSceneMode.Additive);
     }
 }
