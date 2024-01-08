@@ -14,6 +14,7 @@ public class InitSceneInstaller : MonoInstaller
         Container.Bind<IAudioManager>().FromInstance(fmodAudioManager);
         Container.Bind<ILoadingIndicatorModel>().To<LoadingIndicatorModel>().AsSingle();
         Container.Bind<IPlayerRecordModel>().To<PlayerRecordModel>().AsSingle();
+        Container.Bind<IGlobalStateModel>().To<GlobalStateModel>().AsSingle();
     }
 
     private void Start()

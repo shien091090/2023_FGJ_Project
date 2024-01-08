@@ -11,11 +11,14 @@ public class StartSceneManager : MonoBehaviour
     [SerializeField] private bool testMode;
     [SerializeField] private Button btn_start;
     [SerializeField] private Button btn_ranking;
+    [SerializeField] private InputField inputField_playerName;
     [SerializeField] private Animator startSceneAnimator;
     [SerializeField] private Animator tutorialAnimator;
+    [SerializeField] private Animator inputFieldAnimator;
 
     [Inject] private IPlayerRecordModel playerRecordModel;
     [Inject] private IAudioManager audioManager;
+    [Inject] private IGlobalStateModel globalStateModel;
 
     private bool isSwitchedTutorialNext;
 
@@ -30,19 +33,37 @@ public class StartSceneManager : MonoBehaviour
             return;
 
         if (Input.GetKeyDown(KeyCode.F1))
+        {
+            if (globalStateModel.IsPlayerNameInputted == false)
+            {
+                audioManager.PlayOneShot(GameConst.AUDIO_KEY_ERROR);
+                inputFieldAnimator.Play(GameConst.ANIMATION_KEY_INPUT_FIELD_NOT_PASS, 0, 0);
+                return;
+            }
+
             SwitchToGameScene();
+        }
     }
 
     private void Init()
     {
         isSwitchedTutorialNext = false;
         playerRecordModel.RequestPlayerRecord();
+        SetInputComponentInteractive(true);
 
-        btn_start.enabled = true;
-        btn_ranking.enabled = true;
+        inputField_playerName.onEndEdit.RemoveListener(OnPlayerNameInputted);
+        inputField_playerName.onEndEdit.AddListener(OnPlayerNameInputted);
+
         startSceneAnimator.Play(GameConst.ANIMATION_KEY_START_SCENE_IDLE);
         tutorialAnimator.Play(GameConst.ANIMATION_KEY_TUTORIAL_HIDE);
         audioManager.Play(GameConst.AUDIO_KEY_BGM_START, 1);
+    }
+
+    private void SetInputComponentInteractive(bool isInteractive)
+    {
+        btn_start.enabled = isInteractive;
+        btn_ranking.enabled = isInteractive;
+        inputField_playerName.enabled = isInteractive;
     }
 
     private void SwitchToGameScene()
@@ -74,14 +95,19 @@ public class StartSceneManager : MonoBehaviour
 
     public void OnClickStart()
     {
+        if (globalStateModel.IsPlayerNameInputted == false)
+        {
+            audioManager.PlayOneShot(GameConst.AUDIO_KEY_ERROR);
+            inputFieldAnimator.Play(GameConst.ANIMATION_KEY_INPUT_FIELD_NOT_PASS, 0, 0);
+            return;
+        }
+
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_SWITCH_SCENE_TO_TUTORIAL);
 
         if (playerRecordModel.IsViewOpening)
             playerRecordModel.CloseView();
 
-        btn_start.enabled = false;
-        btn_ranking.enabled = false;
-
+        SetInputComponentInteractive(false);
         StartCoroutine(Cor_PlayTutorialAnimation());
     }
 
@@ -115,5 +141,10 @@ public class StartSceneManager : MonoBehaviour
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_BUTTON_CLICK);
 
         playerRecordModel.RequestOpen(false);
+    }
+
+    private void OnPlayerNameInputted(string playerName)
+    {
+        globalStateModel.SetPlayerName(playerName);
     }
 }
