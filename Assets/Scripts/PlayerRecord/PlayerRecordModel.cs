@@ -8,20 +8,23 @@ public class PlayerRecordModel : IPlayerRecordModel
     private const string API_GET_RECORD = "api_get_record";
     private const string EMPTY_TEXT = "-";
 
+    public bool IsViewOpening { get; private set; }
+
     private readonly ServerCommunicator serverCommunicator;
     private readonly ILoadingIndicatorModel loadingIndicatorModel;
     private readonly IAudioManager audioManager;
+    private readonly IGlobalStateModel globalStateModel;
 
     private List<PlayerRecord> playerRecordData;
     private IPlayerRecordView view;
 
-    public bool IsViewOpening { get; private set; }
-
-    public PlayerRecordModel(ServerCommunicator serverCommunicator, ILoadingIndicatorModel loadingIndicatorModel, IAudioManager audioManager)
+    public PlayerRecordModel(ServerCommunicator serverCommunicator, ILoadingIndicatorModel loadingIndicatorModel, IAudioManager audioManager,
+        IGlobalStateModel globalStateModel)
     {
         this.serverCommunicator = serverCommunicator;
         this.loadingIndicatorModel = loadingIndicatorModel;
         this.audioManager = audioManager;
+        this.globalStateModel = globalStateModel;
 
         playerRecordData = new List<PlayerRecord>();
     }
@@ -46,22 +49,10 @@ public class PlayerRecordModel : IPlayerRecordModel
         }
     }
 
-    public void RequestPlayerRecord(Action callback = null)
-    {
-        serverCommunicator.CreatePostRequest(API_GET_RECORD)
-            .SendRequest<PlayerRecordResponse>((res) =>
-            {
-                if (res.statusCode == ServerResponse.STATUS_CODE_SUCCESS)
-                    UpdatePlayerRecord(res.playerRecordList);
-
-                callback?.Invoke();
-            });
-    }
-
     public void RequestOpen(bool isRequestRecord = false)
     {
         if (isRequestRecord)
-            RequestPlayerRecord(OpenView);
+            RequestGetPlayerRecord(OpenView);
         else
         {
             if (serverCommunicator.IsWaitingResponse)
@@ -85,6 +76,28 @@ public class PlayerRecordModel : IPlayerRecordModel
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_BUTTON_CLICK);
         view.SetActive(false);
         IsViewOpening = false;
+    }
+
+    public void RequestGetPlayerRecord(Action callback = null)
+    {
+        serverCommunicator.CreatePostRequest(API_GET_RECORD)
+            .SendRequest<PlayerRecordResponse>((res) =>
+            {
+                if (res.statusCode == ServerResponse.STATUS_CODE_SUCCESS)
+                    UpdatePlayerRecord(res.playerRecordList);
+            });
+    }
+
+    public void RequestAddPlayerRecord(int costTimeSeconds, Action callback = null)
+    {
+        serverCommunicator.CreatePostRequest("api_add_record")
+            .AddParameter("playerName", globalStateModel.GetPlayerName)
+            .AddParameter("costTimeSeonds", costTimeSeconds)
+            .SendRequest<PlayerRecordResponse>((res) =>
+            {
+                if (res.statusCode == ServerResponse.STATUS_CODE_SUCCESS)
+                    UpdatePlayerRecord(res.playerRecordList);
+            });
     }
 
     private void UpdatePlayerRecord(List<PlayerRecord> playerRecords)

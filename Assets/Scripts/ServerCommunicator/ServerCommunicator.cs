@@ -7,10 +7,25 @@ using UnityEngine.Networking;
 public class ServerCommunicator : MonoBehaviour, IServerCommunicator
 {
     private const string URL = "https://script.google.com/macros/s/AKfycbzvsgJfeXsqIyXbsKm9HX8ShA6SJysfbAx7Coinbj2YR7efbCD9zTY6UiPC1UZYaWlDMA/exec";
+    public bool IsWaitingResponse { get; private set; }
 
     private RequestSender requestSender;
     public event Action OnRequestCompleted;
-    public bool IsWaitingResponse { get; private set; }
+
+    public ServerCommunicator CreatePostRequest(string action)
+    {
+        requestSender = new RequestSender(action, RequestType.Post);
+        return this;
+    }
+
+    public ServerCommunicator AddParameter(string filedName, object fieldValue)
+    {
+        if (requestSender == null)
+            return this;
+
+        requestSender.AddParameter(filedName, fieldValue.ToString());
+        return this;
+    }
 
     public void SendRequest<T>(Action<T> callback = null) where T : ServerResponse
     {
@@ -21,12 +36,6 @@ public class ServerCommunicator : MonoBehaviour, IServerCommunicator
         }
 
         StartCoroutine(Cor_SendRequest(requestSender.Action, requestSender.RequestType, callback, requestSender.Parameters));
-    }
-
-    public ServerCommunicator CreatePostRequest(string action)
-    {
-        requestSender = new RequestSender(action, RequestType.Post);
-        return this;
     }
 
     [ContextMenu("Test Add Record")]
@@ -47,15 +56,6 @@ public class ServerCommunicator : MonoBehaviour, IServerCommunicator
             .SendRequest<PlayerRecordResponse>((res) =>
             {
             });
-    }
-
-    private ServerCommunicator AddParameter(string filedName, object fieldValue)
-    {
-        if (requestSender == null)
-            return this;
-
-        requestSender.AddParameter(filedName, fieldValue.ToString());
-        return this;
     }
 
     private WWWForm CreateWWWForm(string action, (string, string)[] parameters)
@@ -108,7 +108,7 @@ public class ServerCommunicator : MonoBehaviour, IServerCommunicator
                         response :
                         CreateErrorResponse<T>(www));
                 }
-                
+
                 OnRequestCompleted?.Invoke();
             }
         }

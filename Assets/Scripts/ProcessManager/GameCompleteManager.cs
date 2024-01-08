@@ -47,7 +47,7 @@ public class GameCompleteManager : MonoBehaviour
 
     private IEnumerator Cor_GameComplete()
     {
-        playerRecordModel.RequestPlayerRecord();
+        playerRecordModel.RequestAddPlayerRecord(1);
         FmodAudioManager.Instance.Stop(1);
         FmodAudioManager.Instance.PlayOneShot(GameConst.AUDIO_KEY_VICTORY);
         GetAnim.Play(ANIM_KEY_GAME_COMPLETED);

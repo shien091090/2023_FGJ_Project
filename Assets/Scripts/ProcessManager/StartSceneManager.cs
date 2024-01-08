@@ -48,7 +48,7 @@ public class StartSceneManager : MonoBehaviour
     private void Init()
     {
         isSwitchedTutorialNext = false;
-        playerRecordModel.RequestPlayerRecord();
+        playerRecordModel.RequestGetPlayerRecord();
         SetInputComponentInteractive(true);
 
         inputField_playerName.onEndEdit.RemoveListener(OnPlayerNameInputted);
