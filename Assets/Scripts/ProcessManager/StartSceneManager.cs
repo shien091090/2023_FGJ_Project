@@ -50,6 +50,7 @@ public class StartSceneManager : MonoBehaviour
         isSwitchedTutorialNext = false;
         playerRecordModel.RequestGetPlayerRecord();
         SetInputComponentInteractive(true);
+        InitPlayerNameInputField();
 
         inputField_playerName.onValueChanged.RemoveListener(OnPlayerNameInputted);
         inputField_playerName.onValueChanged.AddListener(OnPlayerNameInputted);
@@ -57,6 +58,12 @@ public class StartSceneManager : MonoBehaviour
         startSceneAnimator.Play(GameConst.ANIMATION_KEY_START_SCENE_IDLE);
         tutorialAnimator.Play(GameConst.ANIMATION_KEY_TUTORIAL_HIDE);
         audioManager.Play(GameConst.AUDIO_KEY_BGM_START, 1);
+    }
+
+    private void InitPlayerNameInputField()
+    {
+        if (globalStateModel.IsPlayerNameInputted)
+            inputField_playerName.SetTextWithoutNotify(globalStateModel.GetPlayerName);
     }
 
     private void SetInputComponentInteractive(bool isInteractive)
