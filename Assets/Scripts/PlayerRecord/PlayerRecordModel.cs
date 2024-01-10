@@ -8,6 +8,7 @@ public class PlayerRecordModel : IPlayerRecordModel
 {
     private const string API_GET_RECORD = "api_get_record";
     private const string EMPTY_TEXT = "-";
+    private const int PLAYER_RECORD_RANKING_LIMIT = 7;
 
     public bool IsViewOpening { get; private set; }
 
@@ -137,7 +138,7 @@ public class PlayerRecordModel : IPlayerRecordModel
     {
         if (HaveOwnRecord())
             view.SetOwnRecordEffectPosition(playerRecordData.FindIndex(x => x.isOwnRecord));
-        
+
         view.SetOwnRecordEffectActive(HaveOwnRecord());
         view.SetActive(true);
         view.UpdateView();
@@ -147,7 +148,12 @@ public class PlayerRecordModel : IPlayerRecordModel
 
     private bool HaveOwnRecord()
     {
-        return playerRecordData.Any(x => x.isOwnRecord);
+        bool haveOwnRecord = playerRecordData.Any(x => x.isOwnRecord);
+        if (haveOwnRecord == false)
+            return false;
+
+        int ownRecordIndex = playerRecordData.FindIndex(x => x.isOwnRecord);
+        return ownRecordIndex < PLAYER_RECORD_RANKING_LIMIT;
     }
 
     private void OnRequestCompleted()
