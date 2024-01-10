@@ -5,9 +5,20 @@ using Zenject;
 public class PlayerRecordView : MonoBehaviour, IPlayerRecordView
 {
     [SerializeField] private GameObject go_root;
+    [SerializeField] private GameObject go_ownRecordEffect;
     [SerializeField] private List<PlayerRecordItem> playerRecordList;
 
     [Inject] private IPlayerRecordModel model;
+
+    public void SetOwnRecordEffectActive(bool isActive)
+    {
+        go_ownRecordEffect.SetActive(isActive);
+    }
+
+    public void SetOwnRecordEffectPosition(int ownRecordIndex)
+    {
+        go_ownRecordEffect.transform.position = new Vector3(go_ownRecordEffect.transform.position.x, playerRecordList[ownRecordIndex].transform.position.y);
+    }
 
     public void UpdateView()
     {

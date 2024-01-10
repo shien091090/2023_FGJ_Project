@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SNShien.Common.AudioTools;
+using UnityEngine;
 
 public class PlayerRecordModel : IPlayerRecordModel
 {
@@ -17,6 +18,7 @@ public class PlayerRecordModel : IPlayerRecordModel
 
     private List<PlayerRecord> playerRecordData;
     private IPlayerRecordView view;
+    private PlayerRecord ownRecord;
 
     public PlayerRecordModel(ServerCommunicator serverCommunicator, ILoadingIndicatorModel loadingIndicatorModel, IAudioManager audioManager,
         IGlobalStateModel globalStateModel)
@@ -85,6 +87,8 @@ public class PlayerRecordModel : IPlayerRecordModel
             {
                 if (res.statusCode == ServerResponse.STATUS_CODE_SUCCESS)
                     UpdatePlayerRecord(res.playerRecordList);
+
+                callback?.Invoke();
             });
     }
 
@@ -96,8 +100,22 @@ public class PlayerRecordModel : IPlayerRecordModel
             .SendRequest<PlayerRecordResponse>((res) =>
             {
                 if (res.statusCode == ServerResponse.STATUS_CODE_SUCCESS)
+                {
+                    SaveOwnRecordInfo(globalStateModel.GetPlayerName, costTimeSeconds);
                     UpdatePlayerRecord(res.playerRecordList);
+                }
+
+                callback?.Invoke();
             });
+    }
+
+    private void SaveOwnRecordInfo(string selfPlayerName, int costTimeSeconds)
+    {
+        ownRecord = new PlayerRecord
+        {
+            playerName = selfPlayerName,
+            costTimeSeconds = costTimeSeconds
+        };
     }
 
     private void UpdatePlayerRecord(List<PlayerRecord> playerRecords)
@@ -106,13 +124,30 @@ public class PlayerRecordModel : IPlayerRecordModel
             return;
 
         playerRecordData = playerRecords.OrderBy(x => x.costTimeSeconds).ToList();
+
+        if (ownRecord != null)
+        {
+            PlayerRecord matchRecord = playerRecordData.FirstOrDefault(x => x.playerName == ownRecord.playerName && x.costTimeSeconds == ownRecord.costTimeSeconds);
+            if (matchRecord != null)
+                matchRecord.isOwnRecord = true;
+        }
     }
 
     private void OpenView()
     {
+        if (HaveOwnRecord())
+            view.SetOwnRecordEffectPosition(playerRecordData.FindIndex(x => x.isOwnRecord));
+        
+        view.SetOwnRecordEffectActive(HaveOwnRecord());
         view.SetActive(true);
         view.UpdateView();
+
         IsViewOpening = true;
+    }
+
+    private bool HaveOwnRecord()
+    {
+        return playerRecordData.Any(x => x.isOwnRecord);
     }
 
     private void OnRequestCompleted()
