@@ -51,8 +51,8 @@ public class StartSceneManager : MonoBehaviour
         playerRecordModel.RequestGetPlayerRecord();
         SetInputComponentInteractive(true);
 
-        inputField_playerName.onEndEdit.RemoveListener(OnPlayerNameInputted);
-        inputField_playerName.onEndEdit.AddListener(OnPlayerNameInputted);
+        inputField_playerName.onValueChanged.RemoveListener(OnPlayerNameInputted);
+        inputField_playerName.onValueChanged.AddListener(OnPlayerNameInputted);
 
         startSceneAnimator.Play(GameConst.ANIMATION_KEY_START_SCENE_IDLE);
         tutorialAnimator.Play(GameConst.ANIMATION_KEY_TUTORIAL_HIDE);
