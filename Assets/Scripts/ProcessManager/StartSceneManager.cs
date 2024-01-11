@@ -15,6 +15,7 @@ public class StartSceneManager : MonoBehaviour
     [SerializeField] private Animator startSceneAnimator;
     [SerializeField] private Animator tutorialAnimator;
     [SerializeField] private Animator inputFieldAnimator;
+    [SerializeField] private Text txt_playerNameEffect;
 
     [Inject] private IPlayerRecordModel playerRecordModel;
     [Inject] private IAudioManager audioManager;
@@ -81,6 +82,8 @@ public class StartSceneManager : MonoBehaviour
 
     private IEnumerator Cor_PlayTutorialAnimation()
     {
+        txt_playerNameEffect.text = globalStateModel.GetPlayerName;
+        audioManager.PlayOneShot(GameConst.AUDIO_KEY_SWITCH_SCENE_TO_TUTORIAL);
         startSceneAnimator.Play(GameConst.ANIMATION_KEY_START_SCENE_ENTER);
         audioManager.Stop(1);
 
@@ -108,8 +111,6 @@ public class StartSceneManager : MonoBehaviour
             inputFieldAnimator.Play(GameConst.ANIMATION_KEY_INPUT_FIELD_NOT_PASS, 0, 0);
             return;
         }
-
-        audioManager.PlayOneShot(GameConst.AUDIO_KEY_SWITCH_SCENE_TO_TUTORIAL);
 
         if (playerRecordModel.IsViewOpening)
             playerRecordModel.CloseView();
