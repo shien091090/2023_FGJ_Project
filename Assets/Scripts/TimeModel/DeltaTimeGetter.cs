@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class TimeModel : ITimeModel
+public class DeltaTimeGetter : IDeltaTimeGetter
 {
     public float deltaTime => Time.deltaTime;
 }

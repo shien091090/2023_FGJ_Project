@@ -2,18 +2,18 @@ public class AfterimageEffectModel : IAfterimageEffectModel
 {
     private readonly IGameObjectPool gameObjectPool;
     private readonly IGameSetting gameSetting;
-    private readonly ITimeModel timeModel;
+    private readonly IDeltaTimeGetter deltaTimeGetter;
     private readonly ICharacterModel characterModel;
 
     private float totalEffectTimer;
     private float frequencyEffectTimer;
     private bool isShowEffect;
 
-    public AfterimageEffectModel(IGameObjectPool gameObjectPool, IGameSetting gameSetting, ITimeModel timeModel, CharacterModel characterModel)
+    public AfterimageEffectModel(IGameObjectPool gameObjectPool, IGameSetting gameSetting, IDeltaTimeGetter deltaTimeGetter, CharacterModel characterModel)
     {
         this.gameObjectPool = gameObjectPool;
         this.gameSetting = gameSetting;
-        this.timeModel = timeModel;
+        this.deltaTimeGetter = deltaTimeGetter;
         this.characterModel = characterModel;
     }
 
@@ -22,8 +22,8 @@ public class AfterimageEffectModel : IAfterimageEffectModel
         if (isShowEffect == false)
             return;
 
-        totalEffectTimer += timeModel.deltaTime;
-        frequencyEffectTimer += timeModel.deltaTime;
+        totalEffectTimer += deltaTimeGetter.deltaTime;
+        frequencyEffectTimer += deltaTimeGetter.deltaTime;
         if (totalEffectTimer >= gameSetting.AutoDisappearSeconds)
         {
             isShowEffect = false;

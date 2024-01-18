@@ -13,7 +13,7 @@ public class CharacterTest
     private IKeyController keyController;
     private IRigidbody characterRigidbody;
     private IAudioManager audioManager;
-    private ITimeModel timeModel;
+    private IDeltaTimeGetter deltaTimeGetter;
     private ICharacterView characterView;
     private IGameObjectPool gameObjectPool;
 
@@ -28,7 +28,7 @@ public class CharacterTest
         keyController = Substitute.For<IKeyController>();
         characterRigidbody = Substitute.For<IRigidbody>();
         audioManager = Substitute.For<IAudioManager>();
-        timeModel = Substitute.For<ITimeModel>();
+        deltaTimeGetter = Substitute.For<IDeltaTimeGetter>();
 
         characterView = Substitute.For<ICharacterView>();
         characterView.Waiting(Arg.Any<float>(), Arg.Do<Action>(callback =>
@@ -46,7 +46,7 @@ public class CharacterTest
         GivenJumpDelay(1);
         GivenFallDownLimitPos(-10);
 
-        characterModel = new CharacterModel(moveController, keyController, audioManager, timeModel, itemTriggerHandler, gameObjectPool, gameSetting);
+        characterModel = new CharacterModel(moveController, keyController, audioManager, deltaTimeGetter, itemTriggerHandler, gameObjectPool, gameSetting);
 
         characterModel.BindView(characterView);
     }
@@ -502,7 +502,7 @@ public class CharacterTest
 
     private void GivenDeltaTime(float deltaTime)
     {
-        timeModel.deltaTime.Returns(deltaTime);
+        deltaTimeGetter.deltaTime.Returns(deltaTime);
     }
 
     private void GivenCharacterPosition(Vector3 pos)

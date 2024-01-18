@@ -12,7 +12,7 @@ public class CharacterModel : ICharacterModel
     private readonly IMoveController moveController;
     private readonly IKeyController keyController;
     private readonly IAudioManager audioManager;
-    private readonly ITimeModel timeModel;
+    private readonly IDeltaTimeGetter deltaTimeGetter;
     private readonly IItemTriggerHandler itemTriggerHandler;
     private readonly IGameObjectPool gameObjectPool;
     private readonly IAfterimageEffectModel afterimageEffectModel;
@@ -33,16 +33,16 @@ public class CharacterModel : ICharacterModel
     private ISavePointView CurrentTriggerSavePoint { get; set; }
     private bool IsStayOnFloor { get; set; }
 
-    public CharacterModel(IMoveController moveController, IKeyController keyController, IAudioManager audioManager, ITimeModel timeModel,
+    public CharacterModel(IMoveController moveController, IKeyController keyController, IAudioManager audioManager, IDeltaTimeGetter deltaTimeGetter,
         IItemTriggerHandler itemTriggerHandler, IGameObjectPool gameObjectPool, IGameSetting gameSetting)
     {
         this.moveController = moveController;
         this.keyController = keyController;
         this.audioManager = audioManager;
-        this.timeModel = timeModel;
+        this.deltaTimeGetter = deltaTimeGetter;
         this.itemTriggerHandler = itemTriggerHandler;
         this.gameObjectPool = gameObjectPool;
-        afterimageEffectModel = new AfterimageEffectModel(gameObjectPool, gameSetting, timeModel, this);
+        afterimageEffectModel = new AfterimageEffectModel(gameObjectPool, gameSetting, deltaTimeGetter, this);
 
         RegisterEvent();
     }
@@ -213,10 +213,10 @@ public class CharacterModel : ICharacterModel
             return;
         }
 
-        UpdateJumpTimer(timeModel.deltaTime);
+        UpdateJumpTimer(deltaTimeGetter.deltaTime);
         UpdateCheckSavePointTeleport();
         UpdateCheckJump(characterView.JumpForce);
-        UpdateMove(timeModel.deltaTime, characterView.Speed);
+        UpdateMove(deltaTimeGetter.deltaTime, characterView.Speed);
         UpdateCheckInteract();
         UpdateAfterimageEffect();
     }

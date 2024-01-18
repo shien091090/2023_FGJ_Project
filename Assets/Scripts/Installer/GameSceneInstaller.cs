@@ -11,7 +11,7 @@ public class GameSceneInstaller : MonoInstaller
         Container.Bind<IMoveController>().To<CharacterMoveController>().AsSingle();
         Container.Bind<IKeyController>().To<CharacterKeyController>().AsSingle();
         Container.Bind<IItemInventoryModel>().To<ItemInventoryModel>().AsSingle();
-        Container.Bind<ITimeModel>().To<TimeModel>().AsSingle();
+        Container.Bind<IDeltaTimeGetter>().To<DeltaTimeGetter>().AsSingle();
         Container.Bind<IItemTriggerHandler>().To<ItemTriggerHandler>().AsSingle();
         Container.Bind<ICharacterModel>().To<CharacterModel>().AsSingle();
         Container.Bind<ITileRemoverModel>().To<TileRemoverModel>().AsSingle();
