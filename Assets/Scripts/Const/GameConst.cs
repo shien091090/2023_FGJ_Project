@@ -12,23 +12,23 @@ public class GameConst
         SavePoint = 11,
     }
 
-    public const string AUDIO_KEY_BGM_GAME = "BGM_Game";
+    public const string AUDIO_KEY_BGM_GAME = "BGM_Main";
     public const string AUDIO_KEY_BGM_START = "BGM_Start";
     public const string AUDIO_KEY_BGM_TUTORIAL = "BGM_Tutorial";
     public const string AUDIO_KEY_BGM_ENDING = "BGM_Ending";
     public const string AUDIO_KEY_DAMAGE = "Damage";
     public const string AUDIO_KEY_JUMP = "Jump";
-    public const string AUDIO_KEY_SUPER_JUMP = "Jump2";
+    public const string AUDIO_KEY_SUPER_JUMP = "SuperJump";
     public const string AUDIO_KEY_TELEPORT = "Teleport";
     public const string AUDIO_KEY_SAVE_POINT = "SavePoint";
-    public const string AUDIO_KEY_BUTTON_CLICK = "Button1";
-    public const string AUDIO_KEY_BUTTON_CONFIRM = "Button2";
-    public const string AUDIO_KEY_BUTTON_SWITCH = "Button3";
+    public const string AUDIO_KEY_BUTTON_CLICK = "UI_ClickButton1";
+    public const string AUDIO_KEY_BUTTON_CONFIRM = "UI_ClickButton2";
+    public const string AUDIO_KEY_BUTTON_SWITCH = "UI_ClickButton3";
     public const string AUDIO_KEY_SWITCH_SCENE_TO_TUTORIAL = "SwitchSceneToTutorial";
-    public const string AUDIO_KEY_ERROR = "Error1";
+    public const string AUDIO_KEY_ERROR = "UI_Error";
     public const string AUDIO_KEY_GUN_SHOT = "GunShot";
     public const string AUDIO_KEY_COLLECT_ITEM = "CollectItem";
-    public const string AUDIO_KEY_HIT_MONSTER = "HitMonster";
+    public const string AUDIO_KEY_HIT_MONSTER = "DamageMonster";
     public const string AUDIO_KEY_PROTECTION_BUFF = "ProtectionBuff";
     public const string AUDIO_KEY_VICTORY = "Victory";
 

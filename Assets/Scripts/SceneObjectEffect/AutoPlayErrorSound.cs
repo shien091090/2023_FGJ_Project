@@ -1,10 +1,13 @@
 using SNShien.Common.AudioTools;
 using UnityEngine;
+using Zenject;
 
 public class AutoPlayErrorSound : MonoBehaviour
 {
+    [Inject] private IAudioManager audioManager;
+
     public void OnEnable()
     {
-        FmodAudioManager.Instance.PlayOneShot(GameConst.AUDIO_KEY_ERROR);
+        audioManager.PlayOneShot(GameConst.AUDIO_KEY_ERROR);
     }
 }

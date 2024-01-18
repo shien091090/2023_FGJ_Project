@@ -6,12 +6,11 @@ using Zenject;
 public class InitSceneInstaller : MonoInstaller 
 {
     [SerializeField] private ServerCommunicator serverCommunicator;
-    [SerializeField] private FmodAudioManager fmodAudioManager;
 
     public override void InstallBindings()
     {
         Container.Bind<ServerCommunicator>().FromInstance(serverCommunicator);
-        Container.Bind<IAudioManager>().FromInstance(fmodAudioManager);
+        Container.Bind<IAudioManager>().To<FmodAudioManager>().AsSingle();
         Container.Bind<ILoadingIndicatorModel>().To<LoadingIndicatorModel>().AsSingle();
         Container.Bind<IPlayerRecordModel>().To<PlayerRecordModel>().AsSingle();
         Container.Bind<IGlobalStateModel>().To<GlobalStateModel>().AsSingle();

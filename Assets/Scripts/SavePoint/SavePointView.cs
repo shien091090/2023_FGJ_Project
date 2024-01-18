@@ -1,6 +1,6 @@
-using System;
 using SNShien.Common.AudioTools;
 using UnityEngine;
+using Zenject;
 
 public class SavePointView : MonoBehaviour, ISavePointView
 {
@@ -11,6 +11,8 @@ public class SavePointView : MonoBehaviour, ISavePointView
     [SerializeField] private Sprite notRecordTypeSprite;
     [SerializeField] private Transform savePointRefObj;
     [SerializeField] private Animator anim;
+
+    [Inject] private IAudioManager audioManager;
 
     public Vector3 SavePointPos => savePointRefObj.position;
     public ISavePointModel GetModel => savePointModel;
@@ -46,6 +48,6 @@ public class SavePointView : MonoBehaviour, ISavePointView
 
     private void Start()
     {
-        savePointModel = new SavePointModel(this, SavePointManager.Instance, FmodAudioManager.Instance);
+        savePointModel = new SavePointModel(this, SavePointManager.Instance, audioManager);
     }
 }

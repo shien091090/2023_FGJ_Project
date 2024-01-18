@@ -11,6 +11,7 @@ public class GameCompleteManager : MonoBehaviour
 
     [Inject] private IMissingTextureManager missingTextureManager;
     [Inject] private IPlayerRecordModel playerRecordModel;
+    [Inject] private IAudioManager audioManager;
 
     private string ANIM_KEY_IDLE = "game_complete_idle";
     private string ANIM_KEY_GAME_COMPLETED = "game_complete";
@@ -32,7 +33,7 @@ public class GameCompleteManager : MonoBehaviour
     {
         SetButtonActive(false);
 
-        FmodAudioManager.Instance.Play(GameConst.AUDIO_KEY_BGM_GAME, 1);
+        audioManager.Play(GameConst.AUDIO_KEY_BGM_GAME, 1);
         GetAnim.Play(ANIM_KEY_IDLE);
 
         missingTextureManager.OnMissingTextureAllClear -= OnMissingTextureAllClear;
@@ -48,13 +49,13 @@ public class GameCompleteManager : MonoBehaviour
     private IEnumerator Cor_GameComplete()
     {
         playerRecordModel.RequestAddPlayerRecord(1);
-        FmodAudioManager.Instance.Stop(1);
-        FmodAudioManager.Instance.PlayOneShot(GameConst.AUDIO_KEY_VICTORY);
+        audioManager.Stop(1);
+        audioManager.PlayOneShot(GameConst.AUDIO_KEY_VICTORY);
         GetAnim.Play(ANIM_KEY_GAME_COMPLETED);
 
         yield return new WaitForSeconds(4f);
 
-        FmodAudioManager.Instance.Play(GameConst.AUDIO_KEY_BGM_ENDING, 1);
+        audioManager.Play(GameConst.AUDIO_KEY_BGM_ENDING, 1);
 
         yield return new WaitForSeconds(1f);
 
@@ -69,7 +70,7 @@ public class GameCompleteManager : MonoBehaviour
 
     public void OnClickRanking()
     {
-        FmodAudioManager.Instance.PlayOneShot(GameConst.AUDIO_KEY_BUTTON_CLICK);
+        audioManager.PlayOneShot(GameConst.AUDIO_KEY_BUTTON_CLICK);
         playerRecordModel.RequestOpen();
     }
 

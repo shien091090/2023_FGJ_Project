@@ -23,7 +23,7 @@ public class StartSceneManager : MonoBehaviour
 
     private bool isSwitchedTutorialNext;
 
-    private void Start()
+    private void Awake()
     {
         Init();
     }
@@ -48,6 +48,9 @@ public class StartSceneManager : MonoBehaviour
 
     private void Init()
     {
+        audioManager.InitAudioCollection();
+        audioManager.PrintAudioKeys();
+        
         isSwitchedTutorialNext = false;
         playerRecordModel.RequestGetPlayerRecord();
         SetInputComponentInteractive(true);

@@ -12,9 +12,10 @@ public class MonsterView : MonoBehaviour, IMonsterView
     [SerializeField] private Animator anim_hitEffect;
     [SerializeField] private string monsterType;
     [SerializeField] private float keepStunTime;
-    
-    [Inject]private ICharacterModel characterModel;
-    
+
+    [Inject] private ICharacterModel characterModel;
+    [Inject] private IAudioManager audioManager;
+
     public MonsterState CurrentState => monsterModel.CurrentState;
 
     private MonsterModel monsterModel;
@@ -96,7 +97,7 @@ public class MonsterView : MonoBehaviour, IMonsterView
             Debug.Log("distance: " + distance + "");
             if (distance <= 10)
             {
-                FmodAudioManager.Instance.PlayOneShot(GameConst.AUDIO_KEY_HIT_MONSTER);
+                audioManager.PlayOneShot(GameConst.AUDIO_KEY_HIT_MONSTER);
                 bool isHitFromLeft = col.transform.localRotation.z > 0;
                 anim_hitEffect.transform.localScale = new Vector3(isHitFromLeft ?
                     -1 :
