@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using SCGLobby;
+using SNShien.Common.DataTools;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -103,7 +103,7 @@ public class ServerCommunicator : MonoBehaviour, IServerCommunicator
                 else
                 {
                     Debug.Log($"[ServerCommunicator] Response, action: {action}, content: {www.downloadHandler.text}");
-                    ActivityJsonParser jsonParser = new ActivityJsonParser();
+                    JsonParser jsonParser = new JsonParser();
                     callback?.Invoke(jsonParser.TryDeserializeObject(www.downloadHandler.text, out T response) ?
                         response :
                         CreateErrorResponse<T>(www));
