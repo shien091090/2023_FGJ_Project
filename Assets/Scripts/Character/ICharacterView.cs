@@ -1,4 +1,5 @@
 using System;
+using SNShien.Common.AdapterTools;
 using UnityEngine;
 
 public interface ICharacterView
@@ -9,7 +10,7 @@ public interface ICharacterView
     float JumpDelaySeconds { get; }
     float InteractDistance { get; }
     float FallDownLimitPosY { get; }
-    IRigidbody GetRigidbody { get; }
+    IRigidbody2DAdapter GetRigidbody { get; }
     void SetProtectionActive(bool isActive);
     void SetFaceDirectionScale(int scale);
     void SetActive(bool isActive);

@@ -1,3 +1,5 @@
+using SNShien.Common.AdapterTools;
+
 public class AfterimageEffectModel : IAfterimageEffectModel
 {
     private readonly IGameObjectPool gameObjectPool;

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using SNShien.Common.AdapterTools;
 using UnityEngine;
 using Zenject;
 
@@ -13,10 +14,10 @@ public class CharacterView : MonoBehaviour, ICharacterView
     [SerializeField] private float fallDownLimitHeight;
     [SerializeField] private Animator anim;
     [SerializeField] private GameObject go_protectionEffect;
-    [SerializeField] private ColliderComponent footColliderComponent;
-    [SerializeField] private ColliderComponent rightColliderComponent;
-    [SerializeField] private ColliderComponent leftColliderComponent;
-    [SerializeField] private RigidBody2DComponent rigidBodyComponent;
+    [SerializeField] private Collider2DAdapterComponent footColliderComponent;
+    [SerializeField] private Collider2DAdapterComponent rightColliderComponent;
+    [SerializeField] private Collider2DAdapterComponent leftColliderComponent;
+    [SerializeField] private RigidBody2DAdapterComponent rigidBodyComponent;
     [SerializeField] private Transform tf_faceDirection;
 
     [Inject] private ICharacterModel characterModel;
@@ -27,7 +28,7 @@ public class CharacterView : MonoBehaviour, ICharacterView
     public float JumpDelaySeconds => jumpDelaySeconds;
     public float InteractDistance => interactDistance;
     public float FallDownLimitPosY => fallDownLimitHeight;
-    public IRigidbody GetRigidbody => rigidBodyComponent;
+    public IRigidbody2DAdapter GetRigidbody => rigidBodyComponent;
 
     private SpriteRenderer spriteRenderer;
     private WallColliderHandler rightWallColliderHandler;

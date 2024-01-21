@@ -1,4 +1,5 @@
 using System;
+using SNShien.Common.AdapterTools;
 using SNShien.Common.AudioTools;
 using UnityEngine;
 
@@ -16,7 +17,7 @@ public class CharacterModel : ICharacterModel
     private readonly IItemTriggerHandler itemTriggerHandler;
     private readonly IGameObjectPool gameObjectPool;
     private readonly IAfterimageEffectModel afterimageEffectModel;
-    private IRigidbody selfRigidbody;
+    private IRigidbody2DAdapter selfRigidbody;
     private ICharacterView characterView;
     private float jumpTimer;
     private bool isCollideRightWall;
@@ -77,7 +78,7 @@ public class CharacterModel : ICharacterModel
             isCollideLeftWall = true;
     }
 
-    public void ColliderTriggerEnter(ICollider col)
+    public void ColliderTriggerEnter2D(ICollider2DAdapter col)
     {
         switch (col.Layer)
         {
@@ -111,7 +112,7 @@ public class CharacterModel : ICharacterModel
         }
     }
 
-    public void ColliderTriggerExit(ICollider col)
+    public void ColliderTriggerExit2D(ICollider2DAdapter col)
     {
         switch (col.Layer)
         {
@@ -143,7 +144,7 @@ public class CharacterModel : ICharacterModel
         }
     }
 
-    public void ColliderTriggerStay(ICollider col)
+    public void ColliderTriggerStay2D(ICollider2DAdapter col)
     {
         if (col.Layer == (int)GameConst.GameObjectLayerType.Monster && isProtected == false)
         {
@@ -153,7 +154,7 @@ public class CharacterModel : ICharacterModel
         }
     }
 
-    public void CollisionEnter(ICollision col)
+    public void CollisionEnter2D(ICollision2DAdapter col)
     {
         if (col.Layer == (int)GameConst.GameObjectLayerType.Platform)
         {
@@ -169,7 +170,7 @@ public class CharacterModel : ICharacterModel
         }
     }
 
-    public void CollisionExit(ICollision col)
+    public void CollisionExit2D(ICollision2DAdapter col)
     {
         if (col.Layer == (int)GameConst.GameObjectLayerType.Platform)
         {

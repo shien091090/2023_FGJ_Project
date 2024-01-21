@@ -3,6 +3,7 @@ using System.Linq;
 using NSubstitute;
 using NSubstitute.Core;
 using NUnit.Framework;
+using SNShien.Common.AdapterTools;
 using SNShien.Common.AudioTools;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ public class CharacterTest
     private IMoveController moveController;
     private CharacterModel characterModel;
     private IKeyController keyController;
-    private IRigidbody characterRigidbody;
+    private IRigidbody2DAdapter characterRigidbody;
     private IAudioManager audioManager;
     private IDeltaTimeGetter deltaTimeGetter;
     private ICharacterView characterView;
@@ -26,7 +27,7 @@ public class CharacterTest
     {
         moveController = Substitute.For<IMoveController>();
         keyController = Substitute.For<IKeyController>();
-        characterRigidbody = Substitute.For<IRigidbody>();
+        characterRigidbody = Substitute.For<IRigidbody2DAdapter>();
         audioManager = Substitute.For<IAudioManager>();
         deltaTimeGetter = Substitute.For<IDeltaTimeGetter>();
 
@@ -163,7 +164,7 @@ public class CharacterTest
     //離地時不能跳
     public void cannot_jump_when_not_on_floor()
     {
-        characterModel.CollisionExit(CreateCollision((int)GameConst.GameObjectLayerType.Platform));
+        characterModel.CollisionExit2D(CreateCollision((int)GameConst.GameObjectLayerType.Platform));
 
         GivenIsJumpKeyDown(true);
         characterModel.CallUpdate();
@@ -189,12 +190,12 @@ public class CharacterTest
         GivenIsJumpKeyDown(true);
 
         characterModel.CallUpdate();
-        characterModel.CollisionExit(CreateCollision((int)GameConst.GameObjectLayerType.Platform));
+        characterModel.CollisionExit2D(CreateCollision((int)GameConst.GameObjectLayerType.Platform));
 
         ShouldCallJump(1);
 
         characterModel.CallUpdate();
-        characterModel.CollisionEnter(CreateCollision((int)GameConst.GameObjectLayerType.Platform, true));
+        characterModel.CollisionEnter2D(CreateCollision((int)GameConst.GameObjectLayerType.Platform, true));
 
         ShouldIsJumping(false);
 
@@ -213,13 +214,13 @@ public class CharacterTest
 
         GivenIsJumpKeyDown(true);
         characterModel.CallUpdate();
-        characterModel.CollisionExit(CreateCollision((int)GameConst.GameObjectLayerType.Platform));
+        characterModel.CollisionExit2D(CreateCollision((int)GameConst.GameObjectLayerType.Platform));
 
         ShouldIsJumping(true);
         ShouldCallJump(1);
 
         characterModel.CallUpdate();
-        characterModel.CollisionEnter(CreateCollision((int)GameConst.GameObjectLayerType.Platform, true));
+        characterModel.CollisionEnter2D(CreateCollision((int)GameConst.GameObjectLayerType.Platform, true));
 
         ShouldIsJumping(false);
 
@@ -230,7 +231,7 @@ public class CharacterTest
 
         GivenIsJumpKeyDown(true);
         characterModel.CallUpdate();
-        characterModel.CollisionExit(CreateCollision((int)GameConst.GameObjectLayerType.Platform));
+        characterModel.CollisionExit2D(CreateCollision((int)GameConst.GameObjectLayerType.Platform));
 
         ShouldIsJumping(true);
         ShouldCallJump(2);
@@ -244,18 +245,18 @@ public class CharacterTest
 
         GivenIsJumpKeyDown(true);
         characterModel.CallUpdate();
-        characterModel.CollisionExit(CreateCollision((int)GameConst.GameObjectLayerType.Platform));
+        characterModel.CollisionExit2D(CreateCollision((int)GameConst.GameObjectLayerType.Platform));
 
         ShouldCallJump(1);
 
         characterModel.CallUpdate();
-        characterModel.CollisionEnter(CreateCollision((int)GameConst.GameObjectLayerType.Platform, true));
+        characterModel.CollisionEnter2D(CreateCollision((int)GameConst.GameObjectLayerType.Platform, true));
 
         ShouldIsJumping(false);
 
         GivenIsJumpKeyDown(true);
         characterModel.CallUpdate();
-        characterModel.CollisionExit(CreateCollision((int)GameConst.GameObjectLayerType.Platform));
+        characterModel.CollisionExit2D(CreateCollision((int)GameConst.GameObjectLayerType.Platform));
 
         ShouldCallJump(2);
     }
@@ -264,11 +265,11 @@ public class CharacterTest
     //接觸傳送門時, 點擊按鍵後傳送
     public void teleport_when_touch_teleport()
     {
-        ICollider collider = CreateCollider((int)GameConst.GameObjectLayerType.TeleportGate);
+        ICollider2DAdapter collider = CreateCollider((int)GameConst.GameObjectLayerType.TeleportGate);
         ITeleportGate teleportGate = CreateTeleportGateComponent();
         GivenGetComponent(collider, teleportGate);
 
-        characterModel.ColliderTriggerEnter(collider);
+        characterModel.ColliderTriggerEnter2D(collider);
 
         ShouldHaveTriggerTeleportGate(true);
 
@@ -282,9 +283,9 @@ public class CharacterTest
     //接觸其他物件而非傳送門時, 點擊按鍵不會觸發傳送
     public void not_teleport_when_touch_other_object()
     {
-        ICollider collider = CreateCollider((int)GameConst.GameObjectLayerType.Weapon);
+        ICollider2DAdapter collider = CreateCollider((int)GameConst.GameObjectLayerType.Weapon);
 
-        characterModel.ColliderTriggerEnter(collider);
+        characterModel.ColliderTriggerEnter2D(collider);
 
         ShouldHaveTriggerTeleportGate(false);
 
@@ -298,10 +299,10 @@ public class CharacterTest
     //接觸傳送門但取不到Component, 點擊按鍵不會觸發傳送
     public void not_teleport_when_touch_teleport_gate_but_can_not_get_component()
     {
-        ICollider collider = CreateCollider((int)GameConst.GameObjectLayerType.TeleportGate);
+        ICollider2DAdapter collider = CreateCollider((int)GameConst.GameObjectLayerType.TeleportGate);
         GivenGetComponent(collider, default(ITeleportGate));
 
-        characterModel.ColliderTriggerEnter(collider);
+        characterModel.ColliderTriggerEnter2D(collider);
 
         ShouldHaveTriggerTeleportGate(false);
 
@@ -329,11 +330,11 @@ public class CharacterTest
         GivenCharacterPosition(new Vector3(1, 0, 0));
         GivenInteractKeyDown(true);
 
-        ICollider collider = CreateCollider((int)GameConst.GameObjectLayerType.TeleportGate);
+        ICollider2DAdapter collider = CreateCollider((int)GameConst.GameObjectLayerType.TeleportGate);
         ITeleportGate teleportGate = CreateTeleportGateComponent(new Vector3(5, 0, 0));
         GivenGetComponent(collider, teleportGate);
 
-        characterModel.ColliderTriggerEnter(collider);
+        characterModel.ColliderTriggerEnter2D(collider);
         characterModel.CallUpdate();
 
         ShouldCallTeleport(teleportGate, 0);
@@ -344,12 +345,12 @@ public class CharacterTest
     //接觸傳送門後再離開, 點擊按鍵後不會觸發傳送
     public void not_teleport_when_touch_teleport_but_exit()
     {
-        ICollider collider = CreateCollider((int)GameConst.GameObjectLayerType.TeleportGate);
+        ICollider2DAdapter collider = CreateCollider((int)GameConst.GameObjectLayerType.TeleportGate);
         ITeleportGate teleportGate = CreateTeleportGateComponent();
         GivenGetComponent(collider, teleportGate);
 
-        characterModel.ColliderTriggerEnter(collider);
-        characterModel.ColliderTriggerExit(collider);
+        characterModel.ColliderTriggerEnter2D(collider);
+        characterModel.ColliderTriggerExit2D(collider);
 
         ShouldHaveTriggerTeleportGate(false);
 
@@ -367,9 +368,9 @@ public class CharacterTest
         characterModel.BindView(characterView);
 
         GivenCharacterPosition(new Vector3(5, 2, 0));
-        ICollider collider = CreateCollider((int)GameConst.GameObjectLayerType.Monster);
+        ICollider2DAdapter collider = CreateCollider((int)GameConst.GameObjectLayerType.Monster);
         GivenGetComponent(collider, CreateMonster(MonsterState.Normal));
-        characterModel.ColliderTriggerStay(collider);
+        characterModel.ColliderTriggerStay2D(collider);
 
         ShouldDying(true);
         ShouldChangeCurrentCharacterState(CharacterState.Die);
@@ -390,9 +391,9 @@ public class CharacterTest
     //接觸暈眩中的怪不會死亡
     public void not_die_when_touch_stun_monster()
     {
-        ICollider collider = CreateCollider((int)GameConst.GameObjectLayerType.Monster);
+        ICollider2DAdapter collider = CreateCollider((int)GameConst.GameObjectLayerType.Monster);
         GivenGetComponent(collider, CreateMonster(MonsterState.Stun));
-        characterModel.ColliderTriggerStay(collider);
+        characterModel.ColliderTriggerStay2D(collider);
 
         ShouldDying(false);
     }
@@ -401,15 +402,15 @@ public class CharacterTest
     //接觸暈眩中的怪物, 怪物解除暈眩時會死亡
     public void die_when_touch_stun_monster_and_monster_recover()
     {
-        ICollider collider = CreateCollider((int)GameConst.GameObjectLayerType.Monster);
+        ICollider2DAdapter collider = CreateCollider((int)GameConst.GameObjectLayerType.Monster);
         IMonsterView monster = CreateMonster(MonsterState.Stun);
         GivenGetComponent(collider, monster);
-        characterModel.ColliderTriggerStay(collider);
+        characterModel.ColliderTriggerStay2D(collider);
 
         ShouldDying(false);
 
         GivenMonsterCurrentState(monster, MonsterState.Normal);
-        characterModel.ColliderTriggerStay(collider);
+        characterModel.ColliderTriggerStay2D(collider);
 
         ShouldDying(true);
         ShouldChangeCurrentCharacterState(CharacterState.Die);
@@ -419,16 +420,16 @@ public class CharacterTest
     //接觸怪物死亡時持續接觸, 死亡流程只會觸發一次
     public void die_when_touch_monster_and_stay()
     {
-        ICollider collider = CreateCollider((int)GameConst.GameObjectLayerType.Monster);
+        ICollider2DAdapter collider = CreateCollider((int)GameConst.GameObjectLayerType.Monster);
         IMonsterView monster = CreateMonster(MonsterState.Normal);
         GivenGetComponent(collider, monster);
-        characterModel.ColliderTriggerStay(collider);
-        characterModel.ColliderTriggerStay(collider);
+        characterModel.ColliderTriggerStay2D(collider);
+        characterModel.ColliderTriggerStay2D(collider);
 
         CallCharacterViewWaitingCallback();
 
-        characterModel.ColliderTriggerStay(collider);
-        characterModel.ColliderTriggerStay(collider);
+        characterModel.ColliderTriggerStay2D(collider);
+        characterModel.ColliderTriggerStay2D(collider);
 
         ShouldPlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_DIE, 1);
         ShouldAudioPlayOneShot(GameConst.AUDIO_KEY_TELEPORT, 1);
@@ -525,7 +526,7 @@ public class CharacterTest
         moveController.GetHorizontalAxis().Returns(axisValue);
     }
 
-    private void GivenGetComponent<T>(ICollider collider, T component)
+    private void GivenGetComponent<T>(ICollider2DAdapter collider, T component)
     {
         collider.GetComponent<T>().Returns(component);
     }
@@ -635,16 +636,16 @@ public class CharacterTest
         return monsterView;
     }
 
-    private ICollider CreateCollider(int collisionLayer)
+    private ICollider2DAdapter CreateCollider(int collisionLayer)
     {
-        ICollider collider = Substitute.For<ICollider>();
+        ICollider2DAdapter collider = Substitute.For<ICollider2DAdapter>();
         collider.Layer.Returns(collisionLayer);
         return collider;
     }
 
-    private ICollision CreateCollision(int collisionLayer, bool isPhysicsOverlapCircle = false)
+    private ICollision2DAdapter CreateCollision(int collisionLayer, bool isPhysicsOverlapCircle = false)
     {
-        ICollision collision = Substitute.For<ICollision>();
+        ICollision2DAdapter collision = Substitute.For<ICollision2DAdapter>();
         collision.Layer.Returns(collisionLayer);
         collision.CheckPhysicsOverlapCircle(Arg.Any<Vector3>(), Arg.Any<float>(), Arg.Any<GameConst.GameObjectLayerType>()).Returns(isPhysicsOverlapCircle);
         return collision;

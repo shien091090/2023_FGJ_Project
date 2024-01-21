@@ -1,4 +1,6 @@
-public class WallColliderHandler : IColliderHandler
+using SNShien.Common.AdapterTools;
+
+public class WallColliderHandler : ICollider2DHandler
 {
     private readonly bool isRight;
     private readonly ICharacterModel model;
@@ -9,32 +11,32 @@ public class WallColliderHandler : IColliderHandler
         model = characterModel;
     }
 
-    public void ColliderTriggerEnter(ICollider col)
+    public void ColliderTriggerEnter2D(ICollider2DAdapter col)
     {
         if (col.Layer == (int)GameConst.GameObjectLayerType.Platform)
             model.ColliderTriggerEnterWall(isRight);
 
-        model.ColliderTriggerEnter(col);
+        model.ColliderTriggerEnter2D(col);
     }
 
-    public void ColliderTriggerExit(ICollider col)
+    public void ColliderTriggerExit2D(ICollider2DAdapter col)
     {
         if (col.Layer == (int)GameConst.GameObjectLayerType.Platform)
             model.ColliderTriggerExitWall(isRight);
 
-        model.ColliderTriggerExit(col);
+        model.ColliderTriggerExit2D(col);
     }
 
-    public void ColliderTriggerStay(ICollider col)
+    public void ColliderTriggerStay2D(ICollider2DAdapter col)
     {
-        model.ColliderTriggerStay(col);
+        model.ColliderTriggerStay2D(col);
     }
 
-    public void CollisionEnter(ICollision col)
+    public void CollisionEnter2D(ICollision2DAdapter col)
     {
     }
 
-    public void CollisionExit(ICollision col)
+    public void CollisionExit2D(ICollision2DAdapter col)
     {
     }
 }

@@ -1,7 +1,8 @@
 using System;
+using SNShien.Common.AdapterTools;
 using UnityEngine;
 
-public interface ICharacterModel : IColliderHandler
+public interface ICharacterModel : ICollider2DHandler
 {
     event Action OnTriggerInteractiveObject;
     event Action OnUnTriggerInteractiveObject;
@@ -14,7 +15,7 @@ public interface ICharacterModel : IColliderHandler
     void BindView(ICharacterView view);
     void ColliderTriggerExitWall(bool isRightWall);
     void ColliderTriggerEnterWall(bool isRightWall);
-    void ColliderTriggerEnter(ICollider col);
-    void ColliderTriggerExit(ICollider col);
-    void ColliderTriggerStay(ICollider col);
+    void ColliderTriggerEnter2D(ICollider2DAdapter col);
+    void ColliderTriggerExit2D(ICollider2DAdapter col);
+    void ColliderTriggerStay2D(ICollider2DAdapter col);
 }
