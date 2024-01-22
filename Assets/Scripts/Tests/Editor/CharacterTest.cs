@@ -5,6 +5,7 @@ using NSubstitute.Core;
 using NUnit.Framework;
 using SNShien.Common.AdapterTools;
 using SNShien.Common.AudioTools;
+using SNShien.Common.MonoBehaviorTools;
 using UnityEngine;
 
 public class CharacterTest

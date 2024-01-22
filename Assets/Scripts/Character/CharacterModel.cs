@@ -1,6 +1,7 @@
 using System;
 using SNShien.Common.AdapterTools;
 using SNShien.Common.AudioTools;
+using SNShien.Common.MonoBehaviorTools;
 using UnityEngine;
 
 public class CharacterModel : ICharacterModel

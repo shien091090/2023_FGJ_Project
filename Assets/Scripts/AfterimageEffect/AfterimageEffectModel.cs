@@ -1,4 +1,5 @@
 using SNShien.Common.AdapterTools;
+using SNShien.Common.MonoBehaviorTools;
 using UnityEngine;
 
 public class AfterimageEffectModel : IAfterimageEffectModel
