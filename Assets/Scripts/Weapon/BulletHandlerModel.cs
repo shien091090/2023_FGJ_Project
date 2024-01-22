@@ -35,9 +35,9 @@ public class BulletHandlerModel : IBulletHandlerModel
         if (itemType != ItemType.Weapon)
             return;
 
-        gameObjectPool.SpawnGameObject(GameConst.PREFAB_NAME_BULLET_SHOOT_EFFECT, characterModel.CurrentPos, characterModel.IsFaceRight ?
-            FaceDirection.Right :
-            FaceDirection.Left);
+        gameObjectPool.SpawnGameObject(GameConst.PREFAB_NAME_BULLET_SHOOT_EFFECT, characterModel.CurrentPos, new Vector3(characterModel.IsFaceRight ?
+            1 :
+            -1, 1, 1));
 
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_GUN_SHOT);
         GameObject bulletObject = view.GetBulletObject();

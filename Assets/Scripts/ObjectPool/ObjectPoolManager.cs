@@ -1,27 +1,10 @@
-﻿//物件池管理
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class ObjectPoolManager : MonoBehaviour, IGameObjectPool
 {
     public List<ObjectPoolUnit> objectPoolSetting; //物件池設定
     private Dictionary<string, ObjectPoolUnit> objectPoolTagDict { set; get; } //(字典)從物件名稱查找ObjectPoolUnit
-
-    public void SpawnGameObject(string prefabName, Vector3 position, FaceDirection faceDirection = FaceDirection.None)
-    {
-        if (objectPoolTagDict.ContainsKey(prefabName) == false)
-            return;
-
-        CheckAutoCreateHolder(prefabName);
-        GameObject go = PickUpObject(prefabName);
-        go.transform.position = position;
-        go.SetActive(true);
-        if (faceDirection != FaceDirection.None)
-            go.transform.localScale = new Vector3(faceDirection == FaceDirection.Right ?
-                1 :
-                -1, 1, 1);
-    }
 
     private void Start()
     {
@@ -36,6 +19,23 @@ public class ObjectPoolManager : MonoBehaviour, IGameObjectPool
 
             objectPoolTagDict.Add(objectPoolSetting[i].gameObjectName, objectPoolSetting[i]); //建立字典
         }
+    }
+
+    public void SpawnGameObject(string prefabName, Vector3 position = default, Vector3 scale = default)
+    {
+        if (objectPoolTagDict.ContainsKey(prefabName) == false)
+            return;
+
+        CheckAutoCreateHolder(prefabName);
+        GameObject go = PickUpObject(prefabName);
+
+        if (position != default)
+            go.transform.position = position;
+
+        if (scale != default)
+            go.transform.localScale = scale;
+
+        go.SetActive(true);
     }
 
     //從物件池中取得指定物件

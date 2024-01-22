@@ -1,4 +1,5 @@
 using SNShien.Common.AdapterTools;
+using UnityEngine;
 
 public class AfterimageEffectModel : IAfterimageEffectModel
 {
@@ -34,10 +35,9 @@ public class AfterimageEffectModel : IAfterimageEffectModel
 
         if (frequencyEffectTimer >= gameSetting.SpawnEffectFrequency)
         {
-            gameObjectPool.SpawnGameObject("AfterimageEffect", characterModel.CurrentPos, characterModel.IsFaceRight ?
-                FaceDirection.Right :
-                FaceDirection.Left);
-
+            gameObjectPool.SpawnGameObject("AfterimageEffect", characterModel.CurrentPos, new Vector3(characterModel.IsFaceRight ?
+                1 :
+                -1, 1, 1));
             frequencyEffectTimer = 0;
         }
     }
