@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SNShien.Common.AudioTools;
-using UnityEngine;
+using SNShien.Common.NetworkTools;
 
 public class PlayerRecordModel : IPlayerRecordModel
 {
@@ -83,7 +83,7 @@ public class PlayerRecordModel : IPlayerRecordModel
 
     public void RequestGetPlayerRecord(Action callback = null)
     {
-        serverCommunicator.CreatePostRequest(API_GET_RECORD)
+        serverCommunicator.CreatePostRequest(GameConst.URL_PLAYER_RECORD_API, API_GET_RECORD)
             .SendRequest<PlayerRecordResponse>((res) =>
             {
                 if (res.statusCode == ServerResponse.STATUS_CODE_SUCCESS)
@@ -95,7 +95,7 @@ public class PlayerRecordModel : IPlayerRecordModel
 
     public void RequestAddPlayerRecord(int costTimeSeconds, Action callback = null)
     {
-        serverCommunicator.CreatePostRequest("api_add_record")
+        serverCommunicator.CreatePostRequest(GameConst.URL_PLAYER_RECORD_API, "api_add_record")
             .AddParameter("playerName", globalStateModel.GetPlayerName)
             .AddParameter("costTimeSeonds", costTimeSeconds)
             .SendRequest<PlayerRecordResponse>((res) =>

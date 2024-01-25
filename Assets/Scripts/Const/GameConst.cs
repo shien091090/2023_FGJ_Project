@@ -1,5 +1,3 @@
-using FMODUnity;
-
 public class GameConst
 {
     public enum GameObjectLayerType
@@ -11,6 +9,8 @@ public class GameConst
         Weapon = 10,
         SavePoint = 11,
     }
+
+    public const string URL_PLAYER_RECORD_API = "https://script.google.com/macros/s/AKfycbzvsgJfeXsqIyXbsKm9HX8ShA6SJysfbAx7Coinbj2YR7efbCD9zTY6UiPC1UZYaWlDMA/exec";
 
     public const string AUDIO_KEY_BGM_GAME = "BGM_Main";
     public const string AUDIO_KEY_BGM_START = "BGM_Start";
