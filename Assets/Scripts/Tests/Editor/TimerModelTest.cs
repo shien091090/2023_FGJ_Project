@@ -194,13 +194,22 @@ public class TimerModelTest
         ShouldNotTiggerUpdateEvent();
         CurrentTimerStateShouldBe(TimerState.Stopped);
     }
+    
+    [Test]
+    //計時器尚未開始, 重置計時器, 不做事
+    public void reset_timer_when_timer_is_not_running()
+    {
+        timerModel.Reset();
+        
+        CurrentTimeShouldBe(0);
+        ShouldNotTiggerUpdateEvent();
+        CurrentTimerStateShouldBe(TimerState.Stopped);
+    }
 
     private void CurrentTimerStateShouldBe(TimerState expectedTimerState)
     {
         Assert.AreEqual(expectedTimerState, timerModel.CurrentTimerState);
     }
-
-    //計時器尚未開始, 重置計時器, 不做事
 
     private void ShouldNotTiggerUpdateEvent()
     {
