@@ -65,8 +65,8 @@ public class TimerModelTest
     [Test]
     [TestCase(45, "00:45")]
     [TestCase(505, "08:25")]
-    [TestCase(3599, "59:59")]
-    [TestCase(3600, "59:59+")]
+    [TestCase(5999, "99:59")]
+    [TestCase(6000, "99:59+")]
     //驗證倒數計時器格式(分:秒)
     public void verify_timer_format_MMSS(int deltaTime, string expectedTimerString)
     {

@@ -17,9 +17,9 @@ public class TimerUpdateEventInfo
                     $"{(int)CurrentTime / 3600:00}:{(int)CurrentTime / 60 % 60:00}:{(int)CurrentTime % 60:00}";
 
             case TimerStringFormatType.MMSS:
-                return CurrentTime >= 3600 ?
-                    "59:59+" :
-                    $"{(int)CurrentTime / 60 % 60:00}:{(int)CurrentTime % 60:00}";
+                return CurrentTime >= 6000 ?
+                    "99:59+" :
+                    $"{(int)CurrentTime / 60:00}:{(int)CurrentTime % 60:00}";
 
             case TimerStringFormatType.SS:
                 return CurrentTime >= 100 ?
