@@ -11,10 +11,10 @@ public class TimerModel
         CurrentTime += deltaTime;
         updateEventTimer += deltaTime;
 
-        while (updateEventTimer >= 1)
+        if (updateEventTimer >= 1)
         {
-            OnUpdateTimer?.Invoke(new TimerUpdateEventInfo(CurrentTime));
-            updateEventTimer -= 1;
+            OnUpdateTimer?.Invoke(new TimerUpdateEventInfo((float)Math.Floor(CurrentTime)));
+            updateEventTimer %= 1;
         }
     }
 

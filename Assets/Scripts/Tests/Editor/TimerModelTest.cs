@@ -33,17 +33,17 @@ public class TimerModelTest
         timerModel.UpdateTimer(0.3f); //0.6
         timerModel.UpdateTimer(0.3f); //0.9
 
-        ShouldTiggerUpdateEvent(0);
+        ShouldNotTiggerUpdateEvent();
 
         timerModel.UpdateTimer(0.3f); //1.2
         timerModel.UpdateTimer(0.3f); //1.5
         timerModel.UpdateTimer(0.3f); //1.8
 
-        ShouldTiggerUpdateEvent(1);
+        Assert.AreEqual(1, GetLastTimerUpdateEvent().CurrentTime);
 
         timerModel.UpdateTimer(0.3f); //2.1
 
-        ShouldTiggerUpdateEvent(2);
+        Assert.AreEqual(2, GetLastTimerUpdateEvent().CurrentTime);
     }
 
     [Test]
@@ -56,12 +56,9 @@ public class TimerModelTest
         Assert.AreEqual("01:00:50", GetLastTimerUpdateEvent().GetTimerString(TimerStringFormatType.HHMMSS));
     }
 
-    private void ShouldTiggerUpdateEvent(int expectedTriggerTimes)
+    private void ShouldNotTiggerUpdateEvent()
     {
-        if (expectedTriggerTimes == 0)
-            timerUpdateEvent.DidNotReceive().Invoke(Arg.Any<TimerUpdateEventInfo>());
-        else
-            timerUpdateEvent.Received(expectedTriggerTimes).Invoke(Arg.Any<TimerUpdateEventInfo>());
+        timerUpdateEvent.DidNotReceive().Invoke(Arg.Any<TimerUpdateEventInfo>());
     }
 
     private void CurrentTimeShouldBe(int expectedCurrentTime)
