@@ -76,7 +76,19 @@ public class TimerModelTest
         Assert.AreEqual(expectedTimerString, GetLastTimerUpdateEvent().GetTimerString(TimerStringFormatType.MMSS));
     }
     
+    [Test]
+    [TestCase(45, "45")]
+    [TestCase(99, "99")]
+    [TestCase(100, "99+")]
     //驗證倒數計時器格式(秒)
+    public void verify_timer_format_SS(int deltaTime, string expectedTimerString)
+    {
+        timerModel.StartTimer();
+        timerModel.UpdateTimer(deltaTime);
+
+        Assert.AreEqual(expectedTimerString, GetLastTimerUpdateEvent().GetTimerString(TimerStringFormatType.SS));
+    }
+    
     //開始倒數計時後, 暫停計時器, 之後不會觸發更新事件且時間維持不變
     //開始倒數計時後, 重置計時器, 時間歸零且之後不會觸發更新事件
     //開始倒數計時後, 暫停計時器, 再重置計時器, 時間歸零且之後不會觸發更新事件
