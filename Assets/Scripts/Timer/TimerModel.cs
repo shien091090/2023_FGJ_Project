@@ -15,6 +15,9 @@ public class TimerModel
 
     public void SetPause(bool isPause)
     {
+        if (CurrentTimerState != TimerState.Running && CurrentTimerState != TimerState.Paused)
+            return;
+
         CurrentTimerState = isPause ?
             TimerState.Paused :
             TimerState.Running;
