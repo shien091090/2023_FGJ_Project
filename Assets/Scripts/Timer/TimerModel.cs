@@ -10,7 +10,7 @@ public class TimerModel
 
     public TimerModel()
     {
-        CurrentTimerState = TimerState.Stopped;
+        ClearData();
     }
 
     public void SetPause(bool isPause)
@@ -37,8 +37,19 @@ public class TimerModel
 
     public void StartTimer()
     {
+        ClearData();
+        CurrentTimerState = TimerState.Running;
+    }
+
+    public void Reset()
+    {
+        ClearData();
+    }
+
+    private void ClearData()
+    {
         CurrentTime = 0;
         updateEventTimer = 0;
-        CurrentTimerState = TimerState.Running;
+        CurrentTimerState = TimerState.Stopped;
     }
 }
