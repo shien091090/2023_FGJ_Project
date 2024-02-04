@@ -3,7 +3,7 @@ using System;
 public class TimerModel
 {
     private float updateEventTimer;
-    public event Action OnUpdateTimer;
+    public event Action<TimerUpdateEventInfo> OnUpdateTimer;
     public float CurrentTime { get; private set; }
 
     public void UpdateTimer(float deltaTime)
@@ -13,7 +13,7 @@ public class TimerModel
 
         while (updateEventTimer >= 1)
         {
-            OnUpdateTimer?.Invoke();
+            OnUpdateTimer?.Invoke(new TimerUpdateEventInfo(CurrentTime));
             updateEventTimer -= 1;
         }
     }

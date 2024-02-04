@@ -1,18 +1,19 @@
 using System;
+using System.Linq;
 using NSubstitute;
 using NUnit.Framework;
 
 public class TimerModelTest
 {
     private TimerModel timerModel;
-    private Action timerUpdateEvent;
+    private Action<TimerUpdateEventInfo> timerUpdateEvent;
 
     [SetUp]
     public void Setup()
     {
         timerModel = new TimerModel();
 
-        timerUpdateEvent = Substitute.For<Action>();
+        timerUpdateEvent = Substitute.For<Action<TimerUpdateEventInfo>>();
         timerModel.OnUpdateTimer += timerUpdateEvent;
     }
 
@@ -33,24 +34,34 @@ public class TimerModelTest
         timerModel.UpdateTimer(0.3f); //0.9
 
         ShouldTiggerUpdateEvent(0);
-        
+
         timerModel.UpdateTimer(0.3f); //1.2
         timerModel.UpdateTimer(0.3f); //1.5
         timerModel.UpdateTimer(0.3f); //1.8
-        
+
         ShouldTiggerUpdateEvent(1);
-        
+
         timerModel.UpdateTimer(0.3f); //2.1
-        
+
         ShouldTiggerUpdateEvent(2);
+    }
+
+    [Test]
+    //驗證倒數計時器格式(時:分:秒)
+    public void timer_format_is_minute_second()
+    {
+        timerModel.StartTimer();
+        timerModel.UpdateTimer(3650);
+
+        Assert.AreEqual("01:00:50", GetLastTimerUpdateEvent().GetTimerString(TimerStringFormatType.HHMMSS));
     }
 
     private void ShouldTiggerUpdateEvent(int expectedTriggerTimes)
     {
         if (expectedTriggerTimes == 0)
-            timerUpdateEvent.DidNotReceive().Invoke();
+            timerUpdateEvent.DidNotReceive().Invoke(Arg.Any<TimerUpdateEventInfo>());
         else
-            timerUpdateEvent.Received(expectedTriggerTimes).Invoke();
+            timerUpdateEvent.Received(expectedTriggerTimes).Invoke(Arg.Any<TimerUpdateEventInfo>());
     }
 
     private void CurrentTimeShouldBe(int expectedCurrentTime)
@@ -58,7 +69,11 @@ public class TimerModelTest
         Assert.AreEqual(expectedCurrentTime, timerModel.CurrentTime);
     }
 
-    //驗證倒數計時器格式(時:分:秒)
+    private TimerUpdateEventInfo GetLastTimerUpdateEvent()
+    {
+        return (TimerUpdateEventInfo)timerUpdateEvent.ReceivedCalls().Last().GetArguments()[0];
+    }
+
     //驗證倒數計時器格式(分:秒)
     //驗證倒數計時器格式(秒)
     //開始倒數計時後, 暫停計時器, 之後不會觸發更新事件且時間維持不變
