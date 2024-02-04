@@ -22,6 +22,7 @@ public class TimerModelTest
     public void current_time_is_0_when_timer_is_not_started()
     {
         CurrentTimeShouldBe(0);
+        CurrentTimerStateShouldBe(TimerState.Stopped);
     }
 
     [Test]
@@ -29,6 +30,9 @@ public class TimerModelTest
     public void start_timer_trigger_update_event_every_second()
     {
         timerModel.StartTimer();
+        
+        CurrentTimerStateShouldBe(TimerState.Running);
+        
         timerModel.UpdateTimer(0.3f); //0.3
         timerModel.UpdateTimer(0.3f); //0.6
         timerModel.UpdateTimer(0.3f); //0.9
