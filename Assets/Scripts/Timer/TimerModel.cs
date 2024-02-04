@@ -42,6 +42,7 @@ public class TimerModel : ITimerModel
     {
         ClearData();
         CurrentTimerState = TimerState.Running;
+        OnUpdateTimer?.Invoke(new TimerUpdateEventInfo(0));
     }
 
     public void Reset()

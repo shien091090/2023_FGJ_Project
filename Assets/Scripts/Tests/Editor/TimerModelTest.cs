@@ -32,12 +32,13 @@ public class TimerModelTest
         timerModel.StartTimer();
         
         CurrentTimerStateShouldBe(TimerState.Running);
+        Assert.AreEqual(0, GetLastTimerUpdateEvent().CurrentTime);
         
         timerModel.UpdateTimer(0.3f); //0.3
         timerModel.UpdateTimer(0.3f); //0.6
         timerModel.UpdateTimer(0.3f); //0.9
 
-        ShouldNotTiggerUpdateEvent();
+        Assert.AreEqual(0, GetLastTimerUpdateEvent().CurrentTime);
 
         timerModel.UpdateTimer(0.3f); //1.2
         timerModel.UpdateTimer(0.3f); //1.5
@@ -101,7 +102,7 @@ public class TimerModelTest
         timerModel.UpdateTimer(1);
 
         CurrentTimeShouldBe(1);
-        ShouldTriggerAnyTimerUpdateEvent(1);
+        ShouldTriggerAnyTimerUpdateEvent(2);
         CurrentTimerStateShouldBe(TimerState.Running);
 
         timerModel.SetPause(true);
@@ -110,7 +111,7 @@ public class TimerModelTest
         timerModel.UpdateTimer(1);
 
         CurrentTimeShouldBe(1);
-        ShouldTriggerAnyTimerUpdateEvent(1);
+        ShouldTriggerAnyTimerUpdateEvent(2);
         CurrentTimerStateShouldBe(TimerState.Paused);
     }
     
@@ -122,7 +123,7 @@ public class TimerModelTest
         timerModel.UpdateTimer(1);
 
         CurrentTimeShouldBe(1);
-        ShouldTriggerAnyTimerUpdateEvent(1);
+        ShouldTriggerAnyTimerUpdateEvent(2);
         CurrentTimerStateShouldBe(TimerState.Running);
 
         timerModel.SetPause(true);
@@ -132,7 +133,7 @@ public class TimerModelTest
         timerModel.UpdateTimer(1);
 
         CurrentTimeShouldBe(2);
-        ShouldTriggerAnyTimerUpdateEvent(2);
+        ShouldTriggerAnyTimerUpdateEvent(3);
         CurrentTimerStateShouldBe(TimerState.Running);
     }
     
@@ -144,7 +145,7 @@ public class TimerModelTest
         timerModel.UpdateTimer(1.5f);
 
         CurrentTimeShouldBe(1.5f);
-        ShouldTriggerAnyTimerUpdateEvent(1);
+        ShouldTriggerAnyTimerUpdateEvent(2);
         CurrentTimerStateShouldBe(TimerState.Running);
 
         timerModel.Reset();
@@ -152,7 +153,7 @@ public class TimerModelTest
         timerModel.UpdateTimer(1);
         
         CurrentTimeShouldBe(0);
-        ShouldTriggerAnyTimerUpdateEvent(1);
+        ShouldTriggerAnyTimerUpdateEvent(2);
         CurrentTimerStateShouldBe(TimerState.Stopped);
     }
     
@@ -164,7 +165,7 @@ public class TimerModelTest
         timerModel.UpdateTimer(1.5f);
 
         CurrentTimeShouldBe(1.5f);
-        ShouldTriggerAnyTimerUpdateEvent(1);
+        ShouldTriggerAnyTimerUpdateEvent(2);
         CurrentTimerStateShouldBe(TimerState.Running);
 
         timerModel.SetPause(true);
@@ -172,7 +173,7 @@ public class TimerModelTest
         timerModel.UpdateTimer(1);
 
         CurrentTimeShouldBe(1.5f);
-        ShouldTriggerAnyTimerUpdateEvent(1);
+        ShouldTriggerAnyTimerUpdateEvent(2);
         CurrentTimerStateShouldBe(TimerState.Paused);
 
         timerModel.Reset();
@@ -180,7 +181,7 @@ public class TimerModelTest
         timerModel.UpdateTimer(1);
         
         CurrentTimeShouldBe(0);
-        ShouldTriggerAnyTimerUpdateEvent(1);
+        ShouldTriggerAnyTimerUpdateEvent(2);
         CurrentTimerStateShouldBe(TimerState.Stopped);
     }
     
