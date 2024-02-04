@@ -18,14 +18,14 @@ public class TimerModelTest
     }
 
     [Test]
-    //尚未倒數計時, 當前時間為0
+    //尚未開始計時, 當前時間為0
     public void current_time_is_0_when_timer_is_not_started()
     {
         CurrentTimeShouldBe(0);
     }
 
     [Test]
-    //開始倒數計時, 每秒觸發一次更新事件
+    //開始計時器, 每秒觸發一次更新事件
     public void start_timer_trigger_update_event_every_second()
     {
         timerModel.StartTimer();
@@ -53,7 +53,7 @@ public class TimerModelTest
     [TestCase(89500, "24:51:40")]
     [TestCase(359999, "99:59:59")]
     [TestCase(360000, "99:59:59+")]
-    //驗證倒數計時器格式(時:分:秒)
+    //驗證計時器更新事件顯示格式(時:分:秒)
     public void verify_timer_format_HHMMSS(int deltaTime, string expectedTimerString)
     {
         timerModel.StartTimer();
@@ -67,7 +67,7 @@ public class TimerModelTest
     [TestCase(505, "08:25")]
     [TestCase(5999, "99:59")]
     [TestCase(6000, "99:59+")]
-    //驗證倒數計時器格式(分:秒)
+    //驗證計時器更新事件顯示格式(分:秒)
     public void verify_timer_format_MMSS(int deltaTime, string expectedTimerString)
     {
         timerModel.StartTimer();
@@ -80,7 +80,7 @@ public class TimerModelTest
     [TestCase(45, "45")]
     [TestCase(99, "99")]
     [TestCase(100, "99+")]
-    //驗證倒數計時器格式(秒)
+    //驗證計時器更新事件顯示格式(秒)
     public void verify_timer_format_SS(int deltaTime, string expectedTimerString)
     {
         timerModel.StartTimer();
@@ -90,7 +90,7 @@ public class TimerModelTest
     }
 
     [Test]
-    //開始倒數計時後, 暫停計時器, 之後不會觸發更新事件且時間維持不變
+    //開始計時器後, 暫停計時器, 之後不會觸發更新事件且時間維持不變
     public void pause_timer_should_not_trigger_update_event_and_time_should_not_change()
     {
         timerModel.StartTimer();
@@ -111,7 +111,7 @@ public class TimerModelTest
     }
     
     [Test]
-    //開始倒數計時後, 暫停計時器, 再解除暫停, 之後會觸發更新事件且時間會繼續遞減
+    //開始計時器後, 暫停計時器, 再解除暫停, 之後會繼續每秒觸發更新事件
     public void resume_timer_should_trigger_update_event_and_time_should_continue_decreasing()
     {
         timerModel.StartTimer();
@@ -137,10 +137,10 @@ public class TimerModelTest
         Assert.AreEqual(expectedTimerState, timerModel.CurrentTimerState);
     }
 
-    //開始倒數計時後, 重置計時器, 時間歸零且之後不會觸發更新事件
-    //開始倒數計時後, 暫停計時器, 再重置計時器, 時間歸零且之後不會觸發更新事件
-    //尚未倒數計時, 暫停計時器, 不做事
-    //尚未倒數計時, 重置計時器, 不做事
+    //開始計時器後, 重置計時器, 時間歸零且之後不會觸發更新事件
+    //開始計時器後, 暫停計時器, 再重置計時器, 時間歸零且之後不會觸發更新事件
+    //計時器尚未開始, 暫停計時器, 不做事
+    //計時器尚未開始, 重置計時器, 不做事
 
     private void ShouldNotTiggerUpdateEvent()
     {
