@@ -54,13 +54,34 @@ public class TimerModelTest
     [TestCase(359999, "99:59:59")]
     [TestCase(360000, "99:59:59+")]
     //驗證倒數計時器格式(時:分:秒)
-    public void timer_format_is_minute_second(int deltaTime, string expectedTimerString)
+    public void verify_timer_format_HHMMSS(int deltaTime, string expectedTimerString)
     {
         timerModel.StartTimer();
         timerModel.UpdateTimer(deltaTime);
 
         Assert.AreEqual(expectedTimerString, GetLastTimerUpdateEvent().GetTimerString(TimerStringFormatType.HHMMSS));
     }
+
+    [Test]
+    [TestCase(45, "00:45")]
+    [TestCase(505, "08:25")]
+    [TestCase(3599, "59:59")]
+    [TestCase(3600, "59:59+")]
+    //驗證倒數計時器格式(分:秒)
+    public void verify_timer_format_MMSS(int deltaTime, string expectedTimerString)
+    {
+        timerModel.StartTimer();
+        timerModel.UpdateTimer(deltaTime);
+
+        Assert.AreEqual(expectedTimerString, GetLastTimerUpdateEvent().GetTimerString(TimerStringFormatType.MMSS));
+    }
+    
+    //驗證倒數計時器格式(秒)
+    //開始倒數計時後, 暫停計時器, 之後不會觸發更新事件且時間維持不變
+    //開始倒數計時後, 重置計時器, 時間歸零且之後不會觸發更新事件
+    //開始倒數計時後, 暫停計時器, 再重置計時器, 時間歸零且之後不會觸發更新事件
+    //尚未倒數計時, 暫停計時器, 不做事
+    //尚未倒數計時, 重置計時器, 不做事
 
     private void ShouldNotTiggerUpdateEvent()
     {
@@ -76,12 +97,4 @@ public class TimerModelTest
     {
         return (TimerUpdateEventInfo)timerUpdateEvent.ReceivedCalls().Last().GetArguments()[0];
     }
-
-    //驗證倒數計時器格式(分:秒)
-    //驗證倒數計時器格式(秒)
-    //開始倒數計時後, 暫停計時器, 之後不會觸發更新事件且時間維持不變
-    //開始倒數計時後, 重置計時器, 時間歸零且之後不會觸發更新事件
-    //開始倒數計時後, 暫停計時器, 再重置計時器, 時間歸零且之後不會觸發更新事件
-    //尚未倒數計時, 暫停計時器, 不做事
-    //尚未倒數計時, 重置計時器, 不做事
 }
