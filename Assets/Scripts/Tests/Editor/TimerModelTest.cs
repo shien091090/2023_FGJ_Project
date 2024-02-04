@@ -155,13 +155,40 @@ public class TimerModelTest
         ShouldTriggerAnyTimerUpdateEvent(1);
         CurrentTimerStateShouldBe(TimerState.Stopped);
     }
+    
+    [Test]
+    //開始計時器後, 暫停計時器, 再重置計時器, 時間歸零且之後不會觸發更新事件
+    public void reset_timer_when_timer_is_paused()
+    {
+        timerModel.StartTimer();
+        timerModel.UpdateTimer(1.5f);
+
+        CurrentTimeShouldBe(1.5f);
+        ShouldTriggerAnyTimerUpdateEvent(1);
+        CurrentTimerStateShouldBe(TimerState.Running);
+
+        timerModel.SetPause(true);
+        timerModel.UpdateTimer(1);
+        timerModel.UpdateTimer(1);
+
+        CurrentTimeShouldBe(1.5f);
+        ShouldTriggerAnyTimerUpdateEvent(1);
+        CurrentTimerStateShouldBe(TimerState.Paused);
+
+        timerModel.Reset();
+        timerModel.UpdateTimer(1);
+        timerModel.UpdateTimer(1);
+        
+        CurrentTimeShouldBe(0);
+        ShouldTriggerAnyTimerUpdateEvent(1);
+        CurrentTimerStateShouldBe(TimerState.Stopped);
+    }
 
     private void CurrentTimerStateShouldBe(TimerState expectedTimerState)
     {
         Assert.AreEqual(expectedTimerState, timerModel.CurrentTimerState);
     }
 
-    //開始計時器後, 暫停計時器, 再重置計時器, 時間歸零且之後不會觸發更新事件
     //計時器尚未開始, 暫停計時器, 不做事
     //計時器尚未開始, 重置計時器, 不做事
 
