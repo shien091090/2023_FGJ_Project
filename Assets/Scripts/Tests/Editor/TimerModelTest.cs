@@ -109,6 +109,28 @@ public class TimerModelTest
         ShouldTriggerAnyTimerUpdateEvent(1);
         CurrentTimerStateShouldBe(TimerState.Paused);
     }
+    
+    [Test]
+    //開始倒數計時後, 暫停計時器, 再解除暫停, 之後會觸發更新事件且時間會繼續遞減
+    public void resume_timer_should_trigger_update_event_and_time_should_continue_decreasing()
+    {
+        timerModel.StartTimer();
+        timerModel.UpdateTimer(1);
+
+        CurrentTimeShouldBe(1);
+        ShouldTriggerAnyTimerUpdateEvent(1);
+        CurrentTimerStateShouldBe(TimerState.Running);
+
+        timerModel.SetPause(true);
+        timerModel.UpdateTimer(1);
+
+        timerModel.SetPause(false);
+        timerModel.UpdateTimer(1);
+
+        CurrentTimeShouldBe(2);
+        ShouldTriggerAnyTimerUpdateEvent(2);
+        CurrentTimerStateShouldBe(TimerState.Running);
+    }
 
     private void CurrentTimerStateShouldBe(TimerState expectedTimerState)
     {
