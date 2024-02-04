@@ -3,11 +3,28 @@ using System;
 public class TimerModel
 {
     private float updateEventTimer;
+
     public event Action<TimerUpdateEventInfo> OnUpdateTimer;
     public float CurrentTime { get; private set; }
+    public TimerState CurrentTimerState { get; set; }
+
+    public TimerModel()
+    {
+        CurrentTimerState = TimerState.Stopped;
+    }
+
+    public void SetPause(bool isPause)
+    {
+        CurrentTimerState = isPause ?
+            TimerState.Paused :
+            TimerState.Running;
+    }
 
     public void UpdateTimer(float deltaTime)
     {
+        if (CurrentTimerState != TimerState.Running)
+            return;
+
         CurrentTime += deltaTime;
         updateEventTimer += deltaTime;
 
@@ -22,5 +39,6 @@ public class TimerModel
     {
         CurrentTime = 0;
         updateEventTimer = 0;
+        CurrentTimerState = TimerState.Running;
     }
 }

@@ -75,7 +75,7 @@ public class TimerModelTest
 
         Assert.AreEqual(expectedTimerString, GetLastTimerUpdateEvent().GetTimerString(TimerStringFormatType.MMSS));
     }
-    
+
     [Test]
     [TestCase(45, "45")]
     [TestCase(99, "99")]
@@ -88,8 +88,33 @@ public class TimerModelTest
 
         Assert.AreEqual(expectedTimerString, GetLastTimerUpdateEvent().GetTimerString(TimerStringFormatType.SS));
     }
-    
+
+    [Test]
     //開始倒數計時後, 暫停計時器, 之後不會觸發更新事件且時間維持不變
+    public void pause_timer_should_not_trigger_update_event_and_time_should_not_change()
+    {
+        timerModel.StartTimer();
+        timerModel.UpdateTimer(1);
+
+        CurrentTimeShouldBe(1);
+        ShouldTriggerAnyTimerUpdateEvent(1);
+        CurrentTimerStateShouldBe(TimerState.Running);
+
+        timerModel.SetPause(true);
+        timerModel.UpdateTimer(1);
+        timerModel.UpdateTimer(1);
+        timerModel.UpdateTimer(1);
+
+        CurrentTimeShouldBe(1);
+        ShouldTriggerAnyTimerUpdateEvent(1);
+        CurrentTimerStateShouldBe(TimerState.Paused);
+    }
+
+    private void CurrentTimerStateShouldBe(TimerState expectedTimerState)
+    {
+        Assert.AreEqual(expectedTimerState, timerModel.CurrentTimerState);
+    }
+
     //開始倒數計時後, 重置計時器, 時間歸零且之後不會觸發更新事件
     //開始倒數計時後, 暫停計時器, 再重置計時器, 時間歸零且之後不會觸發更新事件
     //尚未倒數計時, 暫停計時器, 不做事
@@ -98,6 +123,11 @@ public class TimerModelTest
     private void ShouldNotTiggerUpdateEvent()
     {
         timerUpdateEvent.DidNotReceive().Invoke(Arg.Any<TimerUpdateEventInfo>());
+    }
+
+    private void ShouldTriggerAnyTimerUpdateEvent(int expectedTriggerTimes)
+    {
+        timerUpdateEvent.Received(expectedTriggerTimes).Invoke(Arg.Any<TimerUpdateEventInfo>());
     }
 
     private void CurrentTimeShouldBe(int expectedCurrentTime)
