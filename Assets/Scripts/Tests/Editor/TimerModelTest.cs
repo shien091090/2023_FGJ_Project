@@ -47,13 +47,19 @@ public class TimerModelTest
     }
 
     [Test]
+    [TestCase(45, "00:00:45")]
+    [TestCase(505, "00:08:25")]
+    [TestCase(3650, "01:00:50")]
+    [TestCase(89500, "24:51:40")]
+    [TestCase(359999, "99:59:59")]
+    [TestCase(360000, "99:59:59+")]
     //驗證倒數計時器格式(時:分:秒)
-    public void timer_format_is_minute_second()
+    public void timer_format_is_minute_second(int deltaTime, string expectedTimerString)
     {
         timerModel.StartTimer();
-        timerModel.UpdateTimer(3650);
+        timerModel.UpdateTimer(deltaTime);
 
-        Assert.AreEqual("01:00:50", GetLastTimerUpdateEvent().GetTimerString(TimerStringFormatType.HHMMSS));
+        Assert.AreEqual(expectedTimerString, GetLastTimerUpdateEvent().GetTimerString(TimerStringFormatType.HHMMSS));
     }
 
     private void ShouldNotTiggerUpdateEvent()
