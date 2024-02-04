@@ -1,17 +1,17 @@
 using System;
 
-public class TimerModel
+public class TimerModel : ITimerModel
 {
-    private float updateEventTimer;
-
-    public event Action<TimerUpdateEventInfo> OnUpdateTimer;
     public float CurrentTime { get; private set; }
     public TimerState CurrentTimerState { get; set; }
+    private float updateEventTimer;
 
     public TimerModel()
     {
         ClearData();
     }
+
+    public event Action<TimerUpdateEventInfo> OnUpdateTimer;
 
     public void SetPause(bool isPause)
     {

@@ -12,6 +12,7 @@ public class GameCompleteManager : MonoBehaviour
     [Inject] private IMissingTextureManager missingTextureManager;
     [Inject] private IPlayerRecordModel playerRecordModel;
     [Inject] private IAudioManager audioManager;
+    [Inject] private ITimerModel timerModel;
 
     private string ANIM_KEY_IDLE = "game_complete_idle";
     private string ANIM_KEY_GAME_COMPLETED = "game_complete";
@@ -48,7 +49,7 @@ public class GameCompleteManager : MonoBehaviour
 
     private IEnumerator Cor_GameComplete()
     {
-        playerRecordModel.RequestAddPlayerRecord(1);
+        playerRecordModel.RequestAddPlayerRecord((int)timerModel.CurrentTime);
         audioManager.Stop(1);
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_VICTORY);
         GetAnim.Play(ANIM_KEY_GAME_COMPLETED);

@@ -19,6 +19,7 @@ public class GameSceneInstaller : MonoInstaller
         Container.Bind<ITileRemoverModel>().To<TileRemoverModel>().AsSingle();
         Container.Bind<IBulletHandlerModel>().To<BulletHandlerModel>().AsSingle();
         Container.Bind<IMissingTextureManager>().To<MissingTextureManager>().AsSingle();
+        Container.Bind<ITimerModel>().To<TimerModel>().AsSingle();
         Container.Bind<IGameObjectPool>().FromInstance(gameObjectPool);
         Container.Bind<IGameSetting>().FromInstance(gameSetting);
     }
