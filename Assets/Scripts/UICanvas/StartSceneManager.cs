@@ -20,13 +20,9 @@ public class StartSceneManager : MonoBehaviour
     [Inject] private IPlayerRecordModel playerRecordModel;
     [Inject] private IAudioManager audioManager;
     [Inject] private IGlobalStateModel globalStateModel;
+    [Inject] private IAudioCollection audioCollection;
 
     private bool isSwitchedTutorialNext;
-
-    private void Awake()
-    {
-        Init();
-    }
 
     private void Update()
     {
@@ -48,9 +44,9 @@ public class StartSceneManager : MonoBehaviour
 
     private void Init()
     {
-        audioManager.InitAudioCollection();
-        audioManager.PrintAudioKeys();
-        
+        // audioManager.InitCollectionFromProject();
+        audioManager.InitCollectionFromSetting(audioCollection);
+
         isSwitchedTutorialNext = false;
         playerRecordModel.RequestGetPlayerRecord();
         SetInputComponentInteractive(true);
@@ -75,6 +71,11 @@ public class StartSceneManager : MonoBehaviour
         btn_start.enabled = isInteractive;
         btn_ranking.enabled = isInteractive;
         inputField_playerName.enabled = isInteractive;
+    }
+
+    private void Awake()
+    {
+        Init();
     }
 
     private void SwitchToGameScene()

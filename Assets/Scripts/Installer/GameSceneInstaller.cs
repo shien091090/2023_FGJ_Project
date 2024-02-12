@@ -5,7 +5,6 @@ using Zenject;
 
 public class GameSceneInstaller : MonoInstaller
 {
-    [SerializeField] private GameSettingScriptableObject gameSetting;
     [SerializeField] private ObjectPoolManager gameObjectPool;
 
     public override void InstallBindings()
@@ -21,6 +20,5 @@ public class GameSceneInstaller : MonoInstaller
         Container.Bind<IMissingTextureManager>().To<MissingTextureManager>().AsSingle();
         Container.Bind<ITimerModel>().To<TimerModel>().AsSingle();
         Container.Bind<IGameObjectPool>().FromInstance(gameObjectPool);
-        Container.Bind<IGameSetting>().FromInstance(gameSetting);
     }
 }
