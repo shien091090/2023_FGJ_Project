@@ -485,7 +485,7 @@ MonoBehaviour:
   HasSourceProject: 0
   HasPlatforms: 0
   sourceProjectPath: "C:/Users/NKShien/OneDrive/\u6587\u4EF6/FMOD Studio/SNShien/SNShien.fspro"
-  sourceBankPath: Assets/FmodAudios/Default
+  sourceBankPath: FmodAudioAsset/Default
   sourceBankPathUnformatted: 
   BankRefreshCooldown: 5
   ShowBankRefreshWindow: 1
