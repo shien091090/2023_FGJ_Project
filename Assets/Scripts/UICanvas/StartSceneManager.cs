@@ -20,7 +20,6 @@ public class StartSceneManager : MonoBehaviour
     [Inject] private IPlayerRecordModel playerRecordModel;
     [Inject] private IAudioManager audioManager;
     [Inject] private IGlobalStateModel globalStateModel;
-    [Inject] private IAudioCollection audioCollection;
 
     private bool isSwitchedTutorialNext;
 
@@ -44,8 +43,7 @@ public class StartSceneManager : MonoBehaviour
 
     private void Init()
     {
-        // audioManager.InitCollectionFromProject();
-        audioManager.InitCollectionFromSetting(audioCollection);
+        audioManager.InitCollectionFromProject();
 
         isSwitchedTutorialNext = false;
         playerRecordModel.RequestGetPlayerRecord();
