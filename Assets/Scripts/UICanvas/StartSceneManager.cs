@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using SNShien.Common.AudioTools;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -11,11 +12,11 @@ public class StartSceneManager : MonoBehaviour
     [SerializeField] private bool testMode;
     [SerializeField] private Button btn_start;
     [SerializeField] private Button btn_ranking;
-    [SerializeField] private InputField inputField_playerName;
+    [SerializeField] private TMP_InputField inputField_playerName;
     [SerializeField] private Animator startSceneAnimator;
     [SerializeField] private Animator tutorialAnimator;
     [SerializeField] private Animator inputFieldAnimator;
-    [SerializeField] private Text txt_playerNameEffect;
+    [SerializeField] private TextMeshProUGUI txt_playerNameEffect;
 
     [Inject] private IPlayerRecordModel playerRecordModel;
     [Inject] private IAudioManager audioManager;

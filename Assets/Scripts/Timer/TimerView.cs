@@ -1,11 +1,10 @@
-using System;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using Zenject;
 
 public class TimerView : MonoBehaviour
 {
-    [SerializeField] private Text txt_timer;
+    [SerializeField] private TextMeshProUGUI tmp_timer;
 
     [Inject] private ITimerModel timerModel;
     [Inject] private IMissingTextureManager missingTextureManager;
@@ -37,6 +36,6 @@ public class TimerView : MonoBehaviour
 
     private void OnUpdateTimer(TimerUpdateEventInfo eventInfo)
     {
-        txt_timer.text = eventInfo.GetTimerString(TimerStringFormatType.MMSS);
+        tmp_timer.text = eventInfo.GetTimerString(TimerStringFormatType.MMSS);
     }
 }

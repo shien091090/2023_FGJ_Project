@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -6,7 +7,7 @@ public class MissingTextureManagerView : MonoBehaviour, IMissingTextureManagerVi
 {
     private const string ANIM_KEY_CLEAR = "missing_texture_clear";
 
-    [SerializeField] private Text txt_remainPercent;
+    [SerializeField] private TextMeshProUGUI tmp_remainPercent;
     [SerializeField] private Image img_progressFill;
     [SerializeField] private Animator anim;
 
@@ -14,7 +15,7 @@ public class MissingTextureManagerView : MonoBehaviour, IMissingTextureManagerVi
 
     public void RefreshRemainPercentText(string remainPercentText)
     {
-        txt_remainPercent.text = remainPercentText;
+        tmp_remainPercent.text = remainPercentText;
     }
 
     public void RefreshProgress(float progress)
