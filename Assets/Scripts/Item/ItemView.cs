@@ -1,6 +1,6 @@
 using System;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using Zenject;
 
 public class ItemView : MonoBehaviour, IItem
@@ -8,8 +8,8 @@ public class ItemView : MonoBehaviour, IItem
     [SerializeField] private float useLimit;
     [SerializeField] private GameObject go_useTimesPanel;
     [SerializeField] private GameObject go_passTimePanel;
-    [SerializeField] private Text txt_timer;
-    [SerializeField] private Text txt_remainUseTimes;
+    [SerializeField] private TextMeshProUGUI tmp_timer;
+    [SerializeField] private TextMeshProUGUI tmp_remainUseTimes;
     [SerializeField] private ItemType itemType;
 
     [Inject] private ICharacterModel characterModel;
@@ -101,12 +101,12 @@ public class ItemView : MonoBehaviour, IItem
 
     private void RefreshCurrentTimer(float timerValue)
     {
-        txt_timer.text = timerValue.ToString("0.0");
+        tmp_timer.text = timerValue.ToString("0.0");
     }
 
     private void RefreshCurrentUseTimes(int remainUseTimes)
     {
-        txt_remainUseTimes.text = remainUseTimes.ToString();
+        tmp_remainUseTimes.text = remainUseTimes.ToString();
     }
 
     private void HideAllPanel()
