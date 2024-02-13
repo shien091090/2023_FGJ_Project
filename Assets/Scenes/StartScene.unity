@@ -2130,7 +2130,6 @@ GameObject:
   - component: {fileID: 536783618}
   - component: {fileID: 536783617}
   - component: {fileID: 536783616}
-  - component: {fileID: 536783619}
   m_Layer: 5
   m_Name: RankingButton
   m_TagString: Untagged
@@ -2251,18 +2250,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &536783619
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 536783614}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fddda4e6afde6c34ca4a801163fc97ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &575317512
 GameObject:
   m_ObjectHideFlags: 0
@@ -5324,7 +5311,6 @@ GameObject:
   - component: {fileID: 1543330129}
   - component: {fileID: 1543330130}
   - component: {fileID: 1543330128}
-  - component: {fileID: 1543330131}
   m_Layer: 5
   m_Name: StartButton
   m_TagString: Untagged
@@ -5445,18 +5431,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &1543330131
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1543330126}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7920ab7e380d441798566cbcfe7cc240, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1595625400
 GameObject:
   m_ObjectHideFlags: 0
