@@ -1,50 +1,41 @@
 using System;
 using SNShien.Common.AdapterTools;
-using SNShien.Common.AudioTools;
-using SNShien.Common.MonoBehaviorTools;
 using UnityEngine;
 
 public class CharacterModel : ICharacterModel
 {
     public CharacterState CurrentCharacterState { get; private set; }
-    public bool IsFaceRight { get; private set; }
-    public Vector3 CurrentPos => selfRigidbody.position;
 
-    public bool isProtected;
     private readonly IMoveController moveController;
     private readonly IKeyController keyController;
-    private readonly IAudioManager audioManager;
     private readonly IDeltaTimeGetter deltaTimeGetter;
     private readonly IItemTriggerHandler itemTriggerHandler;
-    private readonly IGameObjectPool gameObjectPool;
-    private readonly IAfterimageEffectModel afterimageEffectModel;
+    private readonly ICharacterSetting characterSetting;
+
+    private ICharacterPresenter characterPresenter;
     private IRigidbody2DAdapter selfRigidbody;
-    private ICharacterView characterView;
     private float jumpTimer;
     private bool isCollideRightWall;
     private bool isCollideLeftWall;
     private bool isFreeze;
-    private bool isPlayWalkingAnimation;
-    private bool isMoving;
+    private bool isProtected;
 
     public bool IsJumping { get; private set; }
     public bool HaveInteractGate => CurrentTriggerTeleportGate != null;
-    public bool HaveInteractSavePoint => CurrentTriggerSavePoint != null;
     public Vector3 RecordOriginPos { get; private set; }
+    private bool HaveInteractSavePoint => CurrentTriggerSavePoint != null;
     private ITeleportGate CurrentTriggerTeleportGate { get; set; }
     private ISavePointView CurrentTriggerSavePoint { get; set; }
     private bool IsStayOnFloor { get; set; }
 
-    public CharacterModel(IMoveController moveController, IKeyController keyController, IAudioManager audioManager, IDeltaTimeGetter deltaTimeGetter,
-        IItemTriggerHandler itemTriggerHandler, IGameObjectPool gameObjectPool, IGameSetting gameSetting)
+    public CharacterModel(IMoveController moveController, IKeyController keyController, IDeltaTimeGetter deltaTimeGetter, IItemTriggerHandler itemTriggerHandler,
+        ICharacterSetting characterSetting)
     {
         this.moveController = moveController;
         this.keyController = keyController;
-        this.audioManager = audioManager;
         this.deltaTimeGetter = deltaTimeGetter;
         this.itemTriggerHandler = itemTriggerHandler;
-        this.gameObjectPool = gameObjectPool;
-        afterimageEffectModel = new AfterimageEffectModel(gameObjectPool, gameSetting, deltaTimeGetter, this);
+        this.characterSetting = characterSetting;
 
         RegisterEvent();
     }
@@ -54,14 +45,6 @@ public class CharacterModel : ICharacterModel
     public event Action<CharacterState> OnChangeCharacterState;
     public event Action OnTriggerInteractiveObject;
     public event Action OnUnTriggerInteractiveObject;
-
-    public void BindView(ICharacterView view)
-    {
-        characterView = view;
-        selfRigidbody = view.GetRigidbody;
-        InitState();
-        InitFaceDirection();
-    }
 
     public void ColliderTriggerExitWall(bool isRightWall)
     {
@@ -159,12 +142,11 @@ public class CharacterModel : ICharacterModel
     {
         if (col.Layer == (int)GameConst.GameObjectLayerType.Platform)
         {
-            if (IsStayOnFloor == false)
-                gameObjectPool.SpawnGameObject(GameConst.PREFAB_NAME_LANDING_EFFECT, selfRigidbody.position);
+            characterPresenter.PlayCollidePlatformEffect(IsStayOnFloor == false);
 
             IsStayOnFloor = true;
             IsJumping = false;
-            afterimageEffectModel.ForceStop();
+
             if (CurrentCharacterState != CharacterState.Die &&
                 CurrentCharacterState != CharacterState.IntoHouse)
                 ChangeCurrentCharacterState(CharacterState.Walking);
@@ -182,25 +164,6 @@ public class CharacterModel : ICharacterModel
         }
     }
 
-    private void InitFaceDirection()
-    {
-        IsFaceRight = true;
-        // characterView.SetSpriteFlipX(false);
-        characterView.SetFaceDirectionScale(1);
-    }
-
-    private void InitState()
-    {
-        characterView.PlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_NORMAL);
-        jumpTimer = characterView.JumpDelaySeconds;
-        isProtected = false;
-        IsStayOnFloor = true;
-        RecordOriginPos = selfRigidbody.position;
-        characterView.SetProtectionActive(false);
-        characterView.SetActive(true);
-        ChangeCurrentCharacterState(CharacterState.Walking);
-    }
-
     public void CallUpdate()
     {
         if (CurrentCharacterState == CharacterState.Die)
@@ -209,7 +172,7 @@ public class CharacterModel : ICharacterModel
         if (isFreeze)
             return;
 
-        if (selfRigidbody.position.y <= characterView.FallDownLimitPosY)
+        if (selfRigidbody.position.y <= characterSetting.FallDownLimitPosY)
         {
             BackToOrigin();
             return;
@@ -217,50 +180,33 @@ public class CharacterModel : ICharacterModel
 
         UpdateJumpTimer(deltaTimeGetter.deltaTime);
         UpdateCheckSavePointTeleport();
-        UpdateCheckJump(characterView.JumpForce);
-        UpdateMove(deltaTimeGetter.deltaTime, characterView.Speed);
+        UpdateCheckJump(characterSetting.JumpForce);
+        UpdateMove(deltaTimeGetter.deltaTime, characterSetting.Speed);
         UpdateCheckInteract();
-        UpdateAfterimageEffect();
+        characterPresenter.CallUpdate();
     }
 
-    public void Jump(float jumpForce)
+    public void BindPresenter(ICharacterPresenter presenter)
     {
-        jumpTimer = 0;
-        IsJumping = true;
-        ChangeCurrentCharacterState(CharacterState.Jumping);
-        selfRigidbody.AddForce(new Vector2(0, jumpForce));
+        characterPresenter = presenter;
+
+        selfRigidbody = characterPresenter.GetRigidbody;
+        jumpTimer = characterSetting.JumpDelaySeconds;
+        isProtected = false;
+        IsStayOnFloor = true;
+        RecordOriginPos = selfRigidbody.position;
+
+        ChangeCurrentCharacterState(CharacterState.Walking);
     }
 
     public void BackToOrigin()
     {
         ChangeCurrentCharacterState(CharacterState.Die);
         Teleport(RecordOriginPos);
-        characterView.Waiting(0.5f, () =>
+        characterPresenter.PlayBackToOriginEffect(() =>
         {
             ChangeCurrentCharacterState(CharacterState.Walking);
         });
-    }
-
-    private void ParseWalkingAnimation()
-    {
-        if (isMoving && CurrentCharacterState == CharacterState.Walking)
-        {
-            if (!isPlayWalkingAnimation)
-            {
-                isPlayWalkingAnimation = true;
-                characterView.SetWalkAnimation(true);
-                Debug.Log($"ParseWalkingAnimation: {isPlayWalkingAnimation}");
-            }
-        }
-        else
-        {
-            if (isPlayWalkingAnimation)
-            {
-                isPlayWalkingAnimation = false;
-                characterView.SetWalkAnimation(false);
-                Debug.Log($"ParseWalkingAnimation: {isPlayWalkingAnimation}");
-            }
-        }
     }
 
     private bool CheckCanJump(float jumpForce)
@@ -274,27 +220,6 @@ public class CharacterModel : ICharacterModel
         return true;
     }
 
-    private void CheckChangeFaceDirection(float moveValue)
-    {
-        if (IsFaceRight && moveValue < 0)
-        {
-            IsFaceRight = false;
-            // characterView.SetSpriteFlipX(true);
-            characterView.SetFaceDirectionScale(-1);
-        }
-        else if (IsFaceRight == false && moveValue > 0)
-        {
-            IsFaceRight = true;
-            // characterView.SetSpriteFlipX(false);
-            characterView.SetFaceDirectionScale(1);
-        }
-    }
-
-    private void UpdateAfterimageEffect()
-    {
-        afterimageEffectModel.UpdateEffect();
-    }
-
     private void UpdateMove(float deltaTime, float speed)
     {
         if (CurrentCharacterState == CharacterState.IntoHouse)
@@ -305,11 +230,7 @@ public class CharacterModel : ICharacterModel
             horizontalAxis = 0;
 
         float moveValue = horizontalAxis * deltaTime * speed;
-        CheckChangeFaceDirection(moveValue);
-        characterView.Translate(new Vector2(moveValue, 0));
-        isMoving = moveValue != 0;
-
-        ParseWalkingAnimation();
+        characterPresenter.PlayerMoveEffect(moveValue);
     }
 
     private void UpdateCheckJump(float jumpForce)
@@ -317,23 +238,22 @@ public class CharacterModel : ICharacterModel
         if (CurrentCharacterState == CharacterState.IntoHouse)
             return;
 
-        if (jumpTimer < characterView.JumpDelaySeconds)
+        if (jumpTimer < characterSetting.JumpDelaySeconds)
             return;
 
         if (keyController.IsJumpKeyDown && CheckCanJump(jumpForce))
         {
             Jump(jumpForce);
-            gameObjectPool.SpawnGameObject(GameConst.PREFAB_NAME_JUMP_EFFECT, selfRigidbody.position);
-            audioManager.PlayOneShot(GameConst.AUDIO_KEY_JUMP);
+            characterPresenter.Jump();
         }
     }
 
     private void UpdateJumpTimer(float deltaTime)
     {
-        if (jumpTimer >= characterView.JumpDelaySeconds)
+        if (jumpTimer >= characterSetting.JumpDelaySeconds)
             return;
 
-        jumpTimer = Math.Min(jumpTimer + deltaTime, characterView.JumpDelaySeconds);
+        jumpTimer = Math.Min(jumpTimer + deltaTime, characterSetting.JumpDelaySeconds);
     }
 
     private void UpdateCheckSavePointTeleport()
@@ -369,9 +289,7 @@ public class CharacterModel : ICharacterModel
         if (CurrentCharacterState == CharacterState.IntoHouse)
         {
             isFreeze = true;
-            characterView.SetActive(true);
-            characterView.PlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_EXIT_HOUSE);
-            characterView.Waiting(0.45f, () =>
+            characterPresenter.PlayExitHouseEffect(() =>
             {
                 ChangeCurrentCharacterState(CharacterState.Walking);
                 CurrentTriggerSavePoint.GetModel.HideInteractHint();
@@ -388,6 +306,14 @@ public class CharacterModel : ICharacterModel
         }
     }
 
+    private void Jump(float jumpForce)
+    {
+        jumpTimer = 0;
+        IsJumping = true;
+        ChangeCurrentCharacterState(CharacterState.Jumping);
+        selfRigidbody.AddForce(new Vector2(0, jumpForce));
+    }
+
     private void ChangeCurrentCharacterState(CharacterState state)
     {
         if (CurrentCharacterState == state)
@@ -396,7 +322,6 @@ public class CharacterModel : ICharacterModel
         Debug.Log($"ChangeCurrentCharacterState: {state}");
 
         CurrentCharacterState = state;
-        ParseWalkingAnimation();
         OnChangeCharacterState?.Invoke(state);
 
         if (state == CharacterState.Die)
@@ -409,18 +334,13 @@ public class CharacterModel : ICharacterModel
             return;
 
         ChangeCurrentCharacterState(CharacterState.Die);
-        audioManager.PlayOneShot(GameConst.AUDIO_KEY_DAMAGE);
-        characterView.PlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_DIE);
-        characterView.Waiting(1.5f, () =>
+        characterPresenter.PlayDieEffect(() =>
         {
-            characterView.PlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_NORMAL);
             BackToOrigin();
-            characterView.Waiting(0.5f, () =>
-            {
-                isProtected = false;
-                ChangeCurrentCharacterState(CharacterState.Walking);
-                characterView.SetActive(true);
-            });
+        }, () =>
+        {
+            isProtected = false;
+            ChangeCurrentCharacterState(CharacterState.Walking);
         });
     }
 
@@ -438,7 +358,7 @@ public class CharacterModel : ICharacterModel
 
     private void Teleport(Vector3 targetPos)
     {
-        audioManager.PlayOneShot(GameConst.AUDIO_KEY_TELEPORT);
+        characterPresenter.Teleport();
         selfRigidbody.position = targetPos;
         selfRigidbody.velocity = Vector2.zero;
     }
@@ -447,11 +367,9 @@ public class CharacterModel : ICharacterModel
     {
         isFreeze = true;
         CurrentTriggerSavePoint.GetModel.Save();
-        characterView.PlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_ENTER_HOUSE);
-        characterView.Waiting(1, () =>
+        characterPresenter.PlayEnterHouseEffect(() =>
         {
             ChangeCurrentCharacterState(CharacterState.IntoHouse);
-            characterView.SetActive(false);
             CurrentTriggerSavePoint.GetModel.ShowInteractHint();
             isFreeze = false;
         });
@@ -460,7 +378,7 @@ public class CharacterModel : ICharacterModel
     private void TriggerTeleportGate()
     {
         float distance = Vector3.Distance(selfRigidbody.position, CurrentTriggerTeleportGate.GetPos);
-        if (distance > characterView.InteractDistance)
+        if (distance > characterSetting.InteractDistance)
         {
             CurrentTriggerTeleportGate = null;
             return;
@@ -475,7 +393,7 @@ public class CharacterModel : ICharacterModel
         if (itemType == ItemType.Protection)
         {
             isProtected = false;
-            characterView.SetProtectionActive(false);
+            characterPresenter.PlayProtectionEndEffect();
         }
     }
 
@@ -484,19 +402,16 @@ public class CharacterModel : ICharacterModel
         if (itemType == ItemType.Protection)
         {
             isProtected = true;
-            audioManager.PlayOneShot(GameConst.AUDIO_KEY_PROTECTION_BUFF);
-            characterView.SetProtectionActive(true);
+            characterPresenter.PlayProtectionEffect();
         }
     }
 
     private void OnUseItemOneTime(ItemType itemType)
     {
-        if (itemType == ItemType.Shoes && CheckCanJump(characterView.SuperJumpForce))
+        if (itemType == ItemType.Shoes && CheckCanJump(characterSetting.SuperJumpForce))
         {
-            Jump(characterView.SuperJumpForce);
-            gameObjectPool.SpawnGameObject(GameConst.PREFAB_NAME_SUPER_JUMP_EFFECT, selfRigidbody.position);
-            afterimageEffectModel.StartPlayEffect();
-            audioManager.PlayOneShot(GameConst.AUDIO_KEY_SUPER_JUMP);
+            Jump(characterSetting.SuperJumpForce);
+            characterPresenter.PlaySuperJumpEffect();
         }
     }
 }

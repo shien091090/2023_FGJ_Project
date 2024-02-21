@@ -7,18 +7,18 @@ public class AfterimageEffectModel : IAfterimageEffectModel
     private readonly IGameObjectPool gameObjectPool;
     private readonly IGameSetting gameSetting;
     private readonly IDeltaTimeGetter deltaTimeGetter;
-    private readonly ICharacterModel characterModel;
+    private readonly ICharacterPresenter characterPresenter;
 
     private float totalEffectTimer;
     private float frequencyEffectTimer;
     private bool isShowEffect;
 
-    public AfterimageEffectModel(IGameObjectPool gameObjectPool, IGameSetting gameSetting, IDeltaTimeGetter deltaTimeGetter, CharacterModel characterModel)
+    public AfterimageEffectModel(IGameObjectPool gameObjectPool, IGameSetting gameSetting, IDeltaTimeGetter deltaTimeGetter, ICharacterPresenter characterPresenter)
     {
         this.gameObjectPool = gameObjectPool;
         this.gameSetting = gameSetting;
         this.deltaTimeGetter = deltaTimeGetter;
-        this.characterModel = characterModel;
+        this.characterPresenter = characterPresenter;
     }
 
     public void UpdateEffect()
@@ -36,7 +36,7 @@ public class AfterimageEffectModel : IAfterimageEffectModel
 
         if (frequencyEffectTimer >= gameSetting.SpawnEffectFrequency)
         {
-            gameObjectPool.SpawnGameObject("AfterimageEffect", characterModel.CurrentPos, new Vector3(characterModel.IsFaceRight ?
+            gameObjectPool.SpawnGameObject("AfterimageEffect", characterPresenter.CurrentPos, new Vector3(characterPresenter.IsFaceRight ?
                 1 :
                 -1, 1, 1));
             frequencyEffectTimer = 0;

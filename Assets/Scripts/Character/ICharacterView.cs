@@ -4,12 +4,12 @@ using UnityEngine;
 
 public interface ICharacterView
 {
-    float JumpForce { get; }
-    float Speed { get; }
-    float SuperJumpForce { get; }
-    float JumpDelaySeconds { get; }
-    float InteractDistance { get; }
-    float FallDownLimitPosY { get; }
+    // float JumpForce { get; }
+    // float Speed { get; }
+    // float SuperJumpForce { get; }
+    // float JumpDelaySeconds { get; }
+    // float InteractDistance { get; }
+    // float FallDownLimitPosY { get; }
     IRigidbody2DAdapter GetRigidbody { get; }
     void SetProtectionActive(bool isActive);
     void SetFaceDirectionScale(int scale);

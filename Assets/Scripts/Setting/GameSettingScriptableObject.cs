@@ -1,6 +1,5 @@
 using UnityEngine;
 
-[CreateAssetMenu]
 public class GameSettingScriptableObject : ScriptableObject, IGameSetting
 {
     [SerializeField] private int totalMissingTextureCount;

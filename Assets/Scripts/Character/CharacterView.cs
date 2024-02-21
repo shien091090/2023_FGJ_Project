@@ -6,12 +6,6 @@ using Zenject;
 
 public class CharacterView : MonoBehaviour, ICharacterView
 {
-    [SerializeField] private float jumpForce;
-    [SerializeField] private float superJumpForce;
-    [SerializeField] private float speed;
-    [SerializeField] private float jumpDelaySeconds;
-    [SerializeField] private float interactDistance;
-    [SerializeField] private float fallDownLimitHeight;
     [SerializeField] private Animator anim;
     [SerializeField] private GameObject go_protectionEffect;
     [SerializeField] private Collider2DAdapterComponent footColliderComponent;
@@ -21,29 +15,13 @@ public class CharacterView : MonoBehaviour, ICharacterView
     [SerializeField] private Transform tf_faceDirection;
 
     [Inject] private ICharacterModel characterModel;
+    [Inject] private ICharacterPresenter characterPresenter;
 
-    public float JumpForce => jumpForce;
-    public float Speed => speed;
-    public float SuperJumpForce => superJumpForce;
-    public float JumpDelaySeconds => jumpDelaySeconds;
-    public float InteractDistance => interactDistance;
-    public float FallDownLimitPosY => fallDownLimitHeight;
     public IRigidbody2DAdapter GetRigidbody => rigidBodyComponent;
-
+    
     private SpriteRenderer spriteRenderer;
     private WallColliderHandler rightWallColliderHandler;
     private WallColliderHandler leftWallColliderHandler;
-
-    public SpriteRenderer GetSpriteRenderer
-    {
-        get
-        {
-            if (spriteRenderer == null)
-                spriteRenderer = GetComponent<SpriteRenderer>();
-
-            return spriteRenderer;
-        }
-    }
 
     public void SetFaceDirectionScale(int scale)
     {
@@ -85,15 +63,17 @@ public class CharacterView : MonoBehaviour, ICharacterView
         rightWallColliderHandler = new WallColliderHandler(true, characterModel);
         leftWallColliderHandler = new WallColliderHandler(false, characterModel);
 
-        characterModel.BindView(this);
         footColliderComponent.InitHandler(characterModel);
         rightColliderComponent.InitHandler(rightWallColliderHandler);
         leftColliderComponent.InitHandler(leftWallColliderHandler);
+
+        characterPresenter.BindView(this);
     }
 
     private void Update()
     {
         characterModel.CallUpdate();
+        characterPresenter.CallUpdate();
     }
 
     private IEnumerator Cor_WaitingCoroutine(float seconds, Action callback)

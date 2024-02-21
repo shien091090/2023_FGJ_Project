@@ -13,7 +13,7 @@ public class MonsterView : MonoBehaviour, IMonsterView
     [SerializeField] private string monsterType;
     [SerializeField] private float keepStunTime;
 
-    [Inject] private ICharacterModel characterModel;
+    [Inject] private ICharacterPresenter characterPresenter;
     [Inject] private IAudioManager audioManager;
 
     public MonsterState CurrentState => monsterModel.CurrentState;
@@ -93,7 +93,7 @@ public class MonsterView : MonoBehaviour, IMonsterView
         {
             monsterModel.BeAttack();
 
-            float distance = Vector2.Distance(transform.position, characterModel.CurrentPos);
+            float distance = Vector2.Distance(transform.position, characterPresenter.CurrentPos);
             Debug.Log("distance: " + distance + "");
             if (distance <= 10)
             {

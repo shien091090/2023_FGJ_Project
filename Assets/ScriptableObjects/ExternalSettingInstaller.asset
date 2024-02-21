@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: ExternalSettingInstaller
   m_EditorClassIdentifier: 
   gameSetting: {fileID: 11400000, guid: 029ed78f455127340af98eb5d1fcbaae, type: 2}
-  audioCollectionSetting: {fileID: 11400000, guid: 0e784285aab42e945b1158b3a2157f9f, type: 2}
+  characterSetting: {fileID: 11400000, guid: 5bade38e365b09549be8a5907e2f2ff4, type: 2}
