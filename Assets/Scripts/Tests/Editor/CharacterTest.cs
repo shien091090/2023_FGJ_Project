@@ -12,7 +12,7 @@ public class CharacterTest
     private IMoveController moveController;
     private CharacterModel characterModel;
     private IKeyController keyController;
-    private IRigidbody2DAdapter characterRigidbody;
+    private IRigidbody2DAdapter rigidbody;
     private IAudioManager audioManager;
     private IDeltaTimeGetter deltaTimeGetter;
     private ICharacterView characterView;
@@ -22,16 +22,16 @@ public class CharacterTest
     private IItemTriggerHandler itemTriggerHandler;
     private IGameSetting gameSetting;
     private ICharacterSetting characterSetting;
+    private ICharacterPresenter presenter;
 
     [SetUp]
     public void Setup()
     {
         moveController = Substitute.For<IMoveController>();
         keyController = Substitute.For<IKeyController>();
-        characterRigidbody = Substitute.For<IRigidbody2DAdapter>();
+        rigidbody = Substitute.For<IRigidbody2DAdapter>();
         audioManager = Substitute.For<IAudioManager>();
         deltaTimeGetter = Substitute.For<IDeltaTimeGetter>();
-        characterSetting = Substitute.For<ICharacterSetting>();
 
         characterView = Substitute.For<ICharacterView>();
         characterView.Waiting(Arg.Any<float>(), Arg.Do<Action>(callback =>
@@ -43,33 +43,28 @@ public class CharacterTest
         gameObjectPool = Substitute.For<IGameObjectPool>();
         gameSetting = Substitute.For<IGameSetting>();
 
-        GivenDeltaTime(1);
-        GivenSpeed(1);
-        GivenJumpForce(1);
-        GivenJumpDelay(1);
-        GivenFallDownLimitPos(-10);
+        InitCharacterSettingMock();
+        IniPresenterMock();
 
         characterModel = new CharacterModel(moveController, keyController, deltaTimeGetter, itemTriggerHandler,
             characterSetting);
 
-        // characterModel.BindPresenter(characterView);
+        characterModel.BindPresenter(presenter);
     }
 
     [Test]
-    //左右移動
-    public void right_and_left_move()
+    [TestCase(0.5f, true)]
+    [TestCase(1f, true)]
+    [TestCase(-0.01f, false)]
+    [TestCase(-0.9f, false)]
+    //水平移動
+    public void horizontal_move(float axisValue, bool expectedMoveRight)
     {
-        GivenHorizontalAxis(0.5f);
+        GivenHorizontalAxis(axisValue);
 
         characterModel.CallUpdate();
 
-        ShouldCallTranslateAndMoveRight();
-
-        GivenHorizontalAxis(-0.5f);
-
-        characterModel.CallUpdate();
-
-        ShouldCallTranslateAndMoveLeft();
+        LastTranslateShouldBeRight(expectedMoveRight);
     }
 
     [Test]
@@ -479,29 +474,39 @@ public class CharacterTest
         ShouldDying(false);
     }
 
+    private void InitCharacterSettingMock()
+    {
+        characterSetting = Substitute.For<ICharacterSetting>();
+        GivenDeltaTime(1);
+        GivenSpeed(1);
+        GivenJumpForce(1);
+        GivenJumpDelay(1);
+        GivenFallDownLimitPos(-10);
+    }
+
     private void GivenFallDownLimitPos(float pos)
     {
-        // characterView.FallDownLimitPosY.Returns(pos);
+        characterSetting.FallDownLimitPosY.Returns(pos);
     }
 
     private void GivenInteractDistance(float distance)
     {
-        // characterView.InteractDistance.Returns(distance);
+        characterSetting.InteractDistance.Returns(distance);
     }
 
     private void GivenJumpDelay(float delaySeconds)
     {
-        // characterView.JumpDelaySeconds.Returns(delaySeconds);
+        characterSetting.JumpDelaySeconds.Returns(delaySeconds);
     }
 
     private void GivenJumpForce(int jumpForce)
     {
-        // characterView.JumpForce.Returns(jumpForce);
+        characterSetting.JumpForce.Returns(jumpForce);
     }
 
     private void GivenSpeed(int speed)
     {
-        // characterView.Speed.Returns(speed);
+        characterSetting.Speed.Returns(speed);
     }
 
     private void GivenDeltaTime(float deltaTime)
@@ -511,7 +516,7 @@ public class CharacterTest
 
     private void GivenCharacterPosition(Vector3 pos)
     {
-        characterRigidbody.position.Returns(pos);
+        rigidbody.position.Returns(pos);
     }
 
     private void GivenInteractKeyDown(bool isKeyDown)
@@ -573,7 +578,7 @@ public class CharacterTest
 
     private void CurrentCharacterPosShouldBe(Vector3 expectedPos)
     {
-        Assert.AreEqual(expectedPos, characterRigidbody.position);
+        Assert.AreEqual(expectedPos, rigidbody.position);
     }
 
     private void ShouldPlayAnimation(string expectedAnimationKey)
@@ -613,7 +618,7 @@ public class CharacterTest
 
     private void ShouldCallJump(int triggerTimes)
     {
-        characterRigidbody.Received(triggerTimes).AddForce(Arg.Is<Vector2>(v => v.y > 0 && v.x == 0));
+        rigidbody.Received(triggerTimes).AddForce(Arg.Is<Vector2>(v => v.y > 0 && v.x == 0));
         audioManager.Received(triggerTimes).PlayOneShot(GameConst.AUDIO_KEY_JUMP);
     }
 
@@ -622,14 +627,23 @@ public class CharacterTest
         Assert.AreEqual(expectedIsJumping, characterModel.IsJumping);
     }
 
-    private void ShouldCallTranslateAndMoveRight()
+    private void LastTranslateShouldBeRight(bool isRight)
     {
-        characterView.Received(1).Translate(Arg.Is<Vector3>(v => v.x > 0));
+        float argument = (float)presenter
+            .ReceivedCalls()
+            .Last(x => x.GetMethodInfo().Name == "PlayerMoveEffect")
+            .GetArguments()[0];
+
+        if (isRight)
+            Assert.IsTrue(argument > 0);
+        else
+            Assert.IsTrue(argument < 0);
     }
 
-    private void ShouldCallTranslateAndMoveLeft()
+    private void IniPresenterMock()
     {
-        characterView.Received(1).Translate(Arg.Is<Vector3>(v => v.x < 0));
+        presenter = Substitute.For<ICharacterPresenter>();
+        presenter.GetRigidbody.Returns(rigidbody);
     }
 
     private IMonsterView CreateMonster(MonsterState monsterState)
