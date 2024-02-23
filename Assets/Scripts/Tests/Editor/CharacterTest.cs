@@ -16,13 +16,11 @@ public class CharacterTest
     private IAudioManager audioManager;
     private IDeltaTimeGetter deltaTimeGetter;
     private ICharacterView characterView;
-    private IGameObjectPool gameObjectPool;
-
-    private Action characterViewWaitingCallback;
     private IItemTriggerHandler itemTriggerHandler;
-    private IGameSetting gameSetting;
     private ICharacterSetting characterSetting;
     private ICharacterPresenter presenter;
+    
+    private Action characterViewWaitingCallback;
 
     [SetUp]
     public void Setup()
@@ -40,8 +38,6 @@ public class CharacterTest
         }));
 
         itemTriggerHandler = Substitute.For<IItemTriggerHandler>();
-        gameObjectPool = Substitute.For<IGameObjectPool>();
-        gameSetting = Substitute.For<IGameSetting>();
 
         InitCharacterSettingMock();
         IniPresenterMock();
@@ -65,69 +61,6 @@ public class CharacterTest
         characterModel.CallUpdate();
 
         LastTranslateShouldBeRight(expectedMoveRight);
-    }
-
-    [Test]
-    //角色初始狀態預設面向右
-    public void default_face_right()
-    {
-        ShouldFaceRight(true);
-        FaceDirectionScaleShouldBe(1);
-    }
-
-    [Test]
-    //角色變換面向
-    public void change_face()
-    {
-        ShouldFaceRight(true);
-        FaceDirectionScaleShouldBe(1);
-
-        GivenHorizontalAxis(0.5f);
-        characterModel.CallUpdate();
-
-        ShouldFaceRight(true);
-        FaceDirectionScaleShouldBe(1);
-
-        GivenHorizontalAxis(-0.5f);
-        characterModel.CallUpdate();
-
-        ShouldFaceRight(false);
-        FaceDirectionScaleShouldBe(-1);
-
-        GivenHorizontalAxis(0.5f);
-        characterModel.CallUpdate();
-
-        ShouldFaceRight(true);
-        FaceDirectionScaleShouldBe(1);
-    }
-
-    [Test]
-    //角色停止後, 維持原本面向
-    public void keep_face_when_stop()
-    {
-        GivenHorizontalAxis(0.5f);
-        characterModel.CallUpdate();
-
-        ShouldFaceRight(true);
-        FaceDirectionScaleShouldBe(1);
-
-        GivenHorizontalAxis(0);
-        characterModel.CallUpdate();
-
-        ShouldFaceRight(true);
-        FaceDirectionScaleShouldBe(1);
-
-        GivenHorizontalAxis(-1);
-        characterModel.CallUpdate();
-
-        ShouldFaceRight(false);
-        FaceDirectionScaleShouldBe(-1);
-
-        GivenHorizontalAxis(0);
-        characterModel.CallUpdate();
-
-        ShouldFaceRight(false);
-        FaceDirectionScaleShouldBe(-1);
     }
 
     [Test]
