@@ -4,10 +4,9 @@ using NSubstitute;
 using NUnit.Framework;
 using SNShien.Common.AdapterTools;
 using SNShien.Common.AudioTools;
-using SNShien.Common.MonoBehaviorTools;
 using UnityEngine;
 
-public class CharacterTest
+public class CharacterModelTest
 {
     private IMoveController moveController;
     private CharacterModel characterModel;
