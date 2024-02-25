@@ -3,7 +3,6 @@ using System.Linq;
 using NSubstitute;
 using NUnit.Framework;
 using SNShien.Common.AdapterTools;
-using SNShien.Common.AudioTools;
 using UnityEngine;
 
 public class CharacterModelTest
@@ -12,14 +11,11 @@ public class CharacterModelTest
     private CharacterModel characterModel;
     private IKeyController keyController;
     private IRigidbody2DAdapter rigidbody;
-    private IAudioManager audioManager;
     private IDeltaTimeGetter deltaTimeGetter;
-    private ICharacterView characterView;
     private IItemTriggerHandler itemTriggerHandler;
     private ICharacterSetting characterSetting;
     private ICharacterPresenter presenter;
 
-    private Action characterViewWaitingCallback;
     private Action afterDieAnimationCallback;
     private Action afterBackOriginCallback;
 
@@ -28,15 +24,7 @@ public class CharacterModelTest
     {
         moveController = Substitute.For<IMoveController>();
         keyController = Substitute.For<IKeyController>();
-        audioManager = Substitute.For<IAudioManager>();
         deltaTimeGetter = Substitute.For<IDeltaTimeGetter>();
-
-        characterView = Substitute.For<ICharacterView>();
-        characterView.Waiting(Arg.Any<float>(), Arg.Do<Action>(callback =>
-        {
-            characterViewWaitingCallback = callback;
-        }));
-
         itemTriggerHandler = Substitute.For<IItemTriggerHandler>();
 
         InitCharacterSettingMock();
@@ -516,11 +504,6 @@ public class CharacterModelTest
         afterDieAnimationCallback.Invoke();
     }
 
-    private void CallCharacterViewWaitingCallback()
-    {
-        characterViewWaitingCallback.Invoke();
-    }
-
     private void ShouldPlayDieEffect(int expectedCallTimes = 1)
     {
         presenter.Received(expectedCallTimes).PlayDieEffect(Arg.Any<Action>(), Arg.Any<Action>());
@@ -536,51 +519,9 @@ public class CharacterModelTest
         Assert.AreEqual(expectedState, characterModel.CurrentCharacterState);
     }
 
-    private void FaceDirectionScaleShouldBe(int expectedScale)
-    {
-        int argument = (int)characterView
-            .ReceivedCalls()
-            .Where(call => call.GetMethodInfo().Name == "SetFaceDirectionScale")
-            .ToList()
-            .Last()
-            .GetArguments()[0];
-
-        Assert.AreEqual(expectedScale, argument);
-    }
-
-    private void ShouldFaceRight(bool expectedIsFaceRight)
-    {
-        // Assert.AreEqual(expectedIsFaceRight, characterModel.IsFaceRight);
-    }
-
-    private void ShouldAudioPlayOneShot(string audioKey, int callTimes = 1)
-    {
-        audioManager.Received(callTimes).PlayOneShot(audioKey);
-    }
-
     private void CurrentCharacterPosShouldBe(Vector3 expectedPos)
     {
         Assert.AreEqual(expectedPos, rigidbody.position);
-    }
-
-    private void ShouldPlayAnimation(string expectedAnimationKey)
-    {
-        string argument = (string)characterView
-            .ReceivedCalls()
-            .Last(x => x.GetMethodInfo().Name == "PlayAnimation")
-            .GetArguments()[0];
-
-        Assert.AreEqual(expectedAnimationKey, argument);
-    }
-
-    private void ShouldPlayAnimation(string expectedAnimationKey, int triggerTimes)
-    {
-        characterView.Received(triggerTimes).PlayAnimation(expectedAnimationKey);
-    }
-
-    private void RecordOriginPosShouldBe(Vector3 expectedPos)
-    {
-        Assert.AreEqual(expectedPos, characterModel.RecordOriginPos);
     }
 
     private void ShouldHaveTriggerTeleportGate(bool expectedHave)
