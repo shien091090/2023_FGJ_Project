@@ -18,6 +18,8 @@ public class CharacterModelTest
 
     private Action afterDieAnimationCallback;
     private Action afterBackOriginCallback;
+    private Action triggerInteractiveObjectEvent;
+    private Action unTriggerInteractiveObjectEvent;
 
     [SetUp]
     public void Setup()
@@ -34,6 +36,12 @@ public class CharacterModelTest
             characterSetting);
 
         characterModel.BindPresenter(presenter);
+
+        triggerInteractiveObjectEvent = Substitute.For<Action>();
+        characterModel.OnTriggerInteractiveObject += triggerInteractiveObjectEvent;
+
+        unTriggerInteractiveObjectEvent = Substitute.For<Action>();
+        characterModel.OnUnTriggerInteractiveObject += unTriggerInteractiveObjectEvent;
     }
 
     [Test]
@@ -195,8 +203,30 @@ public class CharacterModelTest
         CurrentCharacterPosShouldBe(new Vector3(5, 10));
         ShouldPlayTeleportEffect();
     }
-    
+
+    [Test]
     //在跳躍狀態接觸傳送門時, 點擊互動按鍵後傳送
+    public void teleport_when_touch_and_click_interact_button_in_jumping_state()
+    {
+        ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.TeleportGate);
+        ITeleportGate component = CreateTeleportGateComponent(teleportTargetPos: new Vector3(5, 10));
+        GivenGetComponent(collider, component);
+        GivenIsJumpKeyDown(true);
+
+        characterModel.CallUpdate();
+        characterModel.ColliderTriggerEnter2D(collider);
+
+        ShouldHaveTriggerTeleportGate(true);
+        CurrentCharacterPosShouldBe(Vector3.zero);
+        CurrentCharacterStateShouldBe(CharacterState.Jumping);
+
+        GivenInteractKeyDown(true);
+        characterModel.CallUpdate();
+
+        CurrentCharacterPosShouldBe(new Vector3(5, 10));
+        ShouldPlayTeleportEffect();
+    }
+    
     //在死亡狀態接觸傳送門時, 點擊互動按鍵不做事
 
     [Test]
@@ -354,14 +384,14 @@ public class CharacterModelTest
         characterModel.ColliderTriggerStay2D(collider);
 
         ShouldPlayDieEffect(1);
-        
+
         characterModel.ColliderTriggerStay2D(collider);
-        
+
         ShouldPlayDieEffect(1);
-        
+
         CallAfterDieAnimationCallback();
         characterModel.ColliderTriggerStay2D(collider);
-        
+
         ShouldPlayDieEffect(1);
     }
 
@@ -372,7 +402,7 @@ public class CharacterModelTest
         GivenFallDownLimitPos(-5);
         GivenCharacterPosition(new Vector3(0, -4, 0));
         GivenVelocity(new Vector2(0, -1));
-        
+
         characterModel.CallUpdate();
 
         CurrentCharacterStateShouldBe(CharacterState.Walking);
@@ -388,8 +418,21 @@ public class CharacterModelTest
         CurrentCharacterPosShouldBe(Vector3.zero);
         CharacterVelocityShouldBe(Vector3.zero);
     }
-    
+
+    [Test]
     //接觸儲存點時, 顯示儲存點提示
+    public void show_save_point_hint_when_touch_save_point()
+    {
+        ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
+        ISavePointView savePoint = CreateSavePoint();
+        GivenGetComponent(collider, savePoint);
+        characterModel.ColliderTriggerEnter2D(collider);
+
+        ShouldShowRecordStateHint(savePoint);
+        ShouldHaveTriggerSavePoint(true);
+        ShouldSendTriggerInteractiveObjectEvent(1);
+    }
+
     //接觸儲存點再離開, 隱藏儲存點提示
     //在一般狀態接觸儲存點時, 點擊互動按鍵後儲存位置並進入房屋
     //在跳躍狀態接觸儲存點時, 點擊互動按鍵不做事
@@ -504,6 +547,21 @@ public class CharacterModelTest
         afterDieAnimationCallback.Invoke();
     }
 
+    private void ShouldSendTriggerInteractiveObjectEvent(int expectedTriggerTimes)
+    {
+        triggerInteractiveObjectEvent.Received(expectedTriggerTimes).Invoke();
+    }
+
+    private void ShouldHaveTriggerSavePoint(bool expectedHave)
+    {
+        Assert.AreEqual(expectedHave, characterModel.HaveInteractSavePoint);
+    }
+
+    private void ShouldShowRecordStateHint(ISavePointView savePointView)
+    {
+        savePointView.GetModel.Received().ShowRecordStateHint();
+    }
+
     private void ShouldPlayDieEffect(int expectedCallTimes = 1)
     {
         presenter.Received(expectedCallTimes).PlayDieEffect(Arg.Any<Action>(), Arg.Any<Action>());
@@ -560,6 +618,13 @@ public class CharacterModelTest
             Assert.IsTrue(argument > 0);
         else
             Assert.IsTrue(argument < 0);
+    }
+
+    private ISavePointView CreateSavePoint()
+    {
+        ISavePointView savePoint = Substitute.For<ISavePointView>();
+        savePoint.GetModel.Returns(Substitute.For<ISavePointModel>());
+        return savePoint;
     }
 
     private IMonsterView CreateMonster(MonsterState monsterState)

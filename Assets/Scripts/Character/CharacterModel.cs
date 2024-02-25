@@ -23,7 +23,7 @@ public class CharacterModel : ICharacterModel
     public bool IsJumping { get; private set; }
     public bool HaveInteractGate => CurrentTriggerTeleportGate != null;
     public Vector3 RecordOriginPos { get; private set; }
-    private bool HaveInteractSavePoint => CurrentTriggerSavePoint != null;
+    public bool HaveInteractSavePoint => CurrentTriggerSavePoint != null;
     private ITeleportGate CurrentTriggerTeleportGate { get; set; }
     private ISavePointView CurrentTriggerSavePoint { get; set; }
     private bool IsStayOnFloor { get; set; }
