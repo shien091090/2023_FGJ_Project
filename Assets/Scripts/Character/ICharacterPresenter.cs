@@ -9,9 +9,9 @@ public interface ICharacterPresenter
     IRigidbody2DAdapter GetRigidbody { get; }
     void CallUpdate();
     void BindView(ICharacterView view);
-    void Jump();
+    void PlayJumpEffect();
     void PlayDieEffect(Action afterDieAnimationCallback, Action afterBackOriginCallback);
-    void Teleport();
+    void PlayTeleportEffect();
     void PlayProtectionEffect();
     void PlaySuperJumpEffect();
     void PlayCollidePlatformEffect(bool isLanding);

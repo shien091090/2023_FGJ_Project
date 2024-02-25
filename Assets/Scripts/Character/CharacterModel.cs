@@ -244,7 +244,7 @@ public class CharacterModel : ICharacterModel
         if (keyController.IsJumpKeyDown && CheckCanJump(jumpForce))
         {
             Jump(jumpForce);
-            characterPresenter.Jump();
+            characterPresenter.PlayJumpEffect();
         }
     }
 
@@ -358,7 +358,7 @@ public class CharacterModel : ICharacterModel
 
     private void Teleport(Vector3 targetPos)
     {
-        characterPresenter.Teleport();
+        characterPresenter.PlayTeleportEffect();
         selfRigidbody.position = targetPos;
         selfRigidbody.velocity = Vector2.zero;
     }

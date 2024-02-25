@@ -43,7 +43,7 @@ public class CharacterPresenter : ICharacterPresenter
         RegisterEvent();
     }
 
-    public void Jump()
+    public void PlayJumpEffect()
     {
         gameObjectPool.SpawnGameObject(GameConst.PREFAB_NAME_JUMP_EFFECT, selfRigidbody.position);
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_JUMP);
@@ -65,7 +65,7 @@ public class CharacterPresenter : ICharacterPresenter
         });
     }
 
-    public void Teleport()
+    public void PlayTeleportEffect()
     {
         audioManager.PlayOneShot(GameConst.AUDIO_KEY_TELEPORT);
     }

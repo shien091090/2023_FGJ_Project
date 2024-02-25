@@ -19,15 +19,16 @@ public class CharacterTest
     private IItemTriggerHandler itemTriggerHandler;
     private ICharacterSetting characterSetting;
     private ICharacterPresenter presenter;
-    
+
     private Action characterViewWaitingCallback;
+    private Action afterDieAnimationCallback;
+    private Action afterBackOriginCallback;
 
     [SetUp]
     public void Setup()
     {
         moveController = Substitute.For<IMoveController>();
         keyController = Substitute.For<IKeyController>();
-        rigidbody = Substitute.For<IRigidbody2DAdapter>();
         audioManager = Substitute.For<IAudioManager>();
         deltaTimeGetter = Substitute.For<IDeltaTimeGetter>();
 
@@ -40,7 +41,7 @@ public class CharacterTest
         itemTriggerHandler = Substitute.For<IItemTriggerHandler>();
 
         InitCharacterSettingMock();
-        IniPresenterMock();
+        InitPresenterMock();
 
         characterModel = new CharacterModel(moveController, keyController, deltaTimeGetter, itemTriggerHandler,
             characterSetting);
@@ -65,19 +66,18 @@ public class CharacterTest
 
     [Test]
     //沒有按跳躍按鍵時, 不會跳躍
-    public void jump_not_press_key()
+    public void not_jump_when_not_press_key()
     {
-        ShouldIsJumping(false);
-
         GivenIsJumpKeyDown(false);
         characterModel.CallUpdate();
 
         ShouldCallJump(0);
+        ShouldIsJumping(false);
     }
 
     [Test]
     //跳躍時不能再跳
-    public void jump_cannot_jump_again()
+    public void can_not_jump_when_jumping()
     {
         GivenIsJumpKeyDown(true);
         characterModel.CallUpdate();
@@ -93,9 +93,9 @@ public class CharacterTest
 
     [Test]
     //離地時不能跳
-    public void cannot_jump_when_not_on_floor()
+    public void can_not_jump_when_not_on_floor()
     {
-        characterModel.CollisionExit2D(CreateCollision((int)GameConst.GameObjectLayerType.Platform));
+        characterModel.CollisionExit2D(CreateCollision(GameConst.GameObjectLayerType.Platform));
 
         GivenIsJumpKeyDown(true);
         characterModel.CallUpdate();
@@ -105,10 +105,11 @@ public class CharacterTest
 
     [Test]
     //跳躍力道設定為0時, 按跳躍時不會跳
-    public void jump_force_is_zero()
+    public void can_not_jump_when_jump_force_is_zero()
     {
         GivenJumpForce(0);
         GivenIsJumpKeyDown(true);
+
         characterModel.CallUpdate();
 
         ShouldCallJump(0);
@@ -121,12 +122,13 @@ public class CharacterTest
         GivenIsJumpKeyDown(true);
 
         characterModel.CallUpdate();
-        characterModel.CollisionExit2D(CreateCollision((int)GameConst.GameObjectLayerType.Platform));
+        characterModel.CollisionExit2D(CreateCollision(GameConst.GameObjectLayerType.Platform));
 
         ShouldCallJump(1);
+        ShouldIsJumping(true);
 
         characterModel.CallUpdate();
-        characterModel.CollisionEnter2D(CreateCollision((int)GameConst.GameObjectLayerType.Platform, true));
+        characterModel.CollisionEnter2D(CreateCollision(GameConst.GameObjectLayerType.Platform, true));
 
         ShouldIsJumping(false);
 
@@ -137,100 +139,101 @@ public class CharacterTest
     }
 
     [Test]
-    //跳躍後, 在跳躍延遲時間內觸發地板, 不可再跳, 過延遲時間後再次觸發地板才可跳
-    public void cannot_jump_again_until_delay_time()
+    //跳躍後, 在跳躍延遲時間內觸發地板, 不可再跳
+    public void can_not_jump_again_when_trigger_floor_in_delay_time()
     {
         GivenJumpDelay(0.7f);
         GivenDeltaTime(0.3f);
-
         GivenIsJumpKeyDown(true);
-        characterModel.CallUpdate();
-        characterModel.CollisionExit2D(CreateCollision((int)GameConst.GameObjectLayerType.Platform));
+
+        characterModel.CallUpdate(); //0s
+        characterModel.CollisionExit2D(CreateCollision(GameConst.GameObjectLayerType.Platform));
 
         ShouldIsJumping(true);
         ShouldCallJump(1);
 
-        characterModel.CallUpdate();
-        characterModel.CollisionEnter2D(CreateCollision((int)GameConst.GameObjectLayerType.Platform, true));
+        characterModel.CallUpdate(); //0.3s
+        characterModel.CollisionEnter2D(CreateCollision(GameConst.GameObjectLayerType.Platform, true));
+
+        GivenIsJumpKeyDown(true);
+        characterModel.CallUpdate(); //0.6s
 
         ShouldIsJumping(false);
-
-        GivenIsJumpKeyDown(true);
-        characterModel.CallUpdate();
-
         ShouldCallJump(1);
-
-        GivenIsJumpKeyDown(true);
-        characterModel.CallUpdate();
-        characterModel.CollisionExit2D(CreateCollision((int)GameConst.GameObjectLayerType.Platform));
-
-        ShouldIsJumping(true);
-        ShouldCallJump(2);
     }
 
     [Test]
     //跳躍後, 在跳躍延遲時間過後觸發地板, 可再跳
-    public void can_jump_again_after_delay_time()
+    public void can_jump_again_when_trigger_floor_after_delay_time()
     {
-        GivenJumpDelay(0.5f);
+        GivenJumpDelay(0.7f);
+        GivenDeltaTime(0.6f);
+        GivenIsJumpKeyDown(true);
 
         GivenIsJumpKeyDown(true);
-        characterModel.CallUpdate();
-        characterModel.CollisionExit2D(CreateCollision((int)GameConst.GameObjectLayerType.Platform));
+        characterModel.CallUpdate(); //0s
+        characterModel.CollisionExit2D(CreateCollision(GameConst.GameObjectLayerType.Platform));
 
         ShouldCallJump(1);
 
-        characterModel.CallUpdate();
-        characterModel.CollisionEnter2D(CreateCollision((int)GameConst.GameObjectLayerType.Platform, true));
+        characterModel.CallUpdate(); //0.6s
+        characterModel.CollisionEnter2D(CreateCollision(GameConst.GameObjectLayerType.Platform, true));
 
         ShouldIsJumping(false);
 
         GivenIsJumpKeyDown(true);
-        characterModel.CallUpdate();
-        characterModel.CollisionExit2D(CreateCollision((int)GameConst.GameObjectLayerType.Platform));
+        characterModel.CallUpdate(); //1.2s 可跳躍
+        characterModel.CollisionExit2D(CreateCollision(GameConst.GameObjectLayerType.Platform));
 
         ShouldCallJump(2);
     }
 
     [Test]
-    //接觸傳送門時, 點擊按鍵後傳送
-    public void teleport_when_touch_teleport()
+    //在走路狀態接觸傳送門時, 點擊互動按鍵後傳送
+    public void teleport_when_touch_teleport_and_click_interact_button_in_walking_state()
     {
-        ICollider2DAdapter collider = CreateCollider((int)GameConst.GameObjectLayerType.TeleportGate);
-        ITeleportGate teleportGate = CreateTeleportGateComponent();
-        GivenGetComponent(collider, teleportGate);
+        ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.TeleportGate);
+        ITeleportGate component = CreateTeleportGateComponent(teleportTargetPos: new Vector3(5, 10));
+        GivenGetComponent(collider, component);
 
         characterModel.ColliderTriggerEnter2D(collider);
 
         ShouldHaveTriggerTeleportGate(true);
+        CurrentCharacterPosShouldBe(Vector3.zero);
+        CurrentCharacterStateShouldBe(CharacterState.Walking);
 
         GivenInteractKeyDown(true);
         characterModel.CallUpdate();
 
-        ShouldCallTeleport(teleportGate, 1);
+        CurrentCharacterPosShouldBe(new Vector3(5, 10));
+        ShouldPlayTeleportEffect();
     }
+    
+    //在跳躍狀態接觸傳送門時, 點擊互動按鍵後傳送
+    //在死亡狀態接觸傳送門時, 點擊互動按鍵不做事
 
     [Test]
-    //接觸其他物件而非傳送門時, 點擊按鍵不會觸發傳送
-    public void not_teleport_when_touch_other_object()
+    //觸發傳送門後, 角色速度歸零
+    public void character_velocity_should_be_zero_when_teleport()
     {
-        ICollider2DAdapter collider = CreateCollider((int)GameConst.GameObjectLayerType.Weapon);
+        ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.TeleportGate);
+        ITeleportGate component = CreateTeleportGateComponent(teleportTargetPos: new Vector3(5, 10));
+        GivenGetComponent(collider, component);
+        GivenVelocity(new Vector2(15, 0));
 
         characterModel.ColliderTriggerEnter2D(collider);
 
-        ShouldHaveTriggerTeleportGate(false);
-
         GivenInteractKeyDown(true);
         characterModel.CallUpdate();
 
-        ShouldHaveTriggerTeleportGate(false);
+        CharacterVelocityShouldBe(Vector2.zero);
     }
 
     [Test]
     //接觸傳送門但取不到Component, 點擊按鍵不會觸發傳送
-    public void not_teleport_when_touch_teleport_gate_but_can_not_get_component()
+    public void not_teleport_when_touch_teleport_gate_and_get_null_component()
     {
-        ICollider2DAdapter collider = CreateCollider((int)GameConst.GameObjectLayerType.TeleportGate);
+        ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.TeleportGate);
         GivenGetComponent(collider, default(ITeleportGate));
 
         characterModel.ColliderTriggerEnter2D(collider);
@@ -241,16 +244,7 @@ public class CharacterTest
         characterModel.CallUpdate();
 
         ShouldHaveTriggerTeleportGate(false);
-    }
-
-    [Test]
-    //沒有觸碰任何物件時, 點擊按鍵不會觸發傳送
-    public void not_teleport_when_not_touch_anything()
-    {
-        GivenInteractKeyDown(true);
-        characterModel.CallUpdate();
-
-        ShouldHaveTriggerTeleportGate(false);
+        ShouldNotPlayTeleportEffect();
     }
 
     [Test]
@@ -258,25 +252,25 @@ public class CharacterTest
     public void not_teleport_when_touch_teleport_but_over_distance()
     {
         GivenInteractDistance(2f);
-        GivenCharacterPosition(new Vector3(1, 0, 0));
-        GivenInteractKeyDown(true);
+        GivenCharacterPosition(new Vector3(1, 0));
 
-        ICollider2DAdapter collider = CreateCollider((int)GameConst.GameObjectLayerType.TeleportGate);
-        ITeleportGate teleportGate = CreateTeleportGateComponent(new Vector3(5, 0, 0));
+        ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.TeleportGate);
+        ITeleportGate teleportGate = CreateTeleportGateComponent(new Vector3(5, 0));
         GivenGetComponent(collider, teleportGate);
-
         characterModel.ColliderTriggerEnter2D(collider);
+
+        GivenInteractKeyDown(true);
         characterModel.CallUpdate();
 
-        ShouldCallTeleport(teleportGate, 0);
+        ShouldNotPlayTeleportEffect();
         ShouldHaveTriggerTeleportGate(false);
     }
 
     [Test]
     //接觸傳送門後再離開, 點擊按鍵後不會觸發傳送
-    public void not_teleport_when_touch_teleport_but_exit()
+    public void not_teleport_when_touch_teleport_then_exit()
     {
-        ICollider2DAdapter collider = CreateCollider((int)GameConst.GameObjectLayerType.TeleportGate);
+        ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.TeleportGate);
         ITeleportGate teleportGate = CreateTeleportGateComponent();
         GivenGetComponent(collider, teleportGate);
 
@@ -288,93 +282,100 @@ public class CharacterTest
         GivenInteractKeyDown(true);
         characterModel.CallUpdate();
 
-        ShouldCallTeleport(teleportGate, 0);
+        ShouldNotPlayTeleportEffect();
     }
 
     [Test]
     //接觸怪物會死亡
     public void die_when_touch_monster()
     {
-        GivenCharacterPosition(new Vector3(0, 0, 0));
-        // characterModel.BindPresenter(characterView);
-
-        GivenCharacterPosition(new Vector3(5, 2, 0));
-        ICollider2DAdapter collider = CreateCollider((int)GameConst.GameObjectLayerType.Monster);
+        ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.Monster);
         GivenGetComponent(collider, CreateMonster(MonsterState.Normal));
         characterModel.ColliderTriggerStay2D(collider);
 
-        ShouldDying(true);
-        ShouldChangeCurrentCharacterState(CharacterState.Die);
-        ShouldPlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_DIE);
+        CurrentCharacterStateShouldBe(CharacterState.Die);
+        ShouldPlayDieEffect();
+    }
 
-        CallCharacterViewWaitingCallback();
+    [Test]
+    //死亡後返回初始位置
+    public void back_to_origin_position_when_die()
+    {
+        GivenCharacterPosition(new Vector3(10, 20));
 
-        ShouldPlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_NORMAL);
-        CurrentCharacterPosShouldBe(new Vector3(0, 0, 0));
-        ShouldAudioPlayOneShot(GameConst.AUDIO_KEY_TELEPORT);
+        ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.Monster);
+        GivenGetComponent(collider, CreateMonster(MonsterState.Normal));
+        characterModel.ColliderTriggerStay2D(collider);
 
-        CallCharacterViewWaitingCallback();
+        CurrentCharacterStateShouldBe(CharacterState.Die);
+        CurrentCharacterPosShouldBe(new Vector3(10, 20));
 
-        ShouldDying(false);
+        CallAfterDieAnimationCallback();
+
+        CurrentCharacterPosShouldBe(Vector3.zero);
+    }
+
+    [Test]
+    //死亡返回初始位置後, 切換狀態為Walking
+    public void change_state_to_walking_after_die_and_back_to_origin_position()
+    {
+        ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.Monster);
+        GivenGetComponent(collider, CreateMonster(MonsterState.Normal));
+        characterModel.ColliderTriggerStay2D(collider);
+
+        CurrentCharacterStateShouldBe(CharacterState.Die);
+
+        CallAfterBackOriginCallback();
+
+        CurrentCharacterStateShouldBe(CharacterState.Walking);
     }
 
     [Test]
     //接觸暈眩中的怪不會死亡
     public void not_die_when_touch_stun_monster()
     {
-        ICollider2DAdapter collider = CreateCollider((int)GameConst.GameObjectLayerType.Monster);
+        ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.Monster);
         GivenGetComponent(collider, CreateMonster(MonsterState.Stun));
         characterModel.ColliderTriggerStay2D(collider);
 
-        ShouldDying(false);
+        CurrentCharacterStateShouldBe(CharacterState.Walking);
     }
 
     [Test]
     //接觸暈眩中的怪物, 怪物解除暈眩時會死亡
     public void die_when_touch_stun_monster_and_monster_recover()
     {
-        ICollider2DAdapter collider = CreateCollider((int)GameConst.GameObjectLayerType.Monster);
+        ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.Monster);
         IMonsterView monster = CreateMonster(MonsterState.Stun);
         GivenGetComponent(collider, monster);
         characterModel.ColliderTriggerStay2D(collider);
 
-        ShouldDying(false);
+        CurrentCharacterStateShouldBe(CharacterState.Walking);
 
         GivenMonsterCurrentState(monster, MonsterState.Normal);
         characterModel.ColliderTriggerStay2D(collider);
 
-        ShouldDying(true);
-        ShouldChangeCurrentCharacterState(CharacterState.Die);
+        CurrentCharacterStateShouldBe(CharacterState.Die);
     }
 
     [Test]
     //接觸怪物死亡時持續接觸, 死亡流程只會觸發一次
-    public void die_when_touch_monster_and_stay()
+    public void die_only_one_time_when_continue_stay_touch_monster()
     {
-        ICollider2DAdapter collider = CreateCollider((int)GameConst.GameObjectLayerType.Monster);
-        IMonsterView monster = CreateMonster(MonsterState.Normal);
-        GivenGetComponent(collider, monster);
-        characterModel.ColliderTriggerStay2D(collider);
+        ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.Monster);
+        GivenGetComponent(collider, CreateMonster(MonsterState.Normal));
         characterModel.ColliderTriggerStay2D(collider);
 
-        CallCharacterViewWaitingCallback();
-
+        ShouldPlayDieEffect(1);
+        
         characterModel.ColliderTriggerStay2D(collider);
+        
+        ShouldPlayDieEffect(1);
+        
+        CallAfterDieAnimationCallback();
         characterModel.ColliderTriggerStay2D(collider);
-
-        ShouldPlayAnimation(GameConst.ANIMATION_KEY_CHARACTER_DIE, 1);
-        ShouldAudioPlayOneShot(GameConst.AUDIO_KEY_TELEPORT, 1);
-    }
-
-    [Test]
-    //遊戲開始時, 紀錄初始點
-    public void record_origin_pos_when_game_start()
-    {
-        GivenCharacterPosition(new Vector3(5, 4, 0));
-
-        // characterModel.BindPresenter(characterView);
-
-        RecordOriginPosShouldBe(new Vector3(5, 4, 0));
+        
+        ShouldPlayDieEffect(1);
     }
 
     [Test]
@@ -382,30 +383,40 @@ public class CharacterTest
     public void back_to_origin_when_fall_to_specified_height()
     {
         GivenFallDownLimitPos(-5);
-        GivenCharacterPosition(new Vector3(0, 1, 0));
-
-        // characterModel.BindPresenter(characterView);
-
-        GivenCharacterPosition(new Vector3(-5, -4, 0));
+        GivenCharacterPosition(new Vector3(0, -4, 0));
+        GivenVelocity(new Vector2(0, -1));
+        
         characterModel.CallUpdate();
 
-        ShouldDying(false);
+        CurrentCharacterStateShouldBe(CharacterState.Walking);
+        ShouldNotPlayTeleportEffect();
+        CurrentCharacterPosShouldBe(new Vector3(0, -4, 0));
+        CharacterVelocityShouldBe(new Vector2(0, -1));
 
-        GivenCharacterPosition(new Vector3(-5, -5, 0));
+        GivenCharacterPosition(new Vector3(0, -5, 0));
         characterModel.CallUpdate();
 
-        ShouldDying(true);
-        ShouldChangeCurrentCharacterState(CharacterState.Die);
-        ShouldAudioPlayOneShot(GameConst.AUDIO_KEY_TELEPORT);
-        CurrentCharacterPosShouldBe(new Vector3(0, 1, 0));
-
-        characterModel.CallUpdate();
-        ShouldAudioPlayOneShot(GameConst.AUDIO_KEY_TELEPORT, 1);
-
-        CallCharacterViewWaitingCallback();
-
-        ShouldDying(false);
+        CurrentCharacterStateShouldBe(CharacterState.Die);
+        ShouldPlayTeleportEffect();
+        CurrentCharacterPosShouldBe(Vector3.zero);
+        CharacterVelocityShouldBe(Vector3.zero);
     }
+    
+    //接觸儲存點時, 顯示儲存點提示
+    //接觸儲存點再離開, 隱藏儲存點提示
+    //在一般狀態接觸儲存點時, 點擊互動按鍵後儲存位置並進入房屋
+    //在跳躍狀態接觸儲存點時, 點擊互動按鍵不做事
+    //在死亡狀態接觸儲存點時, 點擊互動按鍵不做事
+    //進入房屋時角色速度歸零
+    //進入房屋時, 不可移動
+    //進入房屋時, 不可跳躍
+    //進入房屋時, 觸碰怪物不會死亡
+    //接觸儲存點但取不到Component, 點擊按鍵不做事
+    //接觸儲存點時, 點擊按鍵但超過距離, 不做事
+    //接觸儲存點後再離開, 點擊按鍵不會觸發儲存點
+    //進入房屋後, 再次按下互動按鍵, 離開房屋
+    //進入房屋後, 若沒有紀錄其他儲存點, 不可在房屋之間傳送
+    //進入房屋後, 若有紀錄其他儲存點, 可在房屋之間傳送, 傳送後維持進入房屋狀態
 
     private void InitCharacterSettingMock()
     {
@@ -415,6 +426,25 @@ public class CharacterTest
         GivenJumpForce(1);
         GivenJumpDelay(1);
         GivenFallDownLimitPos(-10);
+    }
+
+    private void InitPresenterMock()
+    {
+        presenter = Substitute.For<ICharacterPresenter>();
+
+        rigidbody = Substitute.For<IRigidbody2DAdapter>();
+        presenter.GetRigidbody.Returns(rigidbody);
+
+        presenter.When(x => x.PlayDieEffect(Arg.Any<Action>(), Arg.Any<Action>())).Do(callInfo =>
+        {
+            afterDieAnimationCallback = (Action)callInfo.Args()[0];
+            afterBackOriginCallback = (Action)callInfo.Args()[1];
+        });
+    }
+
+    private void GivenVelocity(Vector2 velocity)
+    {
+        rigidbody.velocity = velocity;
     }
 
     private void GivenFallDownLimitPos(float pos)
@@ -477,14 +507,34 @@ public class CharacterTest
         monsterView.CurrentState.Returns(monsterState);
     }
 
+    private void CallAfterBackOriginCallback()
+    {
+        afterBackOriginCallback.Invoke();
+    }
+
+    private void CallAfterDieAnimationCallback()
+    {
+        afterDieAnimationCallback.Invoke();
+    }
+
     private void CallCharacterViewWaitingCallback()
     {
         characterViewWaitingCallback.Invoke();
     }
 
-    private void ShouldChangeCurrentCharacterState(CharacterState characterState, int triggerTimes = 1)
+    private void ShouldPlayDieEffect(int expectedCallTimes = 1)
     {
-        // gameEventHandler.Received(triggerTimes).ChangeCurrentCharacterState(characterState);
+        presenter.Received(expectedCallTimes).PlayDieEffect(Arg.Any<Action>(), Arg.Any<Action>());
+    }
+
+    private void CharacterVelocityShouldBe(Vector2 expectedVelocity)
+    {
+        Assert.AreEqual(expectedVelocity, rigidbody.velocity);
+    }
+
+    private void CurrentCharacterStateShouldBe(CharacterState expectedState)
+    {
+        Assert.AreEqual(expectedState, characterModel.CurrentCharacterState);
     }
 
     private void FaceDirectionScaleShouldBe(int expectedScale)
@@ -529,11 +579,6 @@ public class CharacterTest
         characterView.Received(triggerTimes).PlayAnimation(expectedAnimationKey);
     }
 
-    private void ShouldDying(bool expectedIsDying)
-    {
-        // Assert.AreEqual(expectedIsDying, characterModel.IsDying);
-    }
-
     private void RecordOriginPosShouldBe(Vector3 expectedPos)
     {
         Assert.AreEqual(expectedPos, characterModel.RecordOriginPos);
@@ -544,15 +589,19 @@ public class CharacterTest
         Assert.AreEqual(expectedHave, characterModel.HaveInteractGate);
     }
 
-    private void ShouldCallTeleport(ITeleportGate teleportGate, int callTimes)
+    private void ShouldNotPlayTeleportEffect()
     {
-        // teleportGate.Received(callTimes).Teleport(Arg.Any<IRigidbody>());
+        presenter.DidNotReceive().PlayTeleportEffect();
+    }
+
+    private void ShouldPlayTeleportEffect(int callTimes = 1)
+    {
+        presenter.Received(callTimes).PlayTeleportEffect();
     }
 
     private void ShouldCallJump(int triggerTimes)
     {
         rigidbody.Received(triggerTimes).AddForce(Arg.Is<Vector2>(v => v.y > 0 && v.x == 0));
-        audioManager.Received(triggerTimes).PlayOneShot(GameConst.AUDIO_KEY_JUMP);
     }
 
     private void ShouldIsJumping(bool expectedIsJumping)
@@ -573,12 +622,6 @@ public class CharacterTest
             Assert.IsTrue(argument < 0);
     }
 
-    private void IniPresenterMock()
-    {
-        presenter = Substitute.For<ICharacterPresenter>();
-        presenter.GetRigidbody.Returns(rigidbody);
-    }
-
     private IMonsterView CreateMonster(MonsterState monsterState)
     {
         IMonsterView monsterView = Substitute.For<IMonsterView>();
@@ -586,25 +629,26 @@ public class CharacterTest
         return monsterView;
     }
 
-    private ICollider2DAdapter CreateCollider(int collisionLayer)
+    private ICollider2DAdapter CreateCollider(GameConst.GameObjectLayerType collisionLayer)
     {
         ICollider2DAdapter collider = Substitute.For<ICollider2DAdapter>();
-        collider.Layer.Returns(collisionLayer);
+        collider.Layer.Returns((int)collisionLayer);
         return collider;
     }
 
-    private ICollision2DAdapter CreateCollision(int collisionLayer, bool isPhysicsOverlapCircle = false)
+    private ICollision2DAdapter CreateCollision(GameConst.GameObjectLayerType collisionLayer, bool isPhysicsOverlapCircle = false)
     {
         ICollision2DAdapter collision = Substitute.For<ICollision2DAdapter>();
-        collision.Layer.Returns(collisionLayer);
+        collision.Layer.Returns((int)collisionLayer);
         collision.CheckPhysicsOverlapCircle(Arg.Any<Vector3>(), Arg.Any<float>(), Arg.Any<GameConst.GameObjectLayerType>()).Returns(isPhysicsOverlapCircle);
         return collision;
     }
 
-    private ITeleportGate CreateTeleportGateComponent(Vector3 pos = default)
+    private ITeleportGate CreateTeleportGateComponent(Vector3 pos = default, Vector3 teleportTargetPos = default)
     {
         ITeleportGate teleportGate = Substitute.For<ITeleportGate>();
         teleportGate.GetPos.Returns(pos);
+        teleportGate.GetTargetPos.Returns(teleportTargetPos);
         return teleportGate;
     }
 }
