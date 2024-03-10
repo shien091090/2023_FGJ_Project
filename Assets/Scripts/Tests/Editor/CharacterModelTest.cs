@@ -20,6 +20,7 @@ public class CharacterModelTest
     private Action afterBackOriginCallback;
     private Action triggerInteractiveObjectEvent;
     private Action unTriggerInteractiveObjectEvent;
+    private Action playEnterHouseEffectCallback;
 
     [SetUp]
     public void Setup()
@@ -473,6 +474,36 @@ public class CharacterModelTest
         ShouldSendUnTriggerInteractiveObjectEvent(1);
     }
 
+    [Test]
+    //在一般狀態接觸儲存點時, 點擊互動按鍵後儲存位置並進入房屋
+    public void save_position_and_into_house_when_touch_save_point_and_click_interact_button_in_normal_state()
+    {
+        ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
+        ISavePointView savePoint = CreateSavePoint();
+        GivenGetComponent(collider, savePoint);
+        characterModel.ColliderTriggerEnter2D(collider);
+
+        GivenInteractKeyDown(true);
+        characterModel.CallUpdate();
+
+        CurrentCharacterStateShouldBe(CharacterState.Walking);
+        ShouldSaveCurrentPoint(savePoint);
+
+        CallPlayEnterHouseEffectCallback();
+        
+        CurrentCharacterStateShouldBe(CharacterState.IntoHouse);
+    }
+
+    private void CallPlayEnterHouseEffectCallback()
+    {
+        playEnterHouseEffectCallback.Invoke();
+    }
+
+    private void ShouldSaveCurrentPoint(ISavePointView savePoint, int expectedCallTimes = 1)
+    {
+        savePoint.GetModel.Received(expectedCallTimes).Save();
+    }
+
     private void ShouldSendUnTriggerInteractiveObjectEvent(int expectedTriggerTimes)
     {
         unTriggerInteractiveObjectEvent.Received(expectedTriggerTimes).Invoke();
@@ -483,7 +514,6 @@ public class CharacterModelTest
         savePoint.GetModel.Received().HideAllUI();
     }
 
-    //在一般狀態接觸儲存點時, 點擊互動按鍵後儲存位置並進入房屋
     //在跳躍狀態接觸儲存點時, 點擊互動按鍵不做事
     //在死亡狀態接觸儲存點時, 點擊互動按鍵不做事
     //進入房屋時角色速度歸零
@@ -509,6 +539,10 @@ public class CharacterModelTest
 
     private void InitPresenterMock()
     {
+        afterDieAnimationCallback = null;
+        afterBackOriginCallback = null;
+        playEnterHouseEffectCallback = null;
+
         presenter = Substitute.For<ICharacterPresenter>();
 
         rigidbody = Substitute.For<IRigidbody2DAdapter>();
@@ -518,6 +552,11 @@ public class CharacterModelTest
         {
             afterDieAnimationCallback = (Action)callInfo.Args()[0];
             afterBackOriginCallback = (Action)callInfo.Args()[1];
+        });
+
+        presenter.When(x => x.PlayEnterHouseEffect(Arg.Any<Action>())).Do(callInfo =>
+        {
+            playEnterHouseEffectCallback = (Action)callInfo.Args()[0];
         });
     }
 
