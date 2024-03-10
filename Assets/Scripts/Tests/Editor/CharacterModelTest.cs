@@ -206,7 +206,7 @@ public class CharacterModelTest
 
     [Test]
     //在跳躍狀態接觸傳送門時, 點擊互動按鍵後傳送
-    public void teleport_when_touch_and_click_interact_button_in_jumping_state()
+    public void teleport_when_touch_teleport_gate_and_click_interact_button_in_jumping_state()
     {
         ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.TeleportGate);
         ITeleportGate component = CreateTeleportGateComponent(teleportTargetPos: new Vector3(5, 10));
@@ -226,8 +226,33 @@ public class CharacterModelTest
         CurrentCharacterPosShouldBe(new Vector3(5, 10));
         ShouldPlayTeleportEffect();
     }
-    
+
+    [Test]
     //在死亡狀態接觸傳送門時, 點擊互動按鍵不做事
+    public void not_teleport_when_touch_teleport_gate_and_click_interact_button_in_dead_state()
+    {
+        GivenGetComponent(
+            CreateCollider(GameConst.GameObjectLayerType.Monster),
+            CreateMonster(MonsterState.Normal));
+
+        characterModel.ColliderTriggerStay2D(CreateCollider(GameConst.GameObjectLayerType.Monster));
+
+        CurrentCharacterStateShouldBe(CharacterState.Die);
+
+        ICollider2DAdapter teleportGateCollider = CreateCollider(GameConst.GameObjectLayerType.TeleportGate);
+        ITeleportGate teleportGateComponent = CreateTeleportGateComponent(teleportTargetPos: new Vector3(5, 10));
+        GivenGetComponent(teleportGateCollider, teleportGateComponent);
+
+        characterModel.ColliderTriggerEnter2D(teleportGateCollider);
+
+        ShouldHaveTriggerTeleportGate(true);
+
+        GivenInteractKeyDown(true);
+        characterModel.CallUpdate();
+
+        CurrentCharacterPosShouldBe(Vector3.zero);
+        ShouldNotPlayTeleportEffect();
+    }
 
     [Test]
     //觸發傳送門後, 角色速度歸零
@@ -433,7 +458,31 @@ public class CharacterModelTest
         ShouldSendTriggerInteractiveObjectEvent(1);
     }
 
+    [Test]
     //接觸儲存點再離開, 隱藏儲存點提示
+    public void hide_save_point_hint_when_touch_save_point_then_exit()
+    {
+        ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
+        ISavePointView savePoint = CreateSavePoint();
+        GivenGetComponent(collider, savePoint);
+        characterModel.ColliderTriggerEnter2D(collider);
+        characterModel.ColliderTriggerExit2D(collider);
+
+        ShouldSavePointHideAllUI(savePoint);
+        ShouldHaveTriggerSavePoint(false);
+        ShouldSendUnTriggerInteractiveObjectEvent(1);
+    }
+
+    private void ShouldSendUnTriggerInteractiveObjectEvent(int expectedTriggerTimes)
+    {
+        unTriggerInteractiveObjectEvent.Received(expectedTriggerTimes).Invoke();
+    }
+
+    private void ShouldSavePointHideAllUI(ISavePointView savePoint)
+    {
+        savePoint.GetModel.Received().HideAllUI();
+    }
+
     //在一般狀態接觸儲存點時, 點擊互動按鍵後儲存位置並進入房屋
     //在跳躍狀態接觸儲存點時, 點擊互動按鍵不做事
     //在死亡狀態接觸儲存點時, 點擊互動按鍵不做事
