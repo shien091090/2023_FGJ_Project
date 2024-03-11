@@ -514,7 +514,25 @@ public class CharacterModelTest
         ShouldNotSaveCurrentPoint(savePoint);
     }
     
+    [Test]
     //在死亡狀態接觸儲存點時, 點擊互動按鍵不做事
+    public void do_nothing_when_touch_save_point_and_click_interact_button_in_dead_state()
+    {
+        characterModel.ColliderTriggerStay2D(CreateCollider(GameConst.GameObjectLayerType.Monster));
+        
+        CurrentCharacterStateShouldBe(CharacterState.Die);
+        
+        ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
+        ISavePointView savePoint = CreateSavePoint();
+        GivenGetComponent(collider, savePoint);
+        characterModel.ColliderTriggerEnter2D(collider);
+
+        GivenInteractKeyDown(true);
+        characterModel.CallUpdate();
+
+        ShouldNotSaveCurrentPoint(savePoint);
+    }
+    
     //進入房屋時角色速度歸零
     //進入房屋時, 不可移動
     //進入房屋時, 不可跳躍

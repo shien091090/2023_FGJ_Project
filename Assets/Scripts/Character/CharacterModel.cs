@@ -166,10 +166,7 @@ public class CharacterModel : ICharacterModel
 
     public void CallUpdate()
     {
-        if (CurrentCharacterState == CharacterState.Die)
-            return;
-
-        if (isFreeze)
+        if (CurrentCharacterState == CharacterState.Die || isFreeze)
             return;
 
         if (selfRigidbody.position.y <= characterSetting.FallDownLimitPosY)
