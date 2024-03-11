@@ -494,9 +494,46 @@ public class CharacterModelTest
         CurrentCharacterStateShouldBe(CharacterState.IntoHouse);
     }
 
+    [Test]
+    //在跳躍狀態接觸儲存點時, 點擊互動按鍵不做事
+    public void do_nothing_when_touch_save_point_and_click_interact_button_in_jumping_state()
+    {
+        ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
+        ISavePointView savePoint = CreateSavePoint();
+        GivenGetComponent(collider, savePoint);
+        characterModel.ColliderTriggerEnter2D(collider);
+
+        GivenIsJumpKeyDown(true);
+        characterModel.CallUpdate();
+        
+        CurrentCharacterStateShouldBe(CharacterState.Jumping);
+        
+        GivenInteractKeyDown(true);
+        characterModel.CallUpdate();
+        
+        ShouldNotSaveCurrentPoint(savePoint);
+    }
+    
+    //在死亡狀態接觸儲存點時, 點擊互動按鍵不做事
+    //進入房屋時角色速度歸零
+    //進入房屋時, 不可移動
+    //進入房屋時, 不可跳躍
+    //進入房屋時, 觸碰怪物不會死亡
+    //接觸儲存點但取不到Component, 點擊按鍵不做事
+    //接觸儲存點時, 點擊按鍵但超過距離, 不做事
+    //接觸儲存點後再離開, 點擊按鍵不會觸發儲存點
+    //進入房屋後, 再次按下互動按鍵, 離開房屋
+    //進入房屋後, 若沒有紀錄其他儲存點, 不可在房屋之間傳送
+    //進入房屋後, 若有紀錄其他儲存點, 可在房屋之間傳送, 傳送後維持進入房屋狀態
+
     private void CallPlayEnterHouseEffectCallback()
     {
         playEnterHouseEffectCallback.Invoke();
+    }
+    
+    private void ShouldNotSaveCurrentPoint(ISavePointView savePoint)
+    {
+        savePoint.GetModel.DidNotReceive().Save();
     }
 
     private void ShouldSaveCurrentPoint(ISavePointView savePoint, int expectedCallTimes = 1)
@@ -513,19 +550,6 @@ public class CharacterModelTest
     {
         savePoint.GetModel.Received().HideAllUI();
     }
-
-    //在跳躍狀態接觸儲存點時, 點擊互動按鍵不做事
-    //在死亡狀態接觸儲存點時, 點擊互動按鍵不做事
-    //進入房屋時角色速度歸零
-    //進入房屋時, 不可移動
-    //進入房屋時, 不可跳躍
-    //進入房屋時, 觸碰怪物不會死亡
-    //接觸儲存點但取不到Component, 點擊按鍵不做事
-    //接觸儲存點時, 點擊按鍵但超過距離, 不做事
-    //接觸儲存點後再離開, 點擊按鍵不會觸發儲存點
-    //進入房屋後, 再次按下互動按鍵, 離開房屋
-    //進入房屋後, 若沒有紀錄其他儲存點, 不可在房屋之間傳送
-    //進入房屋後, 若有紀錄其他儲存點, 可在房屋之間傳送, 傳送後維持進入房屋狀態
 
     private void InitCharacterSettingMock()
     {

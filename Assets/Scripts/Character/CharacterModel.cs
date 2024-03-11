@@ -220,6 +220,18 @@ public class CharacterModel : ICharacterModel
         return true;
     }
 
+    private bool CheckCanExitHouse()
+    {
+        return CurrentCharacterState == CharacterState.IntoHouse;
+    }
+
+    private bool CheckCanTriggerSavePoint()
+    {
+        return
+            CurrentCharacterState != CharacterState.Jumping &&
+            HaveInteractSavePoint;
+    }
+
     private void UpdateMove(float deltaTime, float speed)
     {
         if (CurrentCharacterState == CharacterState.IntoHouse)
@@ -286,7 +298,7 @@ public class CharacterModel : ICharacterModel
         if (selfRigidbody == null)
             return;
 
-        if (CurrentCharacterState == CharacterState.IntoHouse)
+        if (CheckCanExitHouse())
         {
             isFreeze = true;
             characterPresenter.PlayExitHouseEffect(() =>
@@ -301,7 +313,8 @@ public class CharacterModel : ICharacterModel
         {
             if (HaveInteractGate)
                 TriggerTeleportGate();
-            else if (HaveInteractSavePoint)
+
+            if (CheckCanTriggerSavePoint())
                 TriggerSavePoint();
         }
     }
