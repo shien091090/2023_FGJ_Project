@@ -235,11 +235,13 @@ public class CharacterModel : ICharacterModel
             return;
 
         float horizontalAxis = moveController.GetHorizontalAxis();
+        if (horizontalAxis == 0)
+            return;
+
         if ((horizontalAxis > 0 && isCollideRightWall) || (horizontalAxis < 0 && isCollideLeftWall))
             horizontalAxis = 0;
 
-        float moveValue = horizontalAxis * deltaTime * speed;
-        characterPresenter.PlayerMoveEffect(moveValue);
+        characterPresenter.PlayerMoveEffect(horizontalAxis * deltaTime * speed);
     }
 
     private void UpdateCheckJump(float jumpForce)

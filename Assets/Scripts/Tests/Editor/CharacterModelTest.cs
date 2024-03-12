@@ -59,6 +59,17 @@ public class CharacterModelTest
 
         LastTranslateShouldBeRight(expectedMoveRight);
     }
+    
+    [Test]
+    //沒有按左右移動按鍵時, 不會移動
+    public void not_move_when_not_press_key()
+    {
+        GivenHorizontalAxis(0);
+
+        characterModel.CallUpdate();
+
+        ShouldNotPlayMoveEffect();
+    }
 
     [Test]
     //沒有按跳躍按鍵時, 不會跳躍
@@ -490,7 +501,7 @@ public class CharacterModelTest
         ShouldSaveCurrentPoint(savePoint);
 
         CallPlayEnterHouseEffectCallback();
-        
+
         CurrentCharacterStateShouldBe(CharacterState.IntoHouse);
     }
 
@@ -505,23 +516,23 @@ public class CharacterModelTest
 
         GivenIsJumpKeyDown(true);
         characterModel.CallUpdate();
-        
+
         CurrentCharacterStateShouldBe(CharacterState.Jumping);
-        
+
         GivenInteractKeyDown(true);
         characterModel.CallUpdate();
-        
+
         ShouldNotSaveCurrentPoint(savePoint);
     }
-    
+
     [Test]
     //在死亡狀態接觸儲存點時, 點擊互動按鍵不做事
     public void do_nothing_when_touch_save_point_and_click_interact_button_in_dead_state()
     {
         characterModel.ColliderTriggerStay2D(CreateCollider(GameConst.GameObjectLayerType.Monster));
-        
+
         CurrentCharacterStateShouldBe(CharacterState.Die);
-        
+
         ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
         ISavePointView savePoint = CreateSavePoint();
         GivenGetComponent(collider, savePoint);
@@ -532,13 +543,13 @@ public class CharacterModelTest
 
         ShouldNotSaveCurrentPoint(savePoint);
     }
-    
+
     [Test]
     //進入房屋時角色速度歸零
     public void character_velocity_should_be_zero_when_into_house()
     {
         GivenVelocity(new Vector2(15, 0));
-        
+
         ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
         ISavePointView savePoint = CreateSavePoint();
         GivenGetComponent(collider, savePoint);
@@ -549,40 +560,23 @@ public class CharacterModelTest
 
         CharacterVelocityShouldBe(Vector2.zero);
     }
-    
+
+    [Test]
     //進入房屋時, 不可移動
-    //進入房屋時, 不可跳躍
-    //進入房屋時, 觸碰怪物不會死亡
-    //接觸儲存點但取不到Component, 點擊按鍵不做事
-    //接觸儲存點時, 點擊按鍵但超過距離, 不做事
-    //接觸儲存點後再離開, 點擊按鍵不會觸發儲存點
-    //進入房屋後, 再次按下互動按鍵, 離開房屋
-    //進入房屋後, 若沒有紀錄其他儲存點, 不可在房屋之間傳送
-    //進入房屋後, 若有紀錄其他儲存點, 可在房屋之間傳送, 傳送後維持進入房屋狀態
+    public void can_not_move_when_into_house()
+    {
+        ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
+        ISavePointView savePoint = CreateSavePoint();
+        GivenGetComponent(collider, savePoint);
+        characterModel.ColliderTriggerEnter2D(collider);
 
-    private void CallPlayEnterHouseEffectCallback()
-    {
-        playEnterHouseEffectCallback.Invoke();
-    }
-    
-    private void ShouldNotSaveCurrentPoint(ISavePointView savePoint)
-    {
-        savePoint.GetModel.DidNotReceive().Save();
-    }
+        GivenInteractKeyDown(true);
+        characterModel.CallUpdate();
 
-    private void ShouldSaveCurrentPoint(ISavePointView savePoint, int expectedCallTimes = 1)
-    {
-        savePoint.GetModel.Received(expectedCallTimes).Save();
-    }
+        GivenHorizontalAxis(1);
+        characterModel.CallUpdate();
 
-    private void ShouldSendUnTriggerInteractiveObjectEvent(int expectedTriggerTimes)
-    {
-        unTriggerInteractiveObjectEvent.Received(expectedTriggerTimes).Invoke();
-    }
-
-    private void ShouldSavePointHideAllUI(ISavePointView savePoint)
-    {
-        savePoint.GetModel.Received().HideAllUI();
+        ShouldNotPlayMoveEffect();
     }
 
     private void InitCharacterSettingMock()
@@ -683,6 +677,21 @@ public class CharacterModelTest
         monsterView.CurrentState.Returns(monsterState);
     }
 
+
+    //進入房屋時, 不可跳躍
+    //進入房屋時, 觸碰怪物不會死亡
+    //接觸儲存點但取不到Component, 點擊按鍵不做事
+    //接觸儲存點時, 點擊按鍵但超過距離, 不做事
+    //接觸儲存點後再離開, 點擊按鍵不會觸發儲存點
+    //進入房屋後, 再次按下互動按鍵, 離開房屋
+    //進入房屋後, 若沒有紀錄其他儲存點, 不可在房屋之間傳送
+    //進入房屋後, 若有紀錄其他儲存點, 可在房屋之間傳送, 傳送後維持進入房屋狀態
+
+    private void CallPlayEnterHouseEffectCallback()
+    {
+        playEnterHouseEffectCallback.Invoke();
+    }
+
     private void CallAfterBackOriginCallback()
     {
         afterBackOriginCallback.Invoke();
@@ -691,6 +700,26 @@ public class CharacterModelTest
     private void CallAfterDieAnimationCallback()
     {
         afterDieAnimationCallback.Invoke();
+    }
+
+    private void ShouldNotSaveCurrentPoint(ISavePointView savePoint)
+    {
+        savePoint.GetModel.DidNotReceive().Save();
+    }
+
+    private void ShouldSaveCurrentPoint(ISavePointView savePoint, int expectedCallTimes = 1)
+    {
+        savePoint.GetModel.Received(expectedCallTimes).Save();
+    }
+
+    private void ShouldSendUnTriggerInteractiveObjectEvent(int expectedTriggerTimes)
+    {
+        unTriggerInteractiveObjectEvent.Received(expectedTriggerTimes).Invoke();
+    }
+
+    private void ShouldSavePointHideAllUI(ISavePointView savePoint)
+    {
+        savePoint.GetModel.Received().HideAllUI();
     }
 
     private void ShouldSendTriggerInteractiveObjectEvent(int expectedTriggerTimes)
@@ -751,6 +780,11 @@ public class CharacterModelTest
     private void ShouldIsJumping(bool expectedIsJumping)
     {
         Assert.AreEqual(expectedIsJumping, characterModel.IsJumping);
+    }
+
+    private void ShouldNotPlayMoveEffect()
+    {
+        presenter.DidNotReceive().PlayerMoveEffect(Arg.Any<float>());
     }
 
     private void LastTranslateShouldBeRight(bool isRight)
