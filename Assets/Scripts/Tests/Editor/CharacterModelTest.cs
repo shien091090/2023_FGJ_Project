@@ -604,15 +604,15 @@ public class CharacterModelTest
     {
         ICollider2DAdapter savePointCollider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
         ISavePointView savePoint = CreateSavePoint();
-        GivenGetComponent( savePointCollider, savePoint);
-        characterModel.ColliderTriggerEnter2D( savePointCollider);
-        
+        GivenGetComponent(savePointCollider, savePoint);
+        characterModel.ColliderTriggerEnter2D(savePointCollider);
+
         GivenInteractKeyDown(true);
         characterModel.CallUpdate();
         CallPlayEnterHouseEffectCallback();
-        
+
         CurrentCharacterStateShouldBe(CharacterState.IntoHouse);
-        
+
         ICollider2DAdapter monsterCollider = CreateCollider(GameConst.GameObjectLayerType.Monster);
         GivenGetComponent(monsterCollider, CreateMonster(MonsterState.Normal));
         characterModel.ColliderTriggerStay2D(monsterCollider);
@@ -620,8 +620,23 @@ public class CharacterModelTest
         CurrentCharacterStateShouldBe(CharacterState.IntoHouse);
         ShouldNotPlayDieEffect();
     }
-    
+
+    [Test]
     //接觸儲存點但取不到Component, 點擊按鍵不做事
+    public void do_nothing_when_touch_save_point_and_get_null_component()
+    {
+        ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
+        GivenGetComponent(collider, default(ISavePointView));
+        characterModel.ColliderTriggerEnter2D(collider);
+
+        ShouldHaveTriggerSavePoint(false);
+
+        GivenInteractKeyDown(true);
+        characterModel.CallUpdate();
+
+        ShouldNotPlayEnterHouseEffect();
+    }
+
     //接觸儲存點時, 點擊按鍵但超過距離, 不做事
     //接觸儲存點後再離開, 點擊按鍵不會觸發儲存點
     //進入房屋後, 再次按下互動按鍵, 離開房屋
@@ -741,6 +756,11 @@ public class CharacterModelTest
         afterDieAnimationCallback.Invoke();
     }
 
+    private void ShouldNotPlayEnterHouseEffect()
+    {
+        presenter.DidNotReceive().PlayEnterHouseEffect(Arg.Any<Action>());
+    }
+
     private void ShouldNotSaveCurrentPoint(ISavePointView savePoint)
     {
         savePoint.GetModel.DidNotReceive().Save();
@@ -780,7 +800,7 @@ public class CharacterModelTest
     {
         presenter.DidNotReceive().PlayDieEffect(Arg.Any<Action>(), Arg.Any<Action>());
     }
-    
+
     private void ShouldPlayDieEffect(int expectedCallTimes = 1)
     {
         presenter.Received(expectedCallTimes).PlayDieEffect(Arg.Any<Action>(), Arg.Any<Action>());
