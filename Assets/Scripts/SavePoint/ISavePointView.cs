@@ -2,6 +2,7 @@ using UnityEngine;
 
 public interface ISavePointView
 {
+    Vector3 GetPos { get; }
     Vector3 SavePointPos { get; }
     ISavePointModel GetModel { get; }
     void SetRecordStateHintActive(bool isActive);

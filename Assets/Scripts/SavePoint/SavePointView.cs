@@ -14,6 +14,7 @@ public class SavePointView : MonoBehaviour, ISavePointView
 
     [Inject] private IAudioManager audioManager;
 
+    public Vector3 GetPos => transform.position;
     public Vector3 SavePointPos => savePointRefObj.position;
     public ISavePointModel GetModel => savePointModel;
 

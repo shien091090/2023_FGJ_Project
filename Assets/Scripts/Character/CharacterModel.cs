@@ -226,9 +226,30 @@ public class CharacterModel : ICharacterModel
 
     private bool CheckCanTriggerSavePoint()
     {
-        return
-            CurrentCharacterState != CharacterState.Jumping &&
-            HaveInteractSavePoint;
+        if (CurrentCharacterState == CharacterState.Jumping || HaveInteractSavePoint == false)
+            return false;
+
+        if (Vector3.Distance(selfRigidbody.position, CurrentTriggerSavePoint.GetPos) > characterSetting.InteractDistance)
+        {
+            CurrentTriggerSavePoint = null;
+            return false;
+        }
+        else
+            return true;
+    }
+
+    private bool CheckCanTriggerTeleportGate()
+    {
+        if (HaveInteractGate == false)
+            return false;
+
+        if (Vector3.Distance(selfRigidbody.position, CurrentTriggerTeleportGate.GetPos) > characterSetting.InteractDistance)
+        {
+            CurrentTriggerTeleportGate = null;
+            return false;
+        }
+        else
+            return true;
     }
 
     private void UpdateMove(float deltaTime, float speed)
@@ -312,7 +333,7 @@ public class CharacterModel : ICharacterModel
         }
         else
         {
-            if (HaveInteractGate)
+            if (CheckCanTriggerTeleportGate())
                 TriggerTeleportGate();
 
             if (CheckCanTriggerSavePoint())
@@ -392,15 +413,7 @@ public class CharacterModel : ICharacterModel
 
     private void TriggerTeleportGate()
     {
-        float distance = Vector3.Distance(selfRigidbody.position, CurrentTriggerTeleportGate.GetPos);
-        if (distance > characterSetting.InteractDistance)
-        {
-            CurrentTriggerTeleportGate = null;
-            return;
-        }
-
-        if (HaveInteractGate)
-            Teleport(CurrentTriggerTeleportGate.GetTargetPos);
+        Teleport(CurrentTriggerTeleportGate.GetTargetPos);
     }
 
     private void OnEndItemEffect(ItemType itemType)

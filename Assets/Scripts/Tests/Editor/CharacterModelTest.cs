@@ -461,7 +461,7 @@ public class CharacterModelTest
     public void show_save_point_hint_when_touch_save_point()
     {
         ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
-        ISavePointView savePoint = CreateSavePoint();
+        ISavePointView savePoint = CreateSavePointComponent();
         GivenGetComponent(collider, savePoint);
         characterModel.ColliderTriggerEnter2D(collider);
 
@@ -475,7 +475,7 @@ public class CharacterModelTest
     public void hide_save_point_hint_when_touch_save_point_then_exit()
     {
         ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
-        ISavePointView savePoint = CreateSavePoint();
+        ISavePointView savePoint = CreateSavePointComponent();
         GivenGetComponent(collider, savePoint);
         characterModel.ColliderTriggerEnter2D(collider);
         characterModel.ColliderTriggerExit2D(collider);
@@ -490,7 +490,7 @@ public class CharacterModelTest
     public void save_position_and_into_house_when_touch_save_point_and_click_interact_button_in_normal_state()
     {
         ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
-        ISavePointView savePoint = CreateSavePoint();
+        ISavePointView savePoint = CreateSavePointComponent();
         GivenGetComponent(collider, savePoint);
         characterModel.ColliderTriggerEnter2D(collider);
 
@@ -510,7 +510,7 @@ public class CharacterModelTest
     public void do_nothing_when_touch_save_point_and_click_interact_button_in_jumping_state()
     {
         ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
-        ISavePointView savePoint = CreateSavePoint();
+        ISavePointView savePoint = CreateSavePointComponent();
         GivenGetComponent(collider, savePoint);
         characterModel.ColliderTriggerEnter2D(collider);
 
@@ -534,7 +534,7 @@ public class CharacterModelTest
         CurrentCharacterStateShouldBe(CharacterState.Die);
 
         ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
-        ISavePointView savePoint = CreateSavePoint();
+        ISavePointView savePoint = CreateSavePointComponent();
         GivenGetComponent(collider, savePoint);
         characterModel.ColliderTriggerEnter2D(collider);
 
@@ -551,7 +551,7 @@ public class CharacterModelTest
         GivenVelocity(new Vector2(15, 0));
 
         ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
-        ISavePointView savePoint = CreateSavePoint();
+        ISavePointView savePoint = CreateSavePointComponent();
         GivenGetComponent(collider, savePoint);
         characterModel.ColliderTriggerEnter2D(collider);
 
@@ -566,7 +566,7 @@ public class CharacterModelTest
     public void can_not_move_when_into_house()
     {
         ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
-        ISavePointView savePoint = CreateSavePoint();
+        ISavePointView savePoint = CreateSavePointComponent();
         GivenGetComponent(collider, savePoint);
         characterModel.ColliderTriggerEnter2D(collider);
 
@@ -584,7 +584,7 @@ public class CharacterModelTest
     public void can_not_jump_when_into_house()
     {
         ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
-        ISavePointView savePoint = CreateSavePoint();
+        ISavePointView savePoint = CreateSavePointComponent();
         GivenGetComponent(collider, savePoint);
         characterModel.ColliderTriggerEnter2D(collider);
 
@@ -603,7 +603,7 @@ public class CharacterModelTest
     public void not_die_when_touch_monster_in_house()
     {
         ICollider2DAdapter savePointCollider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
-        ISavePointView savePoint = CreateSavePoint();
+        ISavePointView savePoint = CreateSavePointComponent();
         GivenGetComponent(savePointCollider, savePoint);
         characterModel.ColliderTriggerEnter2D(savePointCollider);
 
@@ -637,7 +637,25 @@ public class CharacterModelTest
         ShouldNotPlayEnterHouseEffect();
     }
 
+    [Test]
     //接觸儲存點時, 點擊按鍵但超過距離, 不做事
+    public void do_nothing_when_touch_save_point_but_over_distance()
+    {
+        GivenInteractDistance(2f);
+        GivenCharacterPosition(new Vector3(1, 0));
+
+        ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
+        ISavePointView savePoint = CreateSavePointComponent(new Vector3(3.1f, 0));
+        GivenGetComponent(collider, savePoint);
+        characterModel.ColliderTriggerEnter2D(collider);
+
+        GivenInteractKeyDown(true);
+        characterModel.CallUpdate();
+
+        ShouldNotPlayEnterHouseEffect();
+        ShouldHaveTriggerSavePoint(false);
+    }
+
     //接觸儲存點後再離開, 點擊按鍵不會觸發儲存點
     //進入房屋後, 再次按下互動按鍵, 離開房屋
     //進入房屋後, 若沒有紀錄其他儲存點, 不可在房屋之間傳送
@@ -867,9 +885,10 @@ public class CharacterModelTest
             Assert.IsTrue(argument < 0);
     }
 
-    private ISavePointView CreateSavePoint()
+    private ISavePointView CreateSavePointComponent(Vector3 pos = default)
     {
         ISavePointView savePoint = Substitute.For<ISavePointView>();
+        savePoint.GetPos.Returns(pos);
         savePoint.GetModel.Returns(Substitute.For<ISavePointModel>());
         return savePoint;
     }
