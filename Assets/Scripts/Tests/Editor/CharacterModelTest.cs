@@ -59,7 +59,7 @@ public class CharacterModelTest
 
         LastTranslateShouldBeRight(expectedMoveRight);
     }
-    
+
     [Test]
     //沒有按左右移動按鍵時, 不會移動
     public void not_move_when_not_press_key()
@@ -579,6 +579,33 @@ public class CharacterModelTest
         ShouldNotPlayMoveEffect();
     }
 
+    [Test]
+    //進入房屋時, 不可跳躍
+    public void can_not_jump_when_into_house()
+    {
+        ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
+        ISavePointView savePoint = CreateSavePoint();
+        GivenGetComponent(collider, savePoint);
+        characterModel.ColliderTriggerEnter2D(collider);
+
+        GivenInteractKeyDown(true);
+        characterModel.CallUpdate();
+
+        GivenIsJumpKeyDown(true);
+        characterModel.CallUpdate();
+
+        ShouldCallJump(0);
+        ShouldIsJumping(false);
+    }
+
+    //進入房屋時, 觸碰怪物不會死亡
+    //接觸儲存點但取不到Component, 點擊按鍵不做事
+    //接觸儲存點時, 點擊按鍵但超過距離, 不做事
+    //接觸儲存點後再離開, 點擊按鍵不會觸發儲存點
+    //進入房屋後, 再次按下互動按鍵, 離開房屋
+    //進入房屋後, 若沒有紀錄其他儲存點, 不可在房屋之間傳送
+    //進入房屋後, 若有紀錄其他儲存點, 可在房屋之間傳送, 傳送後維持進入房屋狀態
+
     private void InitCharacterSettingMock()
     {
         characterSetting = Substitute.For<ICharacterSetting>();
@@ -677,16 +704,6 @@ public class CharacterModelTest
         monsterView.CurrentState.Returns(monsterState);
     }
 
-
-    //進入房屋時, 不可跳躍
-    //進入房屋時, 觸碰怪物不會死亡
-    //接觸儲存點但取不到Component, 點擊按鍵不做事
-    //接觸儲存點時, 點擊按鍵但超過距離, 不做事
-    //接觸儲存點後再離開, 點擊按鍵不會觸發儲存點
-    //進入房屋後, 再次按下互動按鍵, 離開房屋
-    //進入房屋後, 若沒有紀錄其他儲存點, 不可在房屋之間傳送
-    //進入房屋後, 若有紀錄其他儲存點, 可在房屋之間傳送, 傳送後維持進入房屋狀態
-
     private void CallPlayEnterHouseEffectCallback()
     {
         playEnterHouseEffectCallback.Invoke();
@@ -774,7 +791,10 @@ public class CharacterModelTest
 
     private void ShouldCallJump(int triggerTimes)
     {
-        rigidbody.Received(triggerTimes).AddForce(Arg.Is<Vector2>(v => v.y > 0 && v.x == 0));
+        if (triggerTimes == 0)
+            rigidbody.DidNotReceive().AddForce(Arg.Any<Vector2>(), Arg.Any<ForceMode2D>());
+        else
+            rigidbody.Received(triggerTimes).AddForce(Arg.Is<Vector2>(v => v.y > 0 && v.x == 0));
     }
 
     private void ShouldIsJumping(bool expectedIsJumping)
