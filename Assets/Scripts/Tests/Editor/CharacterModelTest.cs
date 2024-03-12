@@ -533,7 +533,23 @@ public class CharacterModelTest
         ShouldNotSaveCurrentPoint(savePoint);
     }
     
+    [Test]
     //進入房屋時角色速度歸零
+    public void character_velocity_should_be_zero_when_into_house()
+    {
+        GivenVelocity(new Vector2(15, 0));
+        
+        ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
+        ISavePointView savePoint = CreateSavePoint();
+        GivenGetComponent(collider, savePoint);
+        characterModel.ColliderTriggerEnter2D(collider);
+
+        GivenInteractKeyDown(true);
+        characterModel.CallUpdate();
+
+        CharacterVelocityShouldBe(Vector2.zero);
+    }
+    
     //進入房屋時, 不可移動
     //進入房屋時, 不可跳躍
     //進入房屋時, 觸碰怪物不會死亡

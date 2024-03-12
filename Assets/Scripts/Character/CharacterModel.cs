@@ -377,6 +377,7 @@ public class CharacterModel : ICharacterModel
     {
         isFreeze = true;
         CurrentTriggerSavePoint.GetModel.Save();
+        selfRigidbody.velocity = Vector2.zero;
         characterPresenter.PlayEnterHouseEffect(() =>
         {
             ChangeCurrentCharacterState(CharacterState.IntoHouse);
