@@ -598,7 +598,29 @@ public class CharacterModelTest
         ShouldIsJumping(false);
     }
 
+    [Test]
     //進入房屋時, 觸碰怪物不會死亡
+    public void not_die_when_touch_monster_in_house()
+    {
+        ICollider2DAdapter savePointCollider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
+        ISavePointView savePoint = CreateSavePoint();
+        GivenGetComponent( savePointCollider, savePoint);
+        characterModel.ColliderTriggerEnter2D( savePointCollider);
+        
+        GivenInteractKeyDown(true);
+        characterModel.CallUpdate();
+        CallPlayEnterHouseEffectCallback();
+        
+        CurrentCharacterStateShouldBe(CharacterState.IntoHouse);
+        
+        ICollider2DAdapter monsterCollider = CreateCollider(GameConst.GameObjectLayerType.Monster);
+        GivenGetComponent(monsterCollider, CreateMonster(MonsterState.Normal));
+        characterModel.ColliderTriggerStay2D(monsterCollider);
+
+        CurrentCharacterStateShouldBe(CharacterState.IntoHouse);
+        ShouldNotPlayDieEffect();
+    }
+    
     //接觸儲存點但取不到Component, 點擊按鍵不做事
     //接觸儲存點時, 點擊按鍵但超過距離, 不做事
     //接觸儲存點後再離開, 點擊按鍵不會觸發儲存點
@@ -754,6 +776,11 @@ public class CharacterModelTest
         savePointView.GetModel.Received().ShowRecordStateHint();
     }
 
+    private void ShouldNotPlayDieEffect()
+    {
+        presenter.DidNotReceive().PlayDieEffect(Arg.Any<Action>(), Arg.Any<Action>());
+    }
+    
     private void ShouldPlayDieEffect(int expectedCallTimes = 1)
     {
         presenter.Received(expectedCallTimes).PlayDieEffect(Arg.Any<Action>(), Arg.Any<Action>());

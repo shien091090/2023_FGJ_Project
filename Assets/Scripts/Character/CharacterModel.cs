@@ -130,12 +130,14 @@ public class CharacterModel : ICharacterModel
 
     public void ColliderTriggerStay2D(ICollider2DAdapter col)
     {
-        if (col.Layer == (int)GameConst.GameObjectLayerType.Monster && isProtected == false)
-        {
-            IMonsterView monsterView = col.GetComponent<IMonsterView>();
-            if (monsterView == null || monsterView.CurrentState == MonsterState.Normal)
-                Die();
-        }
+        if (col.Layer != (int)GameConst.GameObjectLayerType.Monster ||
+            CurrentCharacterState == CharacterState.IntoHouse ||
+            isProtected)
+            return;
+
+        IMonsterView monsterView = col.GetComponent<IMonsterView>();
+        if (monsterView != null && monsterView.CurrentState == MonsterState.Normal)
+            Die();
     }
 
     public void CollisionEnter2D(ICollision2DAdapter col)
