@@ -656,7 +656,24 @@ public class CharacterModelTest
         ShouldHaveTriggerSavePoint(false);
     }
 
+    [Test]
     //接觸儲存點後再離開, 點擊按鍵不會觸發儲存點
+    public void do_nothing_when_touch_save_point_then_exit()
+    {
+        ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
+        ISavePointView savePoint = CreateSavePointComponent();
+        GivenGetComponent(collider, savePoint);
+        characterModel.ColliderTriggerEnter2D(collider);
+        characterModel.ColliderTriggerExit2D(collider);
+
+        ShouldHaveTriggerSavePoint(false);
+
+        GivenInteractKeyDown(true);
+        characterModel.CallUpdate();
+
+        ShouldNotPlayEnterHouseEffect();
+    }
+    
     //進入房屋後, 再次按下互動按鍵, 離開房屋
     //進入房屋後, 若沒有紀錄其他儲存點, 不可在房屋之間傳送
     //進入房屋後, 若有紀錄其他儲存點, 可在房屋之間傳送, 傳送後維持進入房屋狀態
