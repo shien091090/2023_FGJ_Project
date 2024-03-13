@@ -23,6 +23,11 @@ public class CharacterModelTest
     private Action playEnterHouseEffectCallback;
     private Action playExitHouseEffectCallback;
 
+    private static void GivenNextSavePointComponent(ISavePointView savePoint, ISavePointView savePointComponent)
+    {
+        savePoint.GetModel.GetNextSavePointView().Returns(savePointComponent);
+    }
+
     [SetUp]
     public void Setup()
     {
@@ -718,7 +723,7 @@ public class CharacterModelTest
         characterModel.CallUpdate();
 
         ShouldNotPlayTeleportEffect();
-        
+
         GivenLeftKeyDown(true);
         GivenRightKeyDown(false);
         characterModel.CallUpdate();
@@ -726,7 +731,32 @@ public class CharacterModelTest
         ShouldNotPlayTeleportEffect();
     }
 
+    [Test]
     //進入房屋後, 若有紀錄其他儲存點, 可在房屋之間傳送, 傳送後維持進入房屋狀態
+    public void can_teleport_between_house_when_have_other_save_point()
+    {
+        GivenCharacterPosition(new Vector3(0, 0, 0));
+
+        ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
+        ISavePointView savePoint = CreateSavePointComponent(haveNextSavePoint: true, havePreviousSavePoint: true);
+        GivenNextSavePointComponent(savePoint, CreateSavePointComponent(savePos: new Vector3(100, 0, 0)));
+        GivenGetComponent(collider, savePoint);
+        characterModel.ColliderTriggerEnter2D(collider);
+
+        GivenInteractKeyDown(true);
+        characterModel.CallUpdate();
+        CallPlayEnterHouseEffectCallback();
+
+        CurrentCharacterStateShouldBe(CharacterState.IntoHouse);
+        CurrentCharacterPosShouldBe(new Vector3(0, 0, 0));
+
+        GivenRightKeyDown(true);
+        characterModel.CallUpdate();
+
+        CurrentCharacterPosShouldBe(new Vector3(100, 0, 0));
+        ShouldPlayTeleportEffect();
+        CurrentCharacterStateShouldBe(CharacterState.IntoHouse);
+    }
 
     private void InitCharacterSettingMock()
     {
@@ -811,7 +841,7 @@ public class CharacterModelTest
     {
         keyController.IsLeftKeyDown.Returns(isKeyDown);
     }
-    
+
     private void GivenRightKeyDown(bool isKeyDown)
     {
         keyController.IsRightKeyDown.Returns(isKeyDown);
@@ -973,10 +1003,11 @@ public class CharacterModelTest
             Assert.IsTrue(argument < 0);
     }
 
-    private ISavePointView CreateSavePointComponent(Vector3 pos = default, bool haveNextSavePoint = false, bool havePreviousSavePoint = false)
+    private ISavePointView CreateSavePointComponent(Vector3 pos = default, Vector3 savePos = default, bool haveNextSavePoint = false, bool havePreviousSavePoint = false)
     {
         ISavePointView savePoint = Substitute.For<ISavePointView>();
         savePoint.GetPos.Returns(pos);
+        savePoint.SavePointPos.Returns(savePos);
         ISavePointModel savePointModel = Substitute.For<ISavePointModel>();
         savePointModel.HaveNextSavePoint().Returns(haveNextSavePoint);
         savePointModel.HavePreviousSavePoint().Returns(havePreviousSavePoint);
