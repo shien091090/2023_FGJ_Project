@@ -21,6 +21,7 @@ public class CharacterModelTest
     private Action triggerInteractiveObjectEvent;
     private Action unTriggerInteractiveObjectEvent;
     private Action playEnterHouseEffectCallback;
+    private Action playExitHouseEffectCallback;
 
     [SetUp]
     public void Setup()
@@ -673,8 +674,29 @@ public class CharacterModelTest
 
         ShouldNotPlayEnterHouseEffect();
     }
-    
+
+    [Test]
     //進入房屋後, 再次按下互動按鍵, 離開房屋
+    public void leave_house_when_click_interact_button_after_into_house()
+    {
+        ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
+        ISavePointView savePoint = CreateSavePointComponent();
+        GivenGetComponent(collider, savePoint);
+        characterModel.ColliderTriggerEnter2D(collider);
+
+        GivenInteractKeyDown(true);
+        characterModel.CallUpdate();
+        CallPlayEnterHouseEffectCallback();
+
+        CurrentCharacterStateShouldBe(CharacterState.IntoHouse);
+
+        GivenInteractKeyDown(true);
+        characterModel.CallUpdate();
+        CallPlayExitHouseEffectCallback();
+
+        CurrentCharacterStateShouldBe(CharacterState.Walking);
+    }
+
     //進入房屋後, 若沒有紀錄其他儲存點, 不可在房屋之間傳送
     //進入房屋後, 若有紀錄其他儲存點, 可在房屋之間傳送, 傳送後維持進入房屋狀態
 
@@ -693,6 +715,7 @@ public class CharacterModelTest
         afterDieAnimationCallback = null;
         afterBackOriginCallback = null;
         playEnterHouseEffectCallback = null;
+        playExitHouseEffectCallback = null;
 
         presenter = Substitute.For<ICharacterPresenter>();
 
@@ -708,6 +731,11 @@ public class CharacterModelTest
         presenter.When(x => x.PlayEnterHouseEffect(Arg.Any<Action>())).Do(callInfo =>
         {
             playEnterHouseEffectCallback = (Action)callInfo.Args()[0];
+        });
+
+        presenter.When(x => x.PlayExitHouseEffect(Arg.Any<Action>())).Do(callInfo =>
+        {
+            playExitHouseEffectCallback = (Action)callInfo.Args()[0];
         });
     }
 
@@ -774,6 +802,11 @@ public class CharacterModelTest
     private void GivenMonsterCurrentState(IMonsterView monsterView, MonsterState monsterState)
     {
         monsterView.CurrentState.Returns(monsterState);
+    }
+
+    private void CallPlayExitHouseEffectCallback()
+    {
+        playExitHouseEffectCallback.Invoke();
     }
 
     private void CallPlayEnterHouseEffectCallback()
