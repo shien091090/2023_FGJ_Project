@@ -92,14 +92,12 @@ public class CharacterModelTest
     //跳躍時不能再跳
     public void can_not_jump_when_jumping()
     {
-        GivenIsJumpKeyDown(true);
-        characterModel.CallUpdate();
+        CallJumpKeyDown();
 
         ShouldCallJump(1);
         ShouldIsJumping(true);
 
-        GivenIsJumpKeyDown(true);
-        characterModel.CallUpdate();
+        CallJumpKeyDown();
 
         ShouldCallJump(1);
     }
@@ -110,8 +108,7 @@ public class CharacterModelTest
     {
         characterModel.CollisionExit2D(CreateCollision(GameConst.GameObjectLayerType.Platform));
 
-        GivenIsJumpKeyDown(true);
-        characterModel.CallUpdate();
+        CallJumpKeyDown();
 
         ShouldCallJump(0);
     }
@@ -121,9 +118,8 @@ public class CharacterModelTest
     public void can_not_jump_when_jump_force_is_zero()
     {
         GivenJumpForce(0);
-        GivenIsJumpKeyDown(true);
 
-        characterModel.CallUpdate();
+        CallJumpKeyDown();
 
         ShouldCallJump(0);
     }
@@ -132,9 +128,7 @@ public class CharacterModelTest
     //跳躍落地後可再跳
     public void can_jump_when_back_to_floor()
     {
-        GivenIsJumpKeyDown(true);
-
-        characterModel.CallUpdate();
+        CallJumpKeyDown();
         characterModel.CollisionExit2D(CreateCollision(GameConst.GameObjectLayerType.Platform));
 
         ShouldCallJump(1);
@@ -145,8 +139,7 @@ public class CharacterModelTest
 
         ShouldIsJumping(false);
 
-        GivenIsJumpKeyDown(true);
-        characterModel.CallUpdate();
+        CallJumpKeyDown();
 
         ShouldCallJump(2);
     }
@@ -157,19 +150,17 @@ public class CharacterModelTest
     {
         GivenJumpDelay(0.7f);
         GivenDeltaTime(0.3f);
-        GivenIsJumpKeyDown(true);
 
-        characterModel.CallUpdate(); //0s
+        CallJumpKeyDown(); //0s
         characterModel.CollisionExit2D(CreateCollision(GameConst.GameObjectLayerType.Platform));
 
         ShouldIsJumping(true);
         ShouldCallJump(1);
 
-        characterModel.CallUpdate(); //0.3s
+        CallJumpKeyDown(); //0.3s
         characterModel.CollisionEnter2D(CreateCollision(GameConst.GameObjectLayerType.Platform, true));
 
-        GivenIsJumpKeyDown(true);
-        characterModel.CallUpdate(); //0.6s
+        CallJumpKeyDown(); //0.6s
 
         ShouldIsJumping(false);
         ShouldCallJump(1);
@@ -181,21 +172,18 @@ public class CharacterModelTest
     {
         GivenJumpDelay(0.7f);
         GivenDeltaTime(0.6f);
-        GivenIsJumpKeyDown(true);
 
-        GivenIsJumpKeyDown(true);
-        characterModel.CallUpdate(); //0s
+        CallJumpKeyDown(); //0s
         characterModel.CollisionExit2D(CreateCollision(GameConst.GameObjectLayerType.Platform));
 
         ShouldCallJump(1);
 
-        characterModel.CallUpdate(); //0.6s
+        CallJumpKeyDown(); //0.6s
         characterModel.CollisionEnter2D(CreateCollision(GameConst.GameObjectLayerType.Platform, true));
 
         ShouldIsJumping(false);
 
-        GivenIsJumpKeyDown(true);
-        characterModel.CallUpdate(); //1.2s 可跳躍
+        CallJumpKeyDown(); //1.2s 可跳躍
         characterModel.CollisionExit2D(CreateCollision(GameConst.GameObjectLayerType.Platform));
 
         ShouldCallJump(2);
@@ -215,8 +203,7 @@ public class CharacterModelTest
         CurrentCharacterPosShouldBe(Vector3.zero);
         CurrentCharacterStateShouldBe(CharacterState.Walking);
 
-        GivenInteractKeyDown(true);
-        characterModel.CallUpdate();
+        CallInteractKeyDown();
 
         CurrentCharacterPosShouldBe(new Vector3(5, 10));
         ShouldPlayTeleportEffect();
@@ -229,17 +216,15 @@ public class CharacterModelTest
         ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.TeleportGate);
         ITeleportGate component = CreateTeleportGateComponent(teleportTargetPos: new Vector3(5, 10));
         GivenGetComponent(collider, component);
-        GivenIsJumpKeyDown(true);
 
-        characterModel.CallUpdate();
+        CallJumpKeyDown();
         characterModel.ColliderTriggerEnter2D(collider);
 
         ShouldHaveTriggerTeleportGate(true);
         CurrentCharacterPosShouldBe(Vector3.zero);
         CurrentCharacterStateShouldBe(CharacterState.Jumping);
 
-        GivenInteractKeyDown(true);
-        characterModel.CallUpdate();
+        CallInteractKeyDown();
 
         CurrentCharacterPosShouldBe(new Vector3(5, 10));
         ShouldPlayTeleportEffect();
@@ -265,8 +250,7 @@ public class CharacterModelTest
 
         ShouldHaveTriggerTeleportGate(true);
 
-        GivenInteractKeyDown(true);
-        characterModel.CallUpdate();
+        CallInteractKeyDown();
 
         CurrentCharacterPosShouldBe(Vector3.zero);
         ShouldNotPlayTeleportEffect();
@@ -283,8 +267,7 @@ public class CharacterModelTest
 
         characterModel.ColliderTriggerEnter2D(collider);
 
-        GivenInteractKeyDown(true);
-        characterModel.CallUpdate();
+        CallInteractKeyDown();
 
         CharacterVelocityShouldBe(Vector2.zero);
     }
@@ -300,8 +283,7 @@ public class CharacterModelTest
 
         ShouldHaveTriggerTeleportGate(false);
 
-        GivenInteractKeyDown(true);
-        characterModel.CallUpdate();
+        CallInteractKeyDown();
 
         ShouldHaveTriggerTeleportGate(false);
         ShouldNotPlayTeleportEffect();
@@ -319,8 +301,7 @@ public class CharacterModelTest
         GivenGetComponent(collider, teleportGate);
         characterModel.ColliderTriggerEnter2D(collider);
 
-        GivenInteractKeyDown(true);
-        characterModel.CallUpdate();
+        CallInteractKeyDown();
 
         ShouldNotPlayTeleportEffect();
         ShouldHaveTriggerTeleportGate(false);
@@ -339,8 +320,7 @@ public class CharacterModelTest
 
         ShouldHaveTriggerTeleportGate(false);
 
-        GivenInteractKeyDown(true);
-        characterModel.CallUpdate();
+        CallInteractKeyDown();
 
         ShouldNotPlayTeleportEffect();
     }
@@ -500,8 +480,7 @@ public class CharacterModelTest
         GivenGetComponent(collider, savePoint);
         characterModel.ColliderTriggerEnter2D(collider);
 
-        GivenInteractKeyDown(true);
-        characterModel.CallUpdate();
+        CallInteractKeyDown();
 
         CurrentCharacterStateShouldBe(CharacterState.Walking);
         ShouldSaveCurrentPoint(savePoint);
@@ -520,13 +499,11 @@ public class CharacterModelTest
         GivenGetComponent(collider, savePoint);
         characterModel.ColliderTriggerEnter2D(collider);
 
-        GivenIsJumpKeyDown(true);
-        characterModel.CallUpdate();
+        CallJumpKeyDown();
 
         CurrentCharacterStateShouldBe(CharacterState.Jumping);
 
-        GivenInteractKeyDown(true);
-        characterModel.CallUpdate();
+        CallInteractKeyDown();
 
         ShouldNotSaveCurrentPoint(savePoint);
     }
@@ -544,8 +521,7 @@ public class CharacterModelTest
         GivenGetComponent(collider, savePoint);
         characterModel.ColliderTriggerEnter2D(collider);
 
-        GivenInteractKeyDown(true);
-        characterModel.CallUpdate();
+        CallInteractKeyDown();
 
         ShouldNotSaveCurrentPoint(savePoint);
     }
@@ -561,8 +537,7 @@ public class CharacterModelTest
         GivenGetComponent(collider, savePoint);
         characterModel.ColliderTriggerEnter2D(collider);
 
-        GivenInteractKeyDown(true);
-        characterModel.CallUpdate();
+        CallInteractKeyDown();
 
         CharacterVelocityShouldBe(Vector2.zero);
     }
@@ -576,8 +551,7 @@ public class CharacterModelTest
         GivenGetComponent(collider, savePoint);
         characterModel.ColliderTriggerEnter2D(collider);
 
-        GivenInteractKeyDown(true);
-        characterModel.CallUpdate();
+        CallInteractKeyDown();
 
         GivenHorizontalAxis(1);
         characterModel.CallUpdate();
@@ -594,11 +568,8 @@ public class CharacterModelTest
         GivenGetComponent(collider, savePoint);
         characterModel.ColliderTriggerEnter2D(collider);
 
-        GivenInteractKeyDown(true);
-        characterModel.CallUpdate();
-
-        GivenIsJumpKeyDown(true);
-        characterModel.CallUpdate();
+        CallInteractKeyDown();
+        CallJumpKeyDown();
 
         ShouldCallJump(0);
         ShouldIsJumping(false);
@@ -613,8 +584,7 @@ public class CharacterModelTest
         GivenGetComponent(savePointCollider, savePoint);
         characterModel.ColliderTriggerEnter2D(savePointCollider);
 
-        GivenInteractKeyDown(true);
-        characterModel.CallUpdate();
+        CallInteractKeyDown();
         CallPlayEnterHouseEffectCallback();
 
         CurrentCharacterStateShouldBe(CharacterState.IntoHouse);
@@ -637,8 +607,7 @@ public class CharacterModelTest
 
         ShouldHaveTriggerSavePoint(false);
 
-        GivenInteractKeyDown(true);
-        characterModel.CallUpdate();
+        CallInteractKeyDown();
 
         ShouldNotPlayEnterHouseEffect();
     }
@@ -655,8 +624,7 @@ public class CharacterModelTest
         GivenGetComponent(collider, savePoint);
         characterModel.ColliderTriggerEnter2D(collider);
 
-        GivenInteractKeyDown(true);
-        characterModel.CallUpdate();
+        CallInteractKeyDown();
 
         ShouldNotPlayEnterHouseEffect();
         ShouldHaveTriggerSavePoint(false);
@@ -674,8 +642,7 @@ public class CharacterModelTest
 
         ShouldHaveTriggerSavePoint(false);
 
-        GivenInteractKeyDown(true);
-        characterModel.CallUpdate();
+        CallInteractKeyDown();
 
         ShouldNotPlayEnterHouseEffect();
     }
@@ -689,14 +656,12 @@ public class CharacterModelTest
         GivenGetComponent(collider, savePoint);
         characterModel.ColliderTriggerEnter2D(collider);
 
-        GivenInteractKeyDown(true);
-        characterModel.CallUpdate();
+        CallInteractKeyDown();
         CallPlayEnterHouseEffectCallback();
 
         CurrentCharacterStateShouldBe(CharacterState.IntoHouse);
 
-        GivenInteractKeyDown(true);
-        characterModel.CallUpdate();
+        CallInteractKeyDown();
         CallPlayExitHouseEffectCallback();
 
         CurrentCharacterStateShouldBe(CharacterState.Walking);
@@ -711,22 +676,16 @@ public class CharacterModelTest
         GivenGetComponent(collider, savePoint);
         characterModel.ColliderTriggerEnter2D(collider);
 
-        GivenInteractKeyDown(true);
-        characterModel.CallUpdate();
+        CallInteractKeyDown();
         CallPlayEnterHouseEffectCallback();
 
         CurrentCharacterStateShouldBe(CharacterState.IntoHouse);
 
-        GivenInteractKeyDown(false);
-        GivenRightKeyDown(true);
-        GivenLeftKeyDown(false);
-        characterModel.CallUpdate();
+        CallRightKeyDown();
 
         ShouldNotPlayTeleportEffect();
 
-        GivenLeftKeyDown(true);
-        GivenRightKeyDown(false);
-        characterModel.CallUpdate();
+        CallLeftKeyDown();
 
         ShouldNotPlayTeleportEffect();
     }
@@ -743,15 +702,13 @@ public class CharacterModelTest
         GivenGetComponent(collider, savePoint);
         characterModel.ColliderTriggerEnter2D(collider);
 
-        GivenInteractKeyDown(true);
-        characterModel.CallUpdate();
+        CallInteractKeyDown();
         CallPlayEnterHouseEffectCallback();
 
         CurrentCharacterStateShouldBe(CharacterState.IntoHouse);
         CurrentCharacterPosShouldBe(new Vector3(0, 0, 0));
 
-        GivenRightKeyDown(true);
-        characterModel.CallUpdate();
+        CallRightKeyDown();
 
         CurrentCharacterPosShouldBe(new Vector3(100, 0, 0));
         ShouldPlayTeleportEffect();
@@ -870,6 +827,36 @@ public class CharacterModelTest
     private void GivenMonsterCurrentState(IMonsterView monsterView, MonsterState monsterState)
     {
         monsterView.CurrentState.Returns(monsterState);
+    }
+
+    private void CallLeftKeyDown()
+    {
+        GivenLeftKeyDown(true);
+        GivenRightKeyDown(false);
+        characterModel.CallUpdate();
+        GivenLeftKeyDown(false);
+    }
+
+    private void CallRightKeyDown()
+    {
+        GivenRightKeyDown(true);
+        GivenLeftKeyDown(false);
+        characterModel.CallUpdate();
+        GivenRightKeyDown(false);
+    }
+
+    private void CallJumpKeyDown()
+    {
+        GivenIsJumpKeyDown(true);
+        characterModel.CallUpdate();
+        GivenIsJumpKeyDown(false);
+    }
+
+    private void CallInteractKeyDown()
+    {
+        GivenInteractKeyDown(true);
+        characterModel.CallUpdate();
+        GivenInteractKeyDown(false);
     }
 
     private void CallPlayExitHouseEffectCallback()
