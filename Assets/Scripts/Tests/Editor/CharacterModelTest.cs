@@ -697,7 +697,35 @@ public class CharacterModelTest
         CurrentCharacterStateShouldBe(CharacterState.Walking);
     }
 
+    [Test]
     //進入房屋後, 若沒有紀錄其他儲存點, 不可在房屋之間傳送
+    public void can_not_teleport_between_house_when_no_other_save_point()
+    {
+        ICollider2DAdapter collider = CreateCollider(GameConst.GameObjectLayerType.SavePoint);
+        ISavePointView savePoint = CreateSavePointComponent(haveNextSavePoint: false, havePreviousSavePoint: false);
+        GivenGetComponent(collider, savePoint);
+        characterModel.ColliderTriggerEnter2D(collider);
+
+        GivenInteractKeyDown(true);
+        characterModel.CallUpdate();
+        CallPlayEnterHouseEffectCallback();
+
+        CurrentCharacterStateShouldBe(CharacterState.IntoHouse);
+
+        GivenInteractKeyDown(false);
+        GivenRightKeyDown(true);
+        GivenLeftKeyDown(false);
+        characterModel.CallUpdate();
+
+        ShouldNotPlayTeleportEffect();
+        
+        GivenLeftKeyDown(true);
+        GivenRightKeyDown(false);
+        characterModel.CallUpdate();
+
+        ShouldNotPlayTeleportEffect();
+    }
+
     //進入房屋後, 若有紀錄其他儲存點, 可在房屋之間傳送, 傳送後維持進入房屋狀態
 
     private void InitCharacterSettingMock()
@@ -777,6 +805,16 @@ public class CharacterModelTest
     private void GivenCharacterPosition(Vector3 pos)
     {
         rigidbody.position.Returns(pos);
+    }
+
+    private void GivenLeftKeyDown(bool isKeyDown)
+    {
+        keyController.IsLeftKeyDown.Returns(isKeyDown);
+    }
+    
+    private void GivenRightKeyDown(bool isKeyDown)
+    {
+        keyController.IsRightKeyDown.Returns(isKeyDown);
     }
 
     private void GivenInteractKeyDown(bool isKeyDown)
@@ -935,11 +973,14 @@ public class CharacterModelTest
             Assert.IsTrue(argument < 0);
     }
 
-    private ISavePointView CreateSavePointComponent(Vector3 pos = default)
+    private ISavePointView CreateSavePointComponent(Vector3 pos = default, bool haveNextSavePoint = false, bool havePreviousSavePoint = false)
     {
         ISavePointView savePoint = Substitute.For<ISavePointView>();
         savePoint.GetPos.Returns(pos);
-        savePoint.GetModel.Returns(Substitute.For<ISavePointModel>());
+        ISavePointModel savePointModel = Substitute.For<ISavePointModel>();
+        savePointModel.HaveNextSavePoint().Returns(haveNextSavePoint);
+        savePointModel.HavePreviousSavePoint().Returns(havePreviousSavePoint);
+        savePoint.GetModel.Returns(savePointModel);
         return savePoint;
     }
 
