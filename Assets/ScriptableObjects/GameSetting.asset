@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 585e531d9a4d4fe5860ed166bed7562f, type: 3}
   m_Name: GameSetting
   m_EditorClassIdentifier: 
-  totalMissingTextureCount: 100
+  totalMissingTextureCount: 3295
   upRange: 2
   downRange: 6
   autoDisappearAfterimageSeconds: 1.1
