@@ -1020,7 +1020,7 @@ public class CharacterModelTest
     {
         ICollision2DAdapter collision = Substitute.For<ICollision2DAdapter>();
         collision.Layer.Returns((int)collisionLayer);
-        collision.CheckPhysicsOverlapCircle(Arg.Any<Vector3>(), Arg.Any<float>(), Arg.Any<GameConst.GameObjectLayerType>()).Returns(isPhysicsOverlapCircle);
+        collision.CheckPhysicsOverlapCircle(Arg.Any<Vector3>(), Arg.Any<float>(), Arg.Any<string>()).Returns(isPhysicsOverlapCircle);
         return collision;
     }
 
